@@ -628,12 +628,6 @@ module layout_print_1() {
     // Spools
     translate([spacing*1,0,0])
         spool_spacer(shaft_d=shaft_d, core_d=core_d, w_spacer=spool_w_mid, w_spool_end=spool_w_end) ;    
-
-    // Winder supports
-    translate([spacing,spacing,0])
-        winder_side_support() ;
-    translate([-spacing,spacing,0])
-        winder_side_support() ;
 }
 
 
