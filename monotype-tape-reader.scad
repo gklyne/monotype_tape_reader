@@ -1,5 +1,7 @@
-    
-shaft_d = 8 ;           // Shaft diameter
+include <monotype-tape-reader-defs.scad> ;
+
+/*    
+shaft_d = 8.2 ;         // Shaft diameter
 core_d = 18 ;           // Core diameter
 bevel_d = 30 ;          // Bevel inner diameter
 outer_d = 40 ;          // Spool outer diameter
@@ -35,6 +37,7 @@ winder_base_t = 16 ;    // Thickness at base of winder
 delta = 0.1 ;           // Small value to force overlap
 spacing = outer_d+10 ;  // Object spacingh (pitch)
 part_gap = 10 ;         // Spacing between exploded assembly parts
+*/
 
 // Utilities
 
@@ -148,10 +151,10 @@ module half_spool(shaft_d, core_d, bevel_d, outer_d, side_t, side_rim_t, w_spool
 module spool_spacer(shaft_d, core_d, w_spacer, w_spool_end) {
     difference() {
         union() {
-            spool_core(d_core=core_d, w_core=spool_w_mid);
+            spool_core(d_core=core_d, w_core=w_spacer);
         } ;
         union() {
-            shaft_hole(d=shaft_d, l=spool_w_mid) ;
+            shaft_hole(d=shaft_d, l=w_spacer) ;
         } ;
     }
 } ;
@@ -623,16 +626,12 @@ module layout_print_xz() {
         phone_holder_rod_fixing() ;
 }
 
-module layout_print_1() {
-    // Cur down
-    // Spools
-    translate([spacing*1,0,0])
-        spool_spacer(shaft_d=shaft_d, core_d=core_d, w_spacer=spool_w_mid, w_spool_end=spool_w_end) ;    
+module layout_print_spacer() {
+    spool_spacer(shaft_d=shaft_d, core_d=core_d, w_spacer=spool_w_mid/2, w_spool_end=spool_w_end) ;
 }
 
 
-
-module layout_print_1a() {
+module layout_print_1() {
     // Spools
     translate([-spacing,0,0])
         half_spool(
@@ -645,7 +644,9 @@ module layout_print_1a() {
             side_t=side_t, side_rim_t=side_rim_t, w_spool_end=spool_w_end
             );
     translate([spacing*1,0,0])
-        spool_spacer(shaft_d=shaft_d, core_d=core_d, w_spacer=spool_w_mid, w_spool_end=spool_w_end) ;
+        spool_spacer(shaft_d=shaft_d, core_d=core_d, w_spacer=spool_w_mid/2, w_spool_end=spool_w_end) ;
+    translate([spacing*2,0,0])
+        spool_spacer(shaft_d=shaft_d, core_d=core_d, w_spacer=spool_w_mid/2, w_spool_end=spool_w_end) ;
 
     // Crank handle
     translate([0, spacing*2,0])
@@ -703,6 +704,7 @@ module layout_print() {
 layout_print_1() ;
 // layout_print_2() ;
 // layout_print_3() ;
+// layout_print_spacer() ;
 
 // spool_spacer(shaft_d=shaft_d, core_d=core_d, w_spacer=spool_w_mid, w_spool_end=spool_w_end) ;
 
