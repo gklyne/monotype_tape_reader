@@ -3,7 +3,7 @@
 .SUFFIXES: scad stl 3mf gcode
 
 OpenSCAD = /Applications/OpenSCAD.app/Contents/MacOS/OpenSCAD
-Slicer = /Applications/Original\ Prusa\ Drivers/PrusaSlicer.app
+Slicer = /Applications/Original\ Prusa\ Drivers/PrusaSlicer.app/Contents/MacOS/PrusaSlicer
 
 %.stl : %.scad
 	${OpenSCAD} -o $@ $<
@@ -14,7 +14,7 @@ Slicer = /Applications/Original\ Prusa\ Drivers/PrusaSlicer.app
 	# ${OpenSCAD} -d $@.deps -o $@ $<
 
 %.gcode : %.3mf
-	${Slicer} --gcode $<
+	${Slicer} -o $@ --gcode $<
 
 clean:
 	rm *.gcode
@@ -25,6 +25,11 @@ all: \
 	monotype-tape-reader-winder.3mf \
 	monotype-tape-reader-bridge.3mf \
 	monotype-tape-reader-camholder.3mf
+
+allgcode: \
+	monotype-tape-reader-winder.gcode \
+	monotype-tape-reader-bridge.gcode \
+	monotype-tape-reader-camholder.gcode
 
 monotype-tape-reader-winder.3mf: \
 	/Users/graham/workspace/github/gklyne/monotype_tape_reader/monotype-tape-reader.scad \
