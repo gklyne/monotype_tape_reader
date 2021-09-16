@@ -14,7 +14,8 @@ Slicer = /Applications/Original\ Prusa\ Drivers/PrusaSlicer.app/Contents/MacOS/P
 	# ${OpenSCAD} -d $@.deps -o $@ $<
 
 %.gcode : %.3mf
-	${Slicer} -o $@ --gcode $<
+	${Slicer} -o $@ --gcode $< \
+	    --load Prusa_PLA_0.2_config.ini
 
 clean:
 	rm *.gcode
