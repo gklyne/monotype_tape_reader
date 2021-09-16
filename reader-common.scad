@@ -1,4 +1,4 @@
-include <monotype-tape-reader-defs.scad> ;
+include <reader-defs.scad> ;
 
 /*    
 shaft_d = 8.2 ;         // Shaft diameter

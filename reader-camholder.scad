@@ -1,8 +1,8 @@
 // monotype-tape-reader-winder.scad
 
-include <monotype-tape-reader-defs.scad> ;
+include <reader-defs.scad> ;
 
-use <monotype-tape-reader.scad> ;
+use <reader-common.scad> ;
 
 module layout_reader_camera_holder() {
     // Phone/camera holder

@@ -23,26 +23,26 @@ clean:
 	rm *.deps
 
 all: \
-	monotype-tape-reader-winder.3mf \
-	monotype-tape-reader-bridge.3mf \
-	monotype-tape-reader-camholder.3mf
+	reader-winder.3mf \
+	reader-bridge.3mf \
+	reader-camholder.3mf
 
 allgcode: \
-	monotype-tape-reader-winder.gcode \
-	monotype-tape-reader-bridge.gcode \
-	monotype-tape-reader-camholder.gcode
+	reader-winder.gcode \
+	reader-bridge.gcode \
+	reader-camholder.gcode
 
-monotype-tape-reader-winder.3mf: \
-	/Users/graham/workspace/github/gklyne/monotype_tape_reader/monotype-tape-reader.scad \
-	/Users/graham/workspace/github/gklyne/monotype_tape_reader/monotype-tape-reader-defs.scad \
-	monotype-tape-reader-winder.scad
+reader-winder.3mf: \
+	/Users/graham/workspace/github/gklyne/monotype_tape_reader/reader-common.scad \
+	/Users/graham/workspace/github/gklyne/monotype_tape_reader/reader-defs.scad \
+	reader-winder.scad
 
-monotype-tape-reader-bridge.3mf: \
-	/Users/graham/workspace/github/gklyne/monotype_tape_reader/monotype-tape-reader.scad \
-	/Users/graham/workspace/github/gklyne/monotype_tape_reader/monotype-tape-reader-defs.scad \
-	monotype-tape-reader-bridge.scad
+reader-bridge.3mf: \
+	/Users/graham/workspace/github/gklyne/monotype_tape_reader/reader-common.scad \
+	/Users/graham/workspace/github/gklyne/monotype_tape_reader/reader-defs.scad \
+	reader-bridge.scad
 
-monotype-tape-reader-camholder.3mf: \
-	/Users/graham/workspace/github/gklyne/monotype_tape_reader/monotype-tape-reader.scad \
-	/Users/graham/workspace/github/gklyne/monotype_tape_reader/monotype-tape-reader-defs.scad \
-	monotype-tape-reader-camholder.scad
+reader-camholder.3mf: \
+	/Users/graham/workspace/github/gklyne/monotype_tape_reader/reader-common.scad \
+	/Users/graham/workspace/github/gklyne/monotype_tape_reader/reader-defs.scad \
+	reader-camholder.scad
