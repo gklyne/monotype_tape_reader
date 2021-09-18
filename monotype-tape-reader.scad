@@ -443,7 +443,7 @@ rod_support_base_w = 45 ;
                     [rod_support_h-rod_support_base_t,-rod_support_base_w/2], [rod_support_h-rod_support_base_t,rod_support_base_w/2],
                     [rod_support_h,-rod_support_base_w/2], [rod_support_h,rod_support_base_w/2],
                     ],
-                paths=[[0,2,4,6,8, 9,7,5,3,1, 0]]
+                paths=[[0,2,4, 5,3,1, 0]]
                 ) ;
         }
     }
