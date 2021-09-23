@@ -34,7 +34,22 @@ winder_side_t = 4 ;     // Thickness of winder side support
 winder_apex_d = 16 ;    // Radius of apex of winder side support
 winder_base_t = 16 ;    // Thickness at base of winder
 
-delta = 0.1 ;           // Small value to force overlap
+read_l = spool_w_all ;  // Reader bridge length (inner)
+read_w = 16 ;           // Width of bridge
+read_extra_w = 5 ;      // Extra width for reader bridge for tie-down
+read_h = 90 ;           // Height of reader bridge above base plate
+read_side_t = side_t ;  // Reader bridge side support thickness
+read_side_base_t = 16 ; // Reader bridge side support thickness at base 
+read_side_apex_w = 24 ;
+read_side_apex_h = 4 ;
+read_side_base_w = 40 ;
+read_side_peg_d  = 4 ;
+
+read_groove_w = 2.25 ;  // EL wire goove width
+read_groove_d = 3 ;     // EL wire groove depth
+
+
+delta = 0.01 ;          // Small value to force overlap
 spacing = outer_d+10 ;  // Object spacing (layout pitch)
 part_gap = 10 ;         // Spacing between exploded assembly parts
 
