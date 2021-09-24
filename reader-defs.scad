@@ -1,6 +1,5 @@
 // Default dimensions
 
-
 shaft_d = 8.2 ;         // Shaft diameter
 core_d = 18 ;           // Core diameter
 bevel_d = 30 ;          // Bevel inner diameter
@@ -49,6 +48,46 @@ read_groove_w = 2.25 ;  // EL wire goove width
 read_groove_d = 3 ;     // EL wire groove depth
 
 
+// Parts for holding phone camera
+
+hold_side_l = 80 ;      // Length is side of holder
+hold_side_h = 10 ;      // Height of side above base
+hold_side_t1 = 7 ;      // Thickness of side at base
+hold_side_t2 = 8 ;      // Thickness of side at top
+
+hold_base_l1 = 60 ;     // Length of base near side
+hold_base_l2 = 50 ;     // Length of base towards centre
+hold_base_t = 8 ;       // Thickness of base (to accommodate hole)
+hold_base_w = 20 ;      // Width of base piece
+
+hold_rail_p = 40 ;      // Distance between rail holes
+hold_rail_d = 4 ;       // Diameter of rail holes
+
+hold_fix_p = 25 ;       // Distance between fixing holes
+hold_fix_d = 4 ;        // Diameter of fixing holes
+hold_fix_o = 30 ;       // Offset from vertical rod to holder fixing holes
+
+hold_fix_t = 6 ;        // Thickness of phone holder-to-rod fixing
+hold_fix_w = 8 ;        // Width of phone holder-to-rod fixing
+hold_fix_l = 80 ;       // Length of phone holder-to-rod fixing
+hold_fix_rod_d = 8 ;    // Diameter of phone holder support rod
+hold_fix_hub_d = 16 ;   // Diameter of phone holder support hub
+
+hold_fix_plate_l = hold_fix_o + hold_fix_rod_d*2 ;
+hold_fix_plate_w = hold_fix_p + hold_fix_rod_d*2 ;
+
+// Bracket to hold phone camera support rod
+
+rod_support_h = 40 ;
+rod_support_t = side_t ;    // Rod support side support thickness
+rod_support_base_t = 16 ;   // Rod support side support thickness at base 
+rod_support_base_o = 100 ;  // X-offset from reader bar to phone support rod
+
+rod_support_apex_w = 24 ;
+rod_support_base_w = 45 ;
+rod_support_shell_w = 40 ;
+
+// Misc
 delta = 0.01 ;          // Small value to force overlap
 spacing = outer_d+10 ;  // Object spacing (layout pitch)
 part_gap = 10 ;         // Spacing between exploded assembly parts

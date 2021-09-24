@@ -197,50 +197,80 @@ module side_support_foot_x(l, h, t, px, py) {
 
 // Baseplate
 
-base_l   = 250 ;
-base_w   = 130 ;
-base_t   = 4 ;
-border_w = 8 ;
-shell_h  = 8 ;
-brace_w  = 8 ;
-mount_l  = 30 ;
-mount_w  = 20 ;
-hole_d   = 4 ;
+    base_l   = 250 ;
+    base_w   = 130 ;
+    base_t   = 4 ;
+    border_w = 8 ;
+    shell_h  = 8 ;
+    brace_w  = 8 ;
+    mount_l  = 30 ;
+    mount_w  = 20 ;
+    hole_d   = 4 ;
 
-foot_lx  = 30 ;
-foot_ly  = 20 ;
-foot_h   = 12 ;
+    foot_lx  = 30 ;
+    foot_ly  = 20 ;
+    foot_h   = 12 ;
 
-plate_px = base_l/2-base_t ;
-plate_py = base_w/2-base_t ;
+    plate_px = base_l/2-base_t ;
+    plate_py = base_w/2-base_t ;
 
-difference() {
-    union() {
-
-        rect_shell(base_l, base_w, base_t, border_w, shell_h);
-        cross_brace_y(base_w, 0, base_t, brace_w) ;
-        diagonal_brace(base_l, base_w, base_t, brace_w, flip=false) ;
-        diagonal_brace(base_l, base_w, base_t, brace_w, flip=true) ;
-
-        mount_plate(mount_l, mount_w, base_t, winder_side_w/2, hole_d, px=+plate_px, py=+plate_py ) ;
-        mount_plate(mount_l, mount_w, base_t, winder_side_w/2, hole_d, px=+plate_px, py=-plate_py) ;
-        mount_plate(mount_l, mount_w, base_t, winder_side_w/2, hole_d, px=-plate_px, py=+plate_py ) ;
-        mount_plate(mount_l, mount_w, base_t, winder_side_w/2, hole_d, px=-plate_px, py=-plate_py) ;
-        mount_plate(mount_l, mount_w, base_t, read_side_base_w/2, hole_d, 0, py=+plate_py) ;
-        mount_plate(mount_l, mount_w, base_t, read_side_base_w/2, hole_d, 0, py=-plate_py) ;
-
-        corner_support_foot(foot_lx, foot_ly, base_t, foot_h, +base_l/2, +base_w/2) ;
-        corner_support_foot(foot_lx, foot_ly, base_t, foot_h, +base_l/2, -base_w/2) ;
-        corner_support_foot(foot_lx, foot_ly, base_t, foot_h, -base_l/2, +base_w/2) ;
-        corner_support_foot(foot_lx, foot_ly, base_t, foot_h, -base_l/2, -base_w/2) ;
-        side_support_foot_x(foot_lx, foot_h, base_t, 0, +base_w/2) ;
-        side_support_foot_x(foot_lx, foot_h, base_t, 0, -base_w/2) ;
-
-    } ;
-    mount_holes(mount_l, mount_w, base_t, winder_side_w/2, hole_d, px=+plate_px, py=+plate_py ) ;
-    mount_holes(mount_l, mount_w, base_t, winder_side_w/2, hole_d, px=+plate_px, py=-plate_py) ;
-    mount_holes(mount_l, mount_w, base_t, winder_side_w/2, hole_d, px=-plate_px, py=+plate_py ) ;
-    mount_holes(mount_l, mount_w, base_t, winder_side_w/2, hole_d, px=-plate_px, py=-plate_py) ;
-    mount_holes(mount_l, mount_w, base_t, read_side_base_w/2, hole_d, 0, py=+plate_py) ;
-    mount_holes(mount_l, mount_w, base_t, read_side_base_w/2, hole_d, 0, py=-plate_py) ;
+module rod_support_mounting_plate() {
+    // rod support mounting plate, centred on origin
+    difference() {
+        union() {
+            rect_shell(rod_support_base_w, rod_support_shell_w, base_t, border_w, shell_h) ;
+            mount_plate(rod_support_base_w, rod_support_base_t, base_t, 
+                        rod_support_base_w/2, hold_fix_d, px=0, py=-rod_support_shell_w/2) ;
+            side_support_foot_x(foot_lx, foot_h, base_t, 0, -rod_support_shell_w/2) ;
+        } ;
+            mount_holes(rod_support_base_w, rod_support_base_t, base_t, 
+                        rod_support_base_w/2, hold_fix_d, px=0, py=-rod_support_shell_w/2) ;
+    }
 }
+
+module main_reader_baseplate() {
+    difference() {
+        union() {
+
+            rect_shell(base_l, base_w, base_t, border_w, shell_h) ;
+            cross_brace_y(base_w, 0, base_t, brace_w) ;
+            diagonal_brace(base_l, base_w, base_t, brace_w, flip=false) ;
+            diagonal_brace(base_l, base_w, base_t, brace_w, flip=true) ;
+
+            mount_plate(mount_l, mount_w, base_t, winder_side_w/2, hole_d, px=+plate_px, py=+plate_py ) ;
+            mount_plate(mount_l, mount_w, base_t, winder_side_w/2, hole_d, px=+plate_px, py=-plate_py) ;
+            mount_plate(mount_l, mount_w, base_t, winder_side_w/2, hole_d, px=-plate_px, py=+plate_py ) ;
+            mount_plate(mount_l, mount_w, base_t, winder_side_w/2, hole_d, px=-plate_px, py=-plate_py) ;
+            mount_plate(mount_l, mount_w, base_t, read_side_base_w/2, hole_d, 0, py=+plate_py) ;
+            mount_plate(mount_l, mount_w, base_t, read_side_base_w/2, hole_d, 0, py=-plate_py) ;
+
+            corner_support_foot(foot_lx, foot_ly, base_t, foot_h, +base_l/2, +base_w/2) ;
+            corner_support_foot(foot_lx, foot_ly, base_t, foot_h, +base_l/2, -base_w/2) ;
+            corner_support_foot(foot_lx, foot_ly, base_t, foot_h, -base_l/2, +base_w/2) ;
+            corner_support_foot(foot_lx, foot_ly, base_t, foot_h, -base_l/2, -base_w/2) ;
+            side_support_foot_x(foot_lx, foot_h, base_t, 0, +base_w/2) ;
+            side_support_foot_x(foot_lx, foot_h, base_t, 0, -base_w/2) ;
+        } ;
+        mount_holes(mount_l, mount_w, base_t, winder_side_w/2, hole_d, px=+plate_px, py=+plate_py ) ;
+        mount_holes(mount_l, mount_w, base_t, winder_side_w/2, hole_d, px=+plate_px, py=-plate_py) ;
+        mount_holes(mount_l, mount_w, base_t, winder_side_w/2, hole_d, px=-plate_px, py=+plate_py ) ;
+        mount_holes(mount_l, mount_w, base_t, winder_side_w/2, hole_d, px=-plate_px, py=-plate_py) ;
+        mount_holes(mount_l, mount_w, base_t, read_side_base_w/2, hole_d, 0, py=+plate_py) ;
+        mount_holes(mount_l, mount_w, base_t, read_side_base_w/2, hole_d, 0, py=-plate_py) ;
+    }
+}
+
+module reader_baseplate() {
+    // Combine main baseplate with rod support plate
+    main_reader_baseplate() ;
+    translate([rod_support_base_o,-base_w/2 - rod_support_shell_w/2,0]) {
+        rod_support_mounting_plate() ;
+    }
+
+}
+
+rod_support_mounting_plate() ;
+
+// main_reader_baseplate() ;
+
+// reader_baseplate() ;

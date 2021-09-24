@@ -324,29 +324,33 @@ module read_side_support() {
 
 // Parts for holding phone camera
 
-hold_side_l = 80 ;      // Length is side of holder
-hold_side_h = 10 ;      // Height of side above base
-hold_side_t1 = 7 ;      // Thickness of side at base
-hold_side_t2 = 8 ;      // Thickness of side at top
+// hold_side_l = 80 ;      // Length is side of holder
+// hold_side_h = 10 ;      // Height of side above base
+// hold_side_t1 = 7 ;      // Thickness of side at base
+// hold_side_t2 = 8 ;      // Thickness of side at top
+// 
+// hold_base_l1 = 60 ;     // Length of base near side
+// hold_base_l2 = 50 ;     // Length of base towards centre
+// hold_base_t = 8 ;       // Thickness of base (to accommodate hole)
+// hold_base_w = 20 ;      // Width of base piece
+// 
+// hold_rail_p = 40 ;      // Distance between rail holes
+// hold_rail_d = 4 ;       // Diameter of rail holes
+// 
+// hold_fix_p = 25 ;       // Distance between fixing holes
+// hold_fix_d = 4 ;        // Diameter of fixing holes
+// hold_fix_o = 30 ;       // Offset from vertical rod to holder fixing holes
+// 
+// hold_fix_t = 6 ;        // Thickness of phone holder-to-rod fixing
+// hold_fix_w = 8 ;        // Width of phone holder-to-rod fixing
+// hold_fix_l = 80 ;       // Length of phone holder-to-rod fixing
+// hold_fix_rod_d = 8 ;    // Diameter of phone holder support rod
+// hold_fix_hub_d = 16 ;   // Diameter of phone holder support hub
+// 
+// hold_fix_plate_l = hold_fix_o + hold_fix_rod_d*2 ;
+// hold_fix_plate_w = hold_fix_p + hold_fix_rod_d*2 ;
 
-hold_base_l1 = 60 ;     // Length of base near side
-hold_base_l2 = 50 ;     // Length of base towards centre
-hold_base_t = 8 ;       // Thickness of base (to accommodate hole)
-hold_base_w = 20 ;      // Width of base piece
-
-hold_rail_p = 40 ;      // Distance between rail holes
-hold_rail_d = 4 ;       // Diameter of rail holes
-
-hold_fix_p = 25 ;       // Distance between fixing holes
-hold_fix_d = 4 ;        // Diameter of fixing holes
-
-hold_fix_t = 6 ;        // Thickness of phone holder-to-rod fixing
-hold_fix_w = 8 ;        // Width of phone holder-to-rod fixing
-hold_fix_l = 80 ;       // Length of phone holder-to-rod fixing
-hold_fix_rod_d = 8 ;    // Diameter of phone holder support rod
-hold_fix_hub_d = 16 ;   // Diameter of phone holder support hub
-
-module phone_holder_rod_fixing() {
+module phone_holder_rod_fixing_arm() {
     module phone_holder_rod_fixing_shape() {
         // Centre hub on origin, extend X axis, lying on Z=0 plane
         union() {
@@ -370,6 +374,37 @@ module phone_holder_rod_fixing() {
                 } ;
     } ;
 }
+
+module phone_holder_rod_fixing_plate() {
+    // NOTE: all holes are centred rod diameter from edges
+    module plate_outline() {
+        linear_extrude(height=hold_fix_t)
+            {
+            polygon(
+                points=[
+                    [0,0], 
+                    [hold_fix_plate_l, 0], 
+                    [hold_fix_plate_l, hold_fix_rod_d*2],
+                    [hold_fix_rod_d*2, hold_fix_plate_w], 
+                    [0, hold_fix_plate_w]
+                    ],
+                paths=[[0,1,2,3,4,0]]
+                ) ;
+            }
+        }
+    difference() {
+        plate_outline() ;
+        translate([hold_fix_rod_d+hold_fix_o, hold_fix_rod_d,0])
+            shaft_hole(hold_fix_rod_d, hold_fix_t ) ;
+        union() {
+            translate([hold_fix_rod_d, hold_fix_rod_d+hold_fix_p, 0])
+                shaft_hole(hold_fix_d, hold_fix_rod_d ) ;
+            translate([hold_fix_rod_d, hold_fix_rod_d, 0])
+                shaft_hole(hold_fix_d, hold_fix_t ) ;
+        } ;
+    }
+}
+
 
 module phone_camera_holder() {
     module phone_holder_base() {
@@ -426,15 +461,15 @@ module phone_camera_holder() {
 
 // Bracket to hold phone camera support rod
 
-rod_support_h = 40 ;
-rod_support_t = side_t ;  // Rod support side support thickness
-rod_support_base_t = 16 ; // Rod support side support thickness at base 
-
-rod_support_apex_w = 24 ;
-rod_support_base_w = 45 ;
+// rod_support_h = 40 ;
+// rod_support_t = side_t ;  // Rod support side support thickness
+// rod_support_base_t = 16 ; // Rod support side support thickness at base 
+// 
+// rod_support_apex_w = 24 ;
+// rod_support_base_w = 45 ;
     
  module phone_holder_rod_support() {
-    // Side in X-Y plane, shaft cente at origin, extends along +X axis
+    // Side in X-Y plane, shaft centre at origin, extends along +X axis
     module side_profile() {
         linear_extrude(height=winder_side_t) {
             polygon(
@@ -462,7 +497,7 @@ rod_support_base_w = 45 ;
     }
     module rod_holder() {
         // Rod support block centred on X-Y plane, rod hole aligned with X-axis
-        // @@QUESTIONB: Should this be spaced away from the side plate to allow a nut on the rod?
+        // @@QUESTION: Should this be spaced away from the side plate to allow a nut on the rod?
         holder_wdth = hold_fix_rod_d*2 ;
         holder_dpth = rod_support_t*2+hold_fix_rod_d ;
         difference() {
