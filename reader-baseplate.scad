@@ -70,11 +70,25 @@ module cross_brace_y(ly, px, t, w) {
 }
 
 module mount_holes(lx, ly, t, hp, hd, px=0, py=0) {
+    // Mounting holes on X-axis for mounting plate.
+    // Defined separately so they can be applied toa merged shape.
+    //
+    // Holes are centred within the Y-extent of the plate not including an outer shall,
+    // which is presumed to be the same thickness as the plate itself.
+    //
+    // lx = overall X extent of plate
+    // ly = overall Y extent of plate
+    // t  = thickness of plate
+    // hp = hole pitch (between centres)
+    // hd = hole diameter
+    // px = position of plate corner - sign determines which corner
+    // px = position of plate corner - sign determines which corner
+    //
     tx = ( px < 0 ? (px+lx/2)
          : px > 0 ? (px-lx/2)
          : 0 ) ;
-    ty = ( py < 0 ? (py+ly/2)
-         : py > 0 ? (py-ly/2)
+    ty = ( py < 0 ? (py+(ly+t)/2)
+         : py > 0 ? (py-(ly+t)/2)
          : 0 ) ;
     translate([tx,ty,t/2]) {
         union() {
@@ -106,8 +120,7 @@ module mount_plate(lx, ly,  t, hp, hd, px=0, py=0) {
     translate([tx,ty,t/2]) {
         difference() {
             cube(size=[lx, ly, t], center=true) ; // plate
-            translate([-hp/2,0,0]) cylinder(t+delta*2, d=hd, center=true) ;
-            translate([ hp/2,0,0]) cylinder(t+delta*2, d=hd, center=true) ;
+            mount_holes(lx, ly,  t, hp, hd, px=0, py=0) ;
         }
     }
 }
@@ -203,7 +216,7 @@ module side_support_foot_x(l, h, t, px, py) {
     border_w = 8 ;
     shell_h  = 8 ;
     brace_w  = 8 ;
-    mount_l  = 30 ;
+    mount_l  = winder_side_w ;
     mount_w  = 20 ;
     hole_d   = 4 ;
 
@@ -211,8 +224,9 @@ module side_support_foot_x(l, h, t, px, py) {
     foot_ly  = 20 ;
     foot_h   = 12 ;
 
-    plate_px = base_l/2-base_t ;
-    plate_py = base_w/2-base_t ;
+    plate_px = base_l/2 ;
+    // plate_py = base_w/2-base_t ;
+    plate_py = base_w/2 ;
 
 module rod_support_mounting_plate() {
     // rod support mounting plate, centred on origin
@@ -223,8 +237,8 @@ module rod_support_mounting_plate() {
                         rod_support_base_w/2, hold_fix_d, px=0, py=-rod_support_shell_w/2) ;
             side_support_foot_x(foot_lx, foot_h, base_t, 0, -rod_support_shell_w/2) ;
         } ;
-            mount_holes(rod_support_base_w, rod_support_base_t, base_t, 
-                        rod_support_base_w/2, hold_fix_d, px=0, py=-rod_support_shell_w/2) ;
+        mount_holes(rod_support_base_w, rod_support_base_t, base_t, 
+                    rod_support_base_w/2, hold_fix_d, px=0, py=-rod_support_shell_w/2) ;
     }
 }
 
@@ -269,8 +283,8 @@ module reader_baseplate() {
 
 }
 
-rod_support_mounting_plate() ;
+// rod_support_mounting_plate() ;
 
 // main_reader_baseplate() ;
 
-// reader_baseplate() ;
+reader_baseplate() ;
