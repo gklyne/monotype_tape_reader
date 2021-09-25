@@ -117,11 +117,11 @@ module mount_plate(lx, ly,  t, hp, hd, px=0, py=0) {
     ty = ( py < 0 ? (py+ly/2)
          : py > 0 ? (py-ly/2)
          : 0 ) ;
-    translate([tx,ty,t/2]) {
-        difference() {
+    difference() {
+        translate([tx,ty,t/2]) {
             cube(size=[lx, ly, t], center=true) ; // plate
-            mount_holes(lx, ly,  t, hp, hd, px=0, py=0) ;
         }
+        mount_holes(lx, ly,  t, hp, hd, px, py) ;
     }
 }
 
@@ -210,7 +210,7 @@ module side_support_foot_x(l, h, t, px, py) {
 
 // Baseplate
 
-    base_l   = 250 ;
+    base_l   = 240 ;
     base_w   = 130 ;
     base_t   = 4 ;
     border_w = 8 ;

@@ -81,7 +81,7 @@ hold_fix_plate_w = hold_fix_p + hold_fix_rod_d*2 ;
 rod_support_h = 40 ;
 rod_support_t = side_t ;    // Rod support side support thickness
 rod_support_base_t = 16 ;   // Rod support side support thickness at base 
-rod_support_base_o = 100 ;  // X-offset from reader bar to phone support rod
+rod_support_base_o = -50  ;  // X-offset from reader bar to phone support rod
 
 rod_support_apex_w = 24 ;
 rod_support_base_w = 45 ;

@@ -18,7 +18,7 @@ module layout_reader_camera_holder() {
         phone_holder_rod_fixing_plate() ;
 }
 
-translate([spacing*2, spacing*1, 0]) layout_reader_camera_holder() ;
+// translate([spacing*2, spacing*1, 0]) layout_reader_camera_holder() ;
 
-// phone_holder_rod_fixing_plate() ;
+phone_holder_rod_fixing_plate() ;
 
