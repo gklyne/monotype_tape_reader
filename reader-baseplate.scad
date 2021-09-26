@@ -217,7 +217,7 @@ module side_support_foot_x(l, h, t, px, py) {
     shell_h  = 8 ;
     brace_w  = 8 ;
     mount_l  = winder_side_w ;
-    mount_w  = 20 ;
+    mount_w  = winder_base_t ;
     hole_d   = 4 ;
 
     foot_lx  = 30 ;

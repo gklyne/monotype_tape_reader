@@ -190,7 +190,7 @@ module crank_handle(
 
 
 module winder_side_support() {
-    // Side in X-Y plane, shaft cente at origin, extends along +X axis
+    // Side in X-Y plane, shaft centre at origin, extends along +X axis
     module side_profile() {
         linear_extrude(height=winder_side_t)
             {
