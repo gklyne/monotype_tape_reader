@@ -1,9 +1,12 @@
 // Default dimensions
 
-m4 = 4.1 ;              // Close clearance hole for M4 screw
+m4 = 4.2 ;              // Close clearance hole for M4 screw
 m8 = 8.2 ;              // Close clearance hole for M8 screw
 
-shaft_d = 8.2 ;         // Shaft diameter
+
+// Winder
+
+shaft_d = m8 ;          // Shaft diameter
 core_d = 18 ;           // Core diameter
 bevel_d = 30 ;          // Bevel inner diameter
 outer_d = 40 ;          // Spool outer diameter
@@ -50,7 +53,6 @@ read_side_peg_d  = m4 ;
 read_groove_w = 2.25 ;  // EL wire goove width
 read_groove_d = 3 ;     // EL wire groove depth
 
-
 // Parts for holding phone camera
 
 hold_side_l = 80 ;      // Length is side of holder
@@ -81,10 +83,10 @@ hold_fix_plate_w = hold_fix_p + hold_fix_rod_d*2 ;
 
 // Bracket to hold phone camera support rod
 
-rod_support_h = 40 ;
+rod_support_h = 50 ;
 rod_support_t = side_t ;    // Rod support side support thickness
-rod_support_base_t = 16 ;   // Rod support side support thickness at base 
-rod_support_base_o = -50  ;  // X-offset from reader bar to phone support rod
+rod_support_base_t = 20 ;   // Rod support side support thickness at base 
+rod_support_base_o = 75 ;   // X-offset from reader bar to phone support rod
 
 rod_support_apex_w = 24 ;
 rod_support_base_w = 45 ;
@@ -102,9 +104,9 @@ mount_l  = winder_side_w ;
 mount_w  = winder_base_t ;
 hole_d   = m4 ;
 
-foot_lx  = 30 ;
-foot_ly  = 20 ;
-foot_h   = 12 ;
+foot_lx  = 36 ;     // At top surface of baseplate: tapers away to foot
+foot_ly  = 26 ;
+foot_h   = 14 ;
 
 plate_px = base_l/2 ;
 plate_py = base_w/2 ;

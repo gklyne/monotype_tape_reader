@@ -410,18 +410,18 @@ module phone_camera_holder() {
     }
     module rod_holder() {
         // Rod support block centred on X-Y plane, rod hole aligned with X-axis
-        // @@QUESTION: Should this be spaced away from the side plate to allow a nut on the rod?
         holder_wdth = hold_fix_rod_d*2 ;
-        holder_dpth = rod_support_t*2+hold_fix_rod_d ;
+        holder_dpth = rod_support_base_t ;
+        holder_hght = holder_dpth-holder_wdth/2 ;
         difference() {
             union() {               
-                translate([0,0,holder_wdth/4])
-                    cube(size=[rod_support_t, holder_wdth, holder_wdth/2], center=true) ;
-                translate([0,0,holder_dpth/2])
+                translate([0,0,holder_hght/2])
+                    cube(size=[rod_support_t, holder_wdth, holder_hght], center=true) ;
+                translate([0,0,holder_dpth-holder_wdth/2])
                     rotate([0,90,0])
-                        cylinder(d=holder_dpth,h=rod_support_t, center=true) ;
+                        cylinder(d=holder_wdth,h=rod_support_t, center=true) ;
             }
-            translate([-rod_support_t/2,0,rod_support_t+hold_fix_rod_d/2])
+            translate([-rod_support_t/2,0,holder_dpth-holder_wdth/2])
                 rotate([0,90,0])
                     shaft_hole(hold_fix_rod_d, rod_support_t) ;
         }
