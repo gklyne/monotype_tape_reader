@@ -1,13 +1,16 @@
 // Default dimensions
 
+m4 = 4.1 ;              // Close clearance hole for M4 screw
+m8 = 8.2 ;              // Close clearance hole for M8 screw
+
 shaft_d = 8.2 ;         // Shaft diameter
 core_d = 18 ;           // Core diameter
 bevel_d = 30 ;          // Bevel inner diameter
 outer_d = 40 ;          // Spool outer diameter
 crank_hub_d = 25 ;      // Diameter of crank hub
 handle_hub_d = 10 ;     // Diameter of handle end of crank
-handle_d = 4 ;          // Diameter of handle
-base_fix_d = 4 ;        // Diameter of base fixing screw hole
+handle_d = m4 ;         // Diameter of handle
+base_fix_d = m4 ;       // Diameter of base fixing screw hole
 
 crank_l = 40 ;          // Length of crank (between shaft and handle centres
 
@@ -42,7 +45,7 @@ read_side_base_t = 16 ; // Reader bridge side support thickness at base
 read_side_apex_w = 24 ;
 read_side_apex_h = 4 ;
 read_side_base_w = 40 ;
-read_side_peg_d  = 4 ;
+read_side_peg_d  = m4 ;
 
 read_groove_w = 2.25 ;  // EL wire goove width
 read_groove_d = 3 ;     // EL wire groove depth
@@ -61,10 +64,10 @@ hold_base_t = 8 ;       // Thickness of base (to accommodate hole)
 hold_base_w = 20 ;      // Width of base piece
 
 hold_rail_p = 40 ;      // Distance between rail holes
-hold_rail_d = 4 ;       // Diameter of rail holes
+hold_rail_d = m4 ;      // Diameter of rail holes
 
 hold_fix_p = 25 ;       // Distance between fixing holes
-hold_fix_d = 4 ;        // Diameter of fixing holes
+hold_fix_d = m4 ;       // Diameter of fixing holes
 hold_fix_o = 30 ;       // Offset from vertical rod to holder fixing holes
 
 hold_fix_t = 6 ;        // Thickness of phone holder-to-rod fixing
@@ -86,6 +89,25 @@ rod_support_base_o = -50  ;  // X-offset from reader bar to phone support rod
 rod_support_apex_w = 24 ;
 rod_support_base_w = 45 ;
 rod_support_shell_w = 40 ;
+
+// Baseplate dimensions
+
+base_l   = 240 ;
+base_w   = 130 ;
+base_t   = 4 ;
+border_w = 8 ;
+shell_h  = 8 ;
+brace_w  = 8 ;
+mount_l  = winder_side_w ;
+mount_w  = winder_base_t ;
+hole_d   = m4 ;
+
+foot_lx  = 30 ;
+foot_ly  = 20 ;
+foot_h   = 12 ;
+
+plate_px = base_l/2 ;
+plate_py = base_w/2 ;
 
 // Misc
 delta = 0.01 ;          // Small value to force overlap

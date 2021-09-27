@@ -210,23 +210,22 @@ module side_support_foot_x(l, h, t, px, py) {
 
 // Baseplate
 
-    base_l   = 240 ;
-    base_w   = 130 ;
-    base_t   = 4 ;
-    border_w = 8 ;
-    shell_h  = 8 ;
-    brace_w  = 8 ;
-    mount_l  = winder_side_w ;
-    mount_w  = winder_base_t ;
-    hole_d   = 4 ;
-
-    foot_lx  = 30 ;
-    foot_ly  = 20 ;
-    foot_h   = 12 ;
-
-    plate_px = base_l/2 ;
-    // plate_py = base_w/2-base_t ;
-    plate_py = base_w/2 ;
+// base_l   = 240 ;
+// base_w   = 130 ;
+// base_t   = 4 ;
+// border_w = 8 ;
+// shell_h  = 8 ;
+// brace_w  = 8 ;
+// mount_l  = winder_side_w ;
+// mount_w  = winder_base_t ;
+// hole_d   = m4 ;
+// 
+// foot_lx  = 30 ;
+// foot_ly  = 20 ;
+// foot_h   = 12 ;
+// 
+// plate_px = base_l/2 ;
+// plate_py = base_w/2 ;
 
 module rod_support_mounting_plate() {
     // rod support mounting plate, centred on origin
