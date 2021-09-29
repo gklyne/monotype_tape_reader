@@ -3,10 +3,9 @@
 Mechanical parts for reading paper tape created by Monotype keyboard.
 
 
-
 ## TODO
 
-### 2021-09-27: First prototype
+### 2021-09-27: Revisions to first prototype
 
 - [x] Stiffen camera support area of baseplate so it doesn't flex with weight of phone.  Propose to extend plate both sides of reader bar.
 
@@ -14,9 +13,9 @@ Mechanical parts for reading paper tape created by Monotype keyboard.
 
 - [x] Camera support bracket: increase width of base.
 
-- [ ] Option to remove winder so that tape can be loaded/unloaded.
-
 - [ ] positive location/keying for reader bar.
+
+- [ ] Option to remove winder so that tape can be loaded/unloaded.
 
 - [ ] tape tensioning arrangement.  Guides to wrap tape around reader bar?
 
@@ -26,5 +25,5 @@ Mechanical parts for reading paper tape created by Monotype keyboard.
 
 - [ ] Countersink for winder crank screw; review crank design to ensure pulley groove is clear of turning crank
 
-- [ ] slot in winder shaft for catching tape 
+- [ ] slot in winder shaft for catching tape (?)
 

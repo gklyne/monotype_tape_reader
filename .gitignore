@@ -1,5 +1,5 @@
 *.gcode
 *.deps
 *.3mf
-*.stl
+# *.stl
 

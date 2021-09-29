@@ -70,6 +70,62 @@ module web_xz(x, y, z, w_x, w_z, w_t) {
     }
 }
 
+module dovetail_key(l, ws, we, t) {
+    // Shape for dovetail key, shoulder centre on origin, key extending along -X axis
+    // lying on X-Y plane.
+    //
+    // l  = length from shoulder to end of dovetail
+    // ws = width of key at shoulder
+    // we = width of key at end
+    // t  = thickness of key
+    //
+    linear_extrude(height=t, center=false) {
+        polygon(
+            points=[
+                [0, ws/2],  [0, -ws/2],
+                [-l, we/2], [-l, -we/2]
+                ],
+            paths=[[0,2,3,1,0]]
+            ) ;
+    }
+}
+
+module dovetail_socket_cutout(l, ws, we, t) {
+    // Shape to cutout dovetail socket in piece lying on X-Y plane,
+    // with key shoulder centre on origin and piece extending in -X direction
+    //
+    // (Cutout piece extends below and above Z axis)
+    //
+    // l  = length from shoulder to end of dovetail
+    // ws = width of key at shoulder
+    // we = width of key at end
+    // t  = thickness of key piece
+    //
+    translate([+delta,0,-delta]) {
+        dovetail_key(l+delta*2, ws, we, t+delta*2) ;
+    }
+}
+
+module dovetail_tongue_cutout(l, ws, we, wp, t) {
+    // Shape to cutout dovetail tongue in end of piece lying on X-Y plane,
+    // with key end centre on origin and extending in +X direction
+    //
+    // (Cutout piece extends below and above Z axis)
+    //
+    // l  = length from shoulder to end of dovetail
+    // ws = width of key at shoulder
+    // we = width of key at end
+    // wp = width of piece behind tongue
+    // t  = thickness of piece with tongue
+    //
+    difference() {
+        translate([-l/2,0,t/2]) {
+            cube(size=[l+delta, wp+delta, t+delta], center=true) ;
+        } ;
+        dovetail_socket_cutout(l+delta, ws, we, t+delta) ;
+    }
+}
+
 // Spool
 
 module spool_edge(shaft_d, core_d, bevel_d, outer_d, side_t, side_rim_t) {
@@ -203,20 +259,18 @@ module winder_side_support() {
 // Tape reader bridge (with lighting groove) and supports
 
 module tape_reader_bridge() {
-    total_l = read_l + 2*(read_side_t + read_extra_w) ;
     difference() {
         rotate([0,90,0])
-            cylinder(d=read_w, h=total_l, center=true) ;
+            cylinder(d=read_w, h=read_total_l, center=true) ;
         translate([0,0,-read_w/2])
-            cube(size=[total_l+delta, read_w+delta, read_w+delta], center=true) ;
-
+            cube(size=[read_total_l+delta, read_w+delta, read_w+delta], center=true) ;
         translate([0,0,(read_w-read_groove_d)/2])
-            cube(size=[total_l+delta, read_groove_w, read_groove_d], center=true) ;
+            cube(size=[read_total_l+delta, read_groove_w, read_groove_d], center=true) ;
     }
 }
 
 module read_side_support() {
-    // Side in X-Y plane, shaft cente at origin, extends along +X axis
+    // Side in X-Y plane, shaft centre at origin, extends along +X axis
     module side_profile() {
         base_h = read_side_t + (read_side_base_t - read_side_t) ;
         linear_extrude(height=winder_side_t)
@@ -229,7 +283,8 @@ module read_side_support() {
                     [read_h-base_h,-read_side_base_w/2], [read_h-base_h,read_side_base_w/2],
                     [read_h,-read_side_base_w/2], [read_h,read_side_base_w/2],
                     ],
-                paths=[[0,2,4,6,8, 9,7,5,3,1, 0]]
+                // paths=[[0,2,4,6,8, 9,7,5,3,1, 0]]
+                paths=[[4,6,8, 9,7,5, 4]]
                 ) ;
             }
         }
