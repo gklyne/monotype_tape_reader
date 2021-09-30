@@ -276,14 +276,14 @@ module main_reader_baseplate() {
 module reader_baseplate() {
     // Combine main baseplate with rod support plate
     main_reader_baseplate() ;
-    translate([-rod_support_base_o,-base_w/2 - rod_support_shell_w/2,0]) {
+    translate([-rod_support_base_o, -base_w/2 - rod_support_shell_w/2,0]) {
         rod_support_mounting_plate() ;
     }
     translate([+rod_support_base_o,-base_w/2 - rod_support_shell_w/2,0]) {
         rod_support_mounting_plate() ;
     }
     translate([0,-base_w/2 - rod_support_shell_w/2,0]) {
-        rect_shell(rod_support_base_o*2-rod_support_shell_w+base_t, rod_support_shell_w, base_t, border_w, shell_h) ;
+        rect_shell(rod_support_base_o*2-rod_support_base_w+base_t, rod_support_shell_w, base_t, base_t /*border_w*/ , shell_h) ;
     }
 }
 

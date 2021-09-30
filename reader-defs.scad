@@ -91,11 +91,11 @@ hold_fix_plate_w = hold_fix_p + hold_fix_rod_d*2 ;
 rod_support_h = 50 ;
 rod_support_t = side_t ;    // Rod support side support thickness
 rod_support_base_t = 20 ;   // Rod support side support thickness at base 
-rod_support_base_o = 75 ;   // X-offset from reader bar to phone support rod
+rod_support_base_o = 89 ;   // X-offset from reader bar to phone support rod
 
 rod_support_apex_w = 24 ;
 rod_support_base_w = 45 ;
-rod_support_shell_w = 40 ;
+rod_support_shell_w = 24 ;
 
 // Baseplate dimensions
 
