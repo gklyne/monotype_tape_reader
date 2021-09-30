@@ -352,24 +352,27 @@ module phone_holder_rod_fixing_arm() {
 
 module phone_holder_rod_fixing_plate() {
     // NOTE: all holes are centred rod diameter from edges
+    hole_x = hold_fix_rod_d + hold_fix_o_x ;
+    hole_y = hold_fix_plate_w/2 + hold_fix_o_y ;
     module plate_outline() {
         linear_extrude(height=hold_fix_t)
             {
             polygon(
                 points=[
                     [0,0], 
-                    [hold_fix_plate_l, 0], 
-                    [hold_fix_plate_l, hold_fix_rod_d*2],
+                    [hold_fix_rod_d*2, 0], 
+                    [hold_fix_plate_l, hole_y-hold_fix_rod_d], 
+                    [hold_fix_plate_l, hole_y+hold_fix_rod_d],
                     [hold_fix_rod_d*2, hold_fix_plate_w], 
                     [0, hold_fix_plate_w]
                     ],
-                paths=[[0,1,2,3,4,0]]
+                paths=[[0,1,2,3,4,5,0]]
                 ) ;
             }
         }
     difference() {
         plate_outline() ;
-        translate([hold_fix_rod_d+hold_fix_o, hold_fix_rod_d,0])
+        translate([hole_x, hole_y,0])
             shaft_hole(hold_fix_rod_d, hold_fix_t ) ;
         union() {
             translate([hold_fix_rod_d, hold_fix_rod_d+hold_fix_p, 0])

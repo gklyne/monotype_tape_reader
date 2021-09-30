@@ -75,7 +75,8 @@ hold_rail_d = m4 ;      // Diameter of rail holes
 
 hold_fix_p = 25 ;       // Distance between fixing holes
 hold_fix_d = m4 ;       // Diameter of fixing holes
-hold_fix_o = 30 ;       // Offset from vertical rod to holder fixing holes
+hold_fix_o_x = 12 ;     // X-offset from vertical rod to holder fixing holes
+hold_fix_o_y = 0 ;      // Y-offset from vertical rod to centre between fixing holes
 
 hold_fix_t = 6 ;        // Thickness of phone holder-to-rod fixing
 hold_fix_w = 8 ;        // Width of phone holder-to-rod fixing
@@ -83,8 +84,9 @@ hold_fix_l = 80 ;       // Length of phone holder-to-rod fixing
 hold_fix_rod_d = 8 ;    // Diameter of phone holder support rod
 hold_fix_hub_d = 16 ;   // Diameter of phone holder support hub
 
-hold_fix_plate_l = hold_fix_o + hold_fix_rod_d*2 ;
+hold_fix_plate_l = hold_fix_o_x + hold_fix_rod_d*2 ;
 hold_fix_plate_w = hold_fix_p + hold_fix_rod_d*2 ;
+
 
 // Bracket to hold phone camera support rod
 
