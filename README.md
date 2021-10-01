@@ -17,7 +17,7 @@ Mechanical parts for reading paper tape created by Monotype keyboard.
 
 - [x] Increase M4 hole size
 
-- [ ] Arrangement to prevent phone holder rotating on bar.
+- [ ] Arrangement to prevent phone holder rotating on bar.  Also improve phone positioning.
 
 - [ ] Countersink for winder crank screw; review crank design to ensure pulley groove is clear of turning crank
 

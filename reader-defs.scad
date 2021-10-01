@@ -87,6 +87,10 @@ hold_fix_hub_d = 16 ;   // Diameter of phone holder support hub
 hold_fix_plate_l = hold_fix_o_x + hold_fix_rod_d*2 ;
 hold_fix_plate_w = hold_fix_p + hold_fix_rod_d*2 ;
 
+hold_slot_o_x1 = 50 ;   // Start of anti-rotation slot
+hold_slot_o_x2 = 85 ;   // end of anti-rotation slot
+
+hold_slot_plate_l = hold_slot_o_x2 + hold_fix_rod_d*2 ;
 
 // Bracket to hold phone camera support rod
 

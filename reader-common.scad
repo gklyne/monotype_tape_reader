@@ -2,10 +2,23 @@ include <reader-defs.scad> ;
 
 // Utilities
 
+module oval(x, d, h) {
+    cylinder(d=d, h=h) ;
+    translate([x,0,0])
+        cylinder(d=d, h=h) ;
+    translate([x/2,0,h/2])
+        cube(size=[x, d, h], center=true) ;
+}
+
 module shaft_hole(d, l) {
         translate([0,0,-delta]) {
             cylinder(d=d, h=l+delta*2) ;
         };
+}
+
+module shaft_slot(x1, x2, y, d, h) {
+    translate([x1,y,-delta])
+        oval(x2-x1, d, h+2*delta) ;    
 }
   
 module nut_recess(af, t)  {
@@ -372,17 +385,45 @@ module phone_holder_rod_fixing_plate() {
         }
     difference() {
         plate_outline() ;
+        // Larger hole
         translate([hole_x, hole_y,0])
             shaft_hole(hold_fix_rod_d, hold_fix_t ) ;
-        union() {
-            translate([hold_fix_rod_d, hold_fix_rod_d+hold_fix_p, 0])
-                shaft_hole(hold_fix_d, hold_fix_rod_d ) ;
-            translate([hold_fix_rod_d, hold_fix_rod_d, 0])
-                shaft_hole(hold_fix_d, hold_fix_t ) ;
-        } ;
+        // Smaller holes
+        translate([hold_fix_rod_d, hold_fix_rod_d+hold_fix_p, 0])
+            shaft_hole(hold_fix_d, hold_fix_rod_d ) ;
+        translate([hold_fix_rod_d, hold_fix_rod_d, 0])
+            shaft_hole(hold_fix_d, hold_fix_t ) ;
     }
 }
 
+module phone_holder_rod_anti_rotation_plate() {
+    // NOTE: all holes are centred rod diameter from edges
+    slot_y  = hold_fix_plate_w/2 + hold_fix_o_y ;
+    module plate_outline() {
+        linear_extrude(height=hold_fix_t)
+            {
+            polygon(
+                points=[
+                    [0,0], 
+                    [hold_fix_rod_d*2, 0], 
+                    [hold_slot_plate_l, slot_y-hold_fix_rod_d], 
+                    [hold_slot_plate_l, slot_y+hold_fix_rod_d],
+                    [hold_fix_rod_d*2, hold_fix_plate_w], 
+                    [0, hold_fix_plate_w]
+                    ],
+                paths=[[0,1,2,3,4,5,0]]
+                ) ;
+            }
+        }
+    difference() {
+        plate_outline() ;
+        shaft_slot(hold_slot_o_x1, hold_slot_o_x2, slot_y, hold_fix_rod_d, hold_fix_t) ;
+        translate([hold_fix_rod_d, hold_fix_rod_d+hold_fix_p, 0])
+            shaft_hole(hold_fix_d, hold_fix_rod_d ) ;
+        translate([hold_fix_rod_d, hold_fix_rod_d, 0])
+            shaft_hole(hold_fix_d, hold_fix_t ) ;
+    }
+}
 
 module phone_camera_holder() {
     module phone_holder_base() {
