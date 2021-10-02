@@ -399,6 +399,7 @@ module phone_holder_rod_fixing_plate() {
 module phone_holder_rod_anti_rotation_plate() {
     // NOTE: all holes are centred rod diameter from edges
     slot_y  = hold_fix_plate_w/2 + hold_fix_o_y ;
+    neck_x  = (hold_slot_o_x1 + hold_slot_o_x2)/2 ;
     module plate_outline() {
         linear_extrude(height=hold_fix_t)
             {
@@ -406,14 +407,18 @@ module phone_holder_rod_anti_rotation_plate() {
                 points=[
                     [0,0], 
                     [hold_fix_rod_d*2, 0], 
-                    [hold_slot_plate_l, slot_y-hold_fix_rod_d], 
-                    [hold_slot_plate_l, slot_y+hold_fix_rod_d],
+                    [neck_x,slot_y-hold_fix_rod_d],
+                    [hold_slot_o_x2, slot_y-hold_fix_rod_d], 
+                    [hold_slot_o_x2, slot_y+hold_fix_rod_d],
+                    [neck_x,slot_y+hold_fix_rod_d],
                     [hold_fix_rod_d*2, hold_fix_plate_w], 
                     [0, hold_fix_plate_w]
                     ],
-                paths=[[0,1,2,3,4,5,0]]
+                paths=[[0,1,2,3,4,5,6,7,0]]
                 ) ;
             }
+        translate([hold_slot_o_x2, slot_y, 0])
+            cylinder(h=hold_fix_t, r=hold_fix_rod_d, center=false) ;
         }
     difference() {
         plate_outline() ;
