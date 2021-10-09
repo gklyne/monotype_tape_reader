@@ -20,12 +20,58 @@ module shaft_slot(x1, x2, y, d, h) {
     translate([x1,y,-delta])
         oval(x2-x1, d, h+2*delta) ;    
 }
-  
+
+// Hex nut recess on centre of X-Y plane
+//
+// af = nut dimension AF (across flats, = spanner size)
+//
 module nut_recess(af, t)  {
     od = af * 2 / sqrt(3) ; // Diameter
     translate([0,0,-delta]) {
         cylinder(d=od, h=t+delta, $fn=6) ;
     }
+}
+
+// Cutout for vertical screw hole with downward-facing countersink at top, 
+// centred on origin.
+//
+// The centre of the countersink top face lies on the origin.
+// The countersink and screw shaft hole lie on tge -ve Z axis
+// A recess hole lies along the +ve Z axis 
+//
+// od = overall diameter (for screw head)
+// oh = overall height (screw + head + recess)
+// sd = screw diameter
+// sh = screw height (to top of countersink)
+//
+module countersinkZ(od, oh, sd, sh)
+{
+    // echo("countersinkZ od: ", od) ;
+    // echo("countersinkZ oh: ", oh) ;
+    // echo("countersinkZ sd: ", sd) ;
+    // echo("countersinkZ sh: ", sh) ;
+    union()
+    {
+        intersection()
+        {
+            translate([0,0,-sh]) cylinder(r=od/2, h=oh, $fn=12);
+            translate([0,0,-od/2]) cylinder(r1=0, r2=oh+od/2, h=oh+od/2, $fn=12);
+        }
+    translate([0,0,-sh+delta]) cylinder(r=sd/2, h=sh+2*delta, $fn=12);
+    }
+}
+// countersinkZ(10, 30, 5, 20);
+
+// Countersink with screw directed along negative X-axis
+module countersinkX(od, oh, sd, sh)
+{
+    rotate([0,90,0]) countersinkZ(od, oh, sd, sh);
+}
+
+// Countersink with screw directed along negative Y-axis
+module countersinkY(od, oh, sd, sh)
+{
+    rotate([90,0,0]) countersinkZ(od, oh, sd, sh);
 }
 
 module web_base(w_x, w_y, w_t) {
@@ -139,7 +185,7 @@ module dovetail_tongue_cutout(l, ws, we, wp, t) {
     }
 }
 
-// Spool
+// Spool and winder
 
 module spool_edge(shaft_d, core_d, bevel_d, outer_d, side_t, side_rim_t) {
     // Edge in X-Y plane with centre of outer face at (0,0,0)
@@ -189,14 +235,10 @@ module spool_spacer(shaft_d, core_d, w_spacer, w_spool_end) {
     }
 } ;
 
-
-
-
 module crank_handle(
         crank_l, 
         shaft_d, crank_hub_d, handle_hub_d, handle_d, 
-        crank_hub_t, crank_arm_t
-    ) {
+        crank_hub_t, crank_arm_t, handle_hub_t) {
     difference() {
         union() {
             cylinder(d=crank_hub_d, h=crank_hub_t) ;
@@ -205,19 +247,20 @@ module crank_handle(
             translate([crank_l/2,0,crank_arm_t/2]) 
                 cube(size=[crank_l,handle_hub_d,crank_arm_t], center=true) ;
             translate([crank_l,0,0]) 
-                cylinder(d=handle_hub_d, h=crank_hub_t) ;
+                cylinder(d=handle_hub_d, h=handle_hub_t) ;
         } ;
         union() {
             shaft_hole(d=shaft_d, l=crank_hub_t*2) ;
             nut_recess(af=shaft_nut_af, t=shaft_nut_t) ;
             translate([crank_l,0,0]) {
-                shaft_hole(d=handle_d, l=crank_hub_t) ;
+                //shaft_hole(d=handle_d, l=crank_hub_t) ;
                 nut_recess(af=handle_nut_af, t=handle_nut_t) ;
+                translate([0,0,handle_hub_t])
+                    countersinkZ(od=handle_d*2,oh=crank_hub_t, sd=handle_d, sh=handle_hub_t) ;
             }
         } ;
     }
 }
-
 
 module winder_side_support() {
     // Side in X-Y plane, shaft centre at origin, extends along +X axis
@@ -568,7 +611,8 @@ module winder_assembly() {
                     crank_l=crank_l, 
                     shaft_d=shaft_d, crank_hub_d=crank_hub_d, 
                     handle_hub_d=handle_hub_d, handle_d=handle_d, 
-                    crank_hub_t=crank_hub_t, crank_arm_t=crank_arm_t
+                    crank_hub_t=crank_hub_t, crank_arm_t=crank_arm_t, 
+                    handle_hub_t=crank_end_t
                     ) ;
     // Winder supports
     translate([winder_side_x,0,winder_side_h])
@@ -650,7 +694,7 @@ module layout_print_xz() {
             crank_l=crank_l, 
             shaft_d=shaft_d, crank_hub_d=crank_hub_d, 
             handle_hub_d=handle_hub_d, handle_d=handle_d, 
-            crank_hub_t=crank_hub_t, crank_arm_t=crank_arm_t
+            crank_hub_t=crank_hub_t, crank_arm_t=crank_arm_t, handle_hub_t=crank_end_t
             ) ;
     
     // Winder supports
@@ -706,7 +750,7 @@ module layout_print_1() {
             crank_l=crank_l, 
             shaft_d=shaft_d, crank_hub_d=crank_hub_d, 
             handle_hub_d=handle_hub_d, handle_d=handle_d, 
-            crank_hub_t=crank_hub_t, crank_arm_t=crank_arm_t
+            crank_hub_t=crank_hub_t, crank_arm_t=crank_arm_t, handle_hub_t=crank_end_t
             ) ;
     
     // Winder supports
@@ -753,7 +797,7 @@ module layout_print() {
 
 // layout_print() ;
 
-layout_print_1() ;
+// layout_print_1() ;
 // layout_print_2() ;
 // layout_print_3() ;
 // layout_print_spacer() ;
@@ -764,7 +808,7 @@ layout_print_1() ;
 //            crank_l=crank_l, 
 //            shaft_d=shaft_d, crank_hub_d=crank_hub_d, 
 //            handle_hub_d=handle_hub_d, handle_d=handle_d, 
-//            crank_hub_t=crank_hub_t, crank_arm_t=crank_arm_t
+//            crank_hub_t=crank_hub_t, crank_arm_t=crank_arm_t, handle_hub_t=handle_hub_t
 //            ) ;
 //
 //

@@ -27,7 +27,7 @@ module layout_winder() {
             crank_l=crank_l, 
             shaft_d=shaft_d, crank_hub_d=crank_hub_d, 
             handle_hub_d=handle_hub_d, handle_d=handle_d, 
-            crank_hub_t=crank_hub_t, crank_arm_t=crank_arm_t
+            crank_hub_t=crank_hub_t, crank_arm_t=crank_arm_t, handle_hub_t=crank_end_t
             ) ;
     
     // Winder supports
@@ -37,5 +37,11 @@ module layout_winder() {
         winder_side_support() ;
 }
 
-    translate([spacing*2,spacing,0]) layout_winder() ;
+//    translate([spacing*2,spacing,0]) layout_winder() ;
 
+        crank_handle(
+            crank_l=crank_l, 
+            shaft_d=shaft_d, crank_hub_d=crank_hub_d, 
+            handle_hub_d=handle_hub_d, handle_d=handle_d, 
+            crank_hub_t=crank_hub_t, crank_arm_t=crank_arm_t, handle_hub_t=crank_end_t
+            ) ;
