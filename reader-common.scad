@@ -28,9 +28,14 @@ module shaft_slot(x1, x2, y, d, h) {
 module nut_recess(af, t)  {
     od = af * 2 / sqrt(3) ; // Diameter
     translate([0,0,-delta]) {
-        cylinder(d=od, h=t+delta, $fn=6) ;
+        cylinder(d=od, h=t+delta*2, $fn=6) ;
+    translate([0,0,t])
+        cylinder(d1=od, d2=0, h=t/2, $fn=6) ;
     }
 }
+
+// nut_recess(13,6) ; //@@@@
+
 
 // Cutout for vertical screw hole with downward-facing countersink at top, 
 // centred on origin.
