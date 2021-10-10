@@ -21,7 +21,7 @@ Mechanical parts for reading paper tape created by Monotype keyboard.
 
 - [x] Countersink for winder crank screw; review crank design to ensure pulley groove is clear of turning crank
 
-- [ ] Option to remove winder so that tape can be loaded/unloaded.
+- [x] Option to remove winder so that tape can be loaded/unloaded.
 
 - [ ] tape tensioning arrangement.  Guides to wrap tape around reader bar?
 

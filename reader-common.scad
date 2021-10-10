@@ -3,6 +3,12 @@ include <reader-defs.scad> ;
 // Utilities
 
 module oval(x, d, h) {
+    // Oval shape aligned on the X axis, with one end centred on the origin
+    //
+    // x  = X position of second centre of curvature
+    // d  = width of oval, also diametar of curved ends
+    // h  = height (thickness) of oval
+    //
     cylinder(d=d, h=h) ;
     translate([x,0,0])
         cylinder(d=d, h=h) ;
@@ -29,13 +35,11 @@ module nut_recess(af, t)  {
     od = af * 2 / sqrt(3) ; // Diameter
     translate([0,0,-delta]) {
         cylinder(d=od, h=t+delta*2, $fn=6) ;
+    // Pyramid at end to allow printing without support:
     translate([0,0,t])
         cylinder(d1=od, d2=0, h=t/2, $fn=6) ;
     }
 }
-
-// nut_recess(13,6) ; //@@@@
-
 
 // Cutout for vertical screw hole with downward-facing countersink at top, 
 // centred on origin.
@@ -65,7 +69,6 @@ module countersinkZ(od, oh, sd, sh)
     translate([0,0,-sh+delta]) cylinder(r=sd/2, h=sh+2*delta, $fn=12);
     }
 }
-// countersinkZ(10, 30, 5, 20);
 
 // Countersink with screw directed along negative X-axis
 module countersinkX(od, oh, sd, sh)
@@ -78,6 +81,9 @@ module countersinkY(od, oh, sd, sh)
 {
     rotate([90,0,0]) countersinkZ(od, oh, sd, sh);
 }
+
+
+// Triangular structure reinforcing webs
 
 module web_base(w_x, w_y, w_t) {
     // Web with corner on origin, extending along +ve X and Y axes
@@ -133,6 +139,10 @@ module web_xz(x, y, z, w_x, w_z, w_t) {
         translate([x, y + w_t/2, z]) rotate([90,0,0]) web_oriented(w_x, w_z, w_t) ;
     }
 }
+
+// Dovetail interlocking shapes  
+//
+// (NOTE: need to be printed flat on baseplate if end is wider than shoulder)
 
 module dovetail_key(l, ws, we, t) {
     // Shape for dovetail key, shoulder centre on origin, key extending along -X axis
@@ -310,11 +320,23 @@ module winder_side_support() {
                 web_xz(winder_side_h-winder_side_t, -winder_side_w/2, winder_side_t, -web_side, web_side, winder_side_t) ;
                 web_xz(winder_side_h-winder_side_t,  winder_side_w/2, winder_side_t, -web_side, web_side, winder_side_t) ;
             } ;
-        union()
-            {
-                shaft_hole(shaft_d, winder_side_t) ;
-            } ;
+        shaft_hole(shaft_d, winder_side_t) ;
         }
+
+}
+
+module winder_side_support_slotted(r=145) {
+    // Winddr support with slot for removing shaft
+    //
+    // r  = angle of rotation of slot from vertical
+    //
+    difference() {
+        winder_side_support() ;
+        // Cutout to allow spool to be removed
+        rotate([0,0,r])
+            translate([shaft_d*0.6,0,-delta])
+                oval(shaft_d, shaft_d, winder_side_t+delta*2) ;
+    }    
 }
 
 // Tape reader bridge (with lighting groove) and supports
