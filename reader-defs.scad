@@ -37,7 +37,7 @@ handle_nut_t  = 3 ;     // Nut thickness
 winder_side_h = 50 ;    // Height to centre of winder shaft
 winder_side_w = 40 ;    // Width base of winder side support
 winder_side_t = 4 ;     // Thickness of winder side support
-winder_apex_d = 16 ;    // Radius of apex of winder side support
+winder_apex_d = 18 ;    // Radius of apex of winder side support
 winder_base_t = 16 ;    // Thickness at base of winder
 
 // Reader bridge

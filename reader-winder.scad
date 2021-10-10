@@ -41,8 +41,19 @@ module layout_winder() {
 // translate([spacing*2,spacing,0]) layout_winder() ;
 
 // winder_side_support_slotted(r=145) ;
-translate([0,+spacing*0.5,0]) winder_side_support_slotted(r=140) ;
-// translate([0,-spacing*0.5,0]) winder_side_support_slotted(r=-140) ;
+// translate([0,+spacing*0.5,0]) winder_side_support_slotted(r=140) ;
+translate([0,-spacing*0.5,0]) winder_side_support_slotted(r=-140) ;
+
+
+//             // Cutout to flex retaining lug
+//             f_x1 = 0 ;
+//             f_x2 = 2 ;
+//             f_y  = shaft_d*0.75 ; // *sign(r) ;
+//             f_d  = 2 ;
+// translate([0,+spacing*0.5,0]) 
+//             translate([f_x1, f_y  ,0])
+//                 # oval(f_x2-f_x1, f_d, winder_side_t+delta*2) ;
+
 
 
 // crank_handle(

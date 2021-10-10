@@ -25,5 +25,5 @@ Mechanical parts for reading paper tape created by Monotype keyboard.
 
 - [ ] tape tensioning arrangement.  Guides to wrap tape around reader bar?
 
-- [ ] slot in winder shaft for catching tape (?)
+- [ ] slot in winder shaft for catching tape (?)  C-clip over shaft?
 
