@@ -374,16 +374,18 @@ module winder_side_support_slotted(r=145) {
     difference() {
         s_ox  = 0.6 ;            // Slot offset diameter multiplier
         f_xm = shaft_d*s_ox/2 ;  // Mid-point of flex cutout
-        f_oy = -0.7*sign(r)*shaft_d ; // Y-offset of flex cutout
-        f_d  = 1.5 ;            // width of flex cutout
-        f_l  = 2.5 ;              // Length flex cutout (excl radius ends)
+        f_oy = -0.675*shaft_d ;  // Y-offset of flex cutout
+        f_d  = 1.5 ;             // width of flex cutout
+        f_l  = 3.0 ;             // Length flex cutout (excl radius ends)
         winder_side_support() ;
         // Cutout to allow spool to be removed
         rotate([0,0,r]) {
             translate([shaft_d*s_ox,0,-delta])
                 oval(shaft_d, shaft_d, winder_side_t+delta*2) ;
-            // Cutout to flex retaining lug
+            // Cutouts to flex retaining lugs
             translate([f_xm-f_l/2, f_oy, 0])
+                oval(f_l, f_d, winder_side_t+delta*2) ;
+            translate([f_xm-f_l/2, -f_oy, 0])
                 oval(f_l, f_d, winder_side_t+delta*2) ;
         } 
     }    
