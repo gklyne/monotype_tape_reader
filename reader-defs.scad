@@ -43,12 +43,16 @@ winder_base_t = 16 ;    // Thickness at base of winder
 // Reader bridge
 
 read_l = spool_w_all ;  // Reader bridge length (inner)
-read_w = 16 ;           // Width of bridge
-guide_w = 20 ;          // Width of guide flange on bridge
+read_w   = 16 ;         // Width of bridge
+read_extra_w = 5 ;      // Extra length for reader bridge for tie-down
+
+guide_w  = 24 ;         // Width of guide flange on bridge
 guide_tc = 2 ;          // Guide thickness at core
 guide_tr = 1 ;          // Guide thickness at rim
 guide_tb = guide_tc-guide_tr ;  // Guide thickness of bevel
-read_extra_w = 5 ;      // Extra length for reader bridge for tie-down
+guide_eld = 4 ;         // EL wire threading hole diameter
+tension_bar_d = 2.5 ;   // Tensioning bar diameter
+
 read_h = 90 ;           // Height of reader bridge above base plate
 read_side_t = side_t ;  // Reader bridge side support thickness
 read_side_base_t = 16 ; // Reader bridge side support thickness at base 

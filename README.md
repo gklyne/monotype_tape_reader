@@ -23,7 +23,7 @@ Mechanical parts for reading paper tape created by Monotype keyboard.
 
 - [x] Option to remove winder so that tape can be loaded/unloaded.
 
-- [ ] tape tensioning arrangement.  Guides to wrap tape around reader bar?
+- [x] tape tensioning arrangement.  Guides to wrap tape around reader bar?
 
-- [ ] slot in winder shaft for catching tape (?)  C-clip over shaft?
+- [x] slot in winder shaft for catching tape (?)  C-clip over shaft?
 
