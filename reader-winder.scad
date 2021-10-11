@@ -44,7 +44,6 @@ module layout_winder() {
 translate([0,+spacing*0.5,0]) winder_side_support_slotted(r=140) ;
 translate([0,-spacing*0.5,0]) winder_side_support_slotted(r=-140) ;
 
-
 clip_len = spool_w_all-15 ;
 spool_clip(core_d, core_d+4, clip_len) ;
 

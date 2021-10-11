@@ -26,9 +26,6 @@ module layout_reader_bridge_dovetailed() {
         read_side_support_dovetailed() ;
 }
 
-// translate([spacing*2, 0, 0]) layout_reader_bridge() ;
-translate([spacing*2, 0, 0]) layout_reader_bridge_dovetailed() ;
-
 module tape_reader_bridge_dovetailed() {
     module bridge_dovetail_cutout() {
         translate([-read_total_l/2+read_side_t,0,0])
@@ -37,7 +34,7 @@ module tape_reader_bridge_dovetailed() {
         ) ;
     }
     difference() {
-        tape_reader_bridge() ;
+        tape_reader_bridge_with_guides() ;
         bridge_dovetail_cutout() ;
         mirror(v=[1, 0, 0]) bridge_dovetail_cutout() ;
     }
@@ -52,8 +49,11 @@ module read_side_support_dovetailed() {
     }
 }
 
+// translate([spacing*2, 0, 0]) layout_reader_bridge() ;
+// translate([spacing*2, 0, 0]) layout_reader_bridge_dovetailed() ;
+
 // tape_reader_bridge() ;
-// tape_reader_bridge_dovetailed() ;
+tape_reader_bridge_dovetailed() ;
 // read_side_support_dovetailed() ;
 
 
