@@ -8,8 +8,8 @@ m8 = 8.2 ;              // Close clearance hole for M8 screw
 
 shaft_d = m8 ;          // Shaft diameter
 core_d = 18 ;           // Core diameter
-bevel_d = 30 ;          // Bevel inner diameter
-outer_d = 40 ;          // Spool outer diameter
+bevel_d = 60 ;          // Bevel inner diameter
+outer_d = 70 ;          // Spool outer diameter
 crank_hub_d = 25 ;      // Diameter of crank hub
 handle_hub_d = 10 ;     // Diameter of handle end of crank
 handle_d = m4 ;         // Diameter of handle
