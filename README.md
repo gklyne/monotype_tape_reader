@@ -27,3 +27,7 @@ Mechanical parts for reading paper tape created by Monotype keyboard.
 
 - [x] slot in winder shaft for catching tape (?)  C-clip over shaft?
 
+- [ ] Clamp to attach reader mechanism to a solid baseplate.
+
+- [ ] Larger gaps and guide rods for reader bar
+

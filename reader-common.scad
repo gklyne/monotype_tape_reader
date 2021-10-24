@@ -406,14 +406,14 @@ module tape_reader_bridge() {
 
 module tape_reader_bridge_with_guides() {
     module guide_flange() {
-        translate([0,0,spool_w_all/2+guide_tb+guide_tr/2])
+        translate([0,0,read_l/2+guide_tb+guide_tr/2])
             cylinder(d=guide_w, h=guide_tr+delta, center=true) ;        // Rim
-        translate([0,0,spool_w_all/2+guide_tr/2])
+        translate([0,0,read_l/2+guide_tr/2])
             cylinder(d1=read_w, d2=guide_w, h=guide_tb, center=true) ;  // Bevel
     }
     module tension_bar() {
         translate([-(guide_w-tension_bar_d)/2,0,0])
-            cylinder(d=tension_bar_d, h=read_l+guide_tb*2, center=true, $fn=8) ;
+            cylinder(d=tension_bar_d, h=read_l+guide_tb*2, center=true, $fn=16) ;
     }
     difference() {
         rotate([0,90,0])
@@ -421,8 +421,8 @@ module tape_reader_bridge_with_guides() {
                 cylinder(d=read_w, h=read_total_l, center=true) ;
                 guide_flange() ;
                 mirror(v=[0, 0, 1]) guide_flange() ;
-                rotate([0,0,84])  tension_bar() ;     // Angle determined by trail/error :(
-                rotate([0,0,-84]) tension_bar() ;
+                rotate([0,0,82])  tension_bar() ;     // Angle determined by trial/error :(
+                rotate([0,0,-82]) tension_bar() ;
             }
         translate([0,0,-read_w/2])
             cube(size=[read_total_l+delta, guide_w+delta, read_w+delta], center=true) ;
