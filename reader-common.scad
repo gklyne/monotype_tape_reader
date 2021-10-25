@@ -28,7 +28,7 @@ module oval(x, d, h) {
     // Oval shape aligned on the X axis, with one end centred on the origin
     //
     // x  = X position of second centre of curvature
-    // d  = width of oval, also diametar of curved ends
+    // d  = width of oval, also diameter of curved ends
     // h  = height (thickness) of oval
     //
     cylinder(d=d, h=h, $fn=16) ;
@@ -67,7 +67,7 @@ module nut_recess(af, t)  {
 // centred on origin.
 //
 // The centre of the countersink top face lies on the origin.
-// The countersink and screw shaft hole lie on tge -ve Z axis
+// The countersink and screw shaft hole lie on the -ve Z axis
 // A recess hole lies along the +ve Z axis 
 //
 // od = overall diameter (for screw head)

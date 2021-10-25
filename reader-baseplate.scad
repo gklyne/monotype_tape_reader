@@ -2,6 +2,8 @@
 
 include <reader-defs.scad> ;
 
+use <reader-common.scad> ;
+
 module rect_frame(lx, ly, t, w) {
     // Rectangular frame on X-Y plane, centred on the origin
     //
@@ -145,11 +147,6 @@ module corner_support_foot(lx, ly, t, h, px, py) {
     }        
 }
 
-//module side_support_foot(l, t, h, px, py) {
-//    // @@TODO?
-//    0
-//}
-
 module side_support_foot_x(l, h, t, px, py) {
     // Support foot on X-axis-aligned edge of frame
     //
@@ -172,6 +169,31 @@ module side_support_foot_x(l, h, t, px, py) {
     }
 
 }
+
+module baseplate_clamp(l, w, h, l1, h1, h2, d) {
+    // l  = overall length of clamp (excluding rounded ends)
+    // w  = width of clamp
+    // h  = overall height of clamp
+    // l1 = length of clamp bridge
+    // h1 = height (from base) of clamp bridge
+    // h2 = height (from base) of clamp hook end
+    // d  = diameter of screw hole
+    //
+    difference() {
+        oval(l, w, h) ;
+        translate([l1/2,0,h-h1/2])
+            cube(size=[l1, w+delta, h1+delta], center=true) ;
+        translate([-w/2,0,h-h2/2])
+            cube(size=[w+delta, w+delta, h2+delta], center=true) ;
+        translate([l,0,0])
+            // flip through x-y plane: reverse z-axis
+            mirror(v=[0,0,1]) 
+                countersinkZ(d*2, h+2*delta, d, h+delta) ;
+    }
+}
+
+// Test clamp
+// baseplate_clamp(20, 10, 12, 8, 9, 6, 5) ;
 
 // Tests
 // rect_frame(100, 60, 4, 6);
@@ -291,5 +313,14 @@ module reader_baseplate() {
 
 // main_reader_baseplate() ;
 
-reader_baseplate() ;
+// reader_baseplate() ;
+
+baseplate_clamp(border_w*2.5, 10, foot_h+base_t, border_w, foot_h, foot_h-2, 5) ;
+    // l  = overall length of clamp (excluding rounded ends)
+    // w  = width of clamp
+    // h  = overall height of clamp
+    // l1 = length of clamp bridge
+    // h1 = height (from base) of clamp bridge
+    // h2 = height (from base) of clamp hook end
+    // d  = diameter of screw hole
 
