@@ -315,15 +315,7 @@ module reader_baseplate() {
 
 // reader_baseplate() ;
 
-for (offset = [0,border_w*4])
-    translate([0,offset,0])
-        baseplate_clamp(border_w*2.5, 12, foot_h+base_t, border_w+0.1, foot_h, foot_h-2, 5) ;
-
-    // l  = overall length of clamp (excluding rounded ends)
-    // w  = width of clamp
-    // h  = overall height of clamp
-    // l1 = length of clamp bridge
-    // h1 = height (from base) of clamp bridge
-    // h2 = height (from base) of clamp hook end
-    // d  = diameter of screw hole
+// for (offset = [0,border_w*4])
+//     translate([0,offset,0])
+//         baseplate_clamp(border_w*2.5, 12, foot_h+base_t, border_w+0.1, foot_h, foot_h-2, 5) ;
 

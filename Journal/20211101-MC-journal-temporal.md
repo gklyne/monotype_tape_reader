@@ -1,0 +1,31 @@
+<!-- 20211101-MC-journal.md -->
+
+## 2021-11-01: Temporal video processing: row detection
+
+Previously, I have achieved some success detecting the video highlight regions that correspond to holes in the tape passing over the electroluminescent (EL) wire in the Monotype Tape read head.
+
+I have also applied processing to merge adjacent and near-adjacent pixels into regions, with a coordinate location for each region.  This is an important step of data reduction, as each region corresponds to up to 150 individual video pixels, and for the most part I'm seeing that these detected regions do indeed correspond to holes in the paper tape.  There are also some additional regions detected where the EL wire is never obscured by the tape, but I'm happy to keep these in the data as they will help me later to confirm that the typesetting data decoding process embodies a degree of robustness (i.e. can still generate good output data in the face of some spurious input data).
+
+All this has, so far, been based on processing each frame of video data independently, with no consideration of what comes before or after.  Since then, I've been spending some time thinking about how to incorporate temporal information from the video.  The challenge I have set myself is to detect and merge data from each row of holes as it passes over the read head.  Each such row will eventually correspond to a single "frame" of typesetting data that can be used for subsequent sonification experiments (like the rows of pins on a musical box drum, maybe).
+
+Because the tape is being drawn over the read head by hand, its speed will vary, so I cannot rely on timing information to distinguish the rows.  Instead, I will look for multiple regions that appear and disappear together, corresponding to rows of holes passing over the read head.  Between these rows there should be periods when there are no regions present in the absence of spurious data.  I am partly relying on the fact that the sprocket holes in the tape will help to provide a regular heartbeat, even when there is no data on the tape.
+
+That, at least is the theory, but the practice is not quite so simple, because:
+
+- the tape may be skewed relative to the read head, and the holes in a row don't necessarily all appear and disappear at the same time,
+- there is spurious data that means that regions appear in the data even when there are no regions corresponding to tape holes,
+- the speed at which the tape passes over the read head means that a region may sometimes appear as two separate regions, or be missed entirely in some frames,
+- the camera shakes, and the tape wanders a little while being drawn over the read head, so the position of a hole may vary slightly from frame to frame.
+
+All these factors are things that I've noticed by devising processes for decoding the data, and then watching the decoder in operation, comparing the detected row data with the original video and highlight regions.  This exposes a key difference between the video decoding process I am trying to understand, and more conventional scientific and engineering code I have worked on previously.  The nature of the input data means that it is very hard (for me: not possible) to devise an algorithm for the processing based on prior knowledge of the data.  Rather, this is a process of exploration of the data, and experimentation with different approaches to processing it [1].  Much of the code I am trying out is aimed at displaying the data in ways that expose how the decoding processes are working.
+
+<footnote>
+[1] It might be suggested that an appropriate way to processing such data would be through machine learning (ML).  As it happens, I have been reading Marcus du Sautoy's "The Creativity Code" (which explores the use of ML for creativity) during the period that I have been exploring the video decoding problem, and have thought a little about this: am I using an altogether wrong approach in my trial-and-error approach to the video decoding?  To date, I have formed a view that I cannot use ML without a large amount of labelled data, which I don't have.  I believe the effort required to create sufficient such data would exceed that my current approach of experimentation with decoding algorithms.  It might be said that I am following the same process as a machine learning algorithm, but with the advantage of some human insight and contextual awareness when making adjustments to the algorithm.  And, unlike most machine learning, I have reasons for the choices I make that can be articulated, and in the process may gain greater personal knowledge of the nature of the data.  Maybe there's a topic here for interesting philosophical debate about the types of evaluation and learning needed in creative activity?
+</footnote>
+
+I am reminded of a discussion I once had with a digital humanist about differing approaches to dealing with humanities data vs scientific/engineering data.  They mentioned to me that it was sometimes important for a humanist to immerse themselves in their raw data, to consider what it might (and might not) be conveying, before deciding how to process it.  I feel there's a similar dynamic at work with the video data: I need to spend time with it, getting a feel for what constitutes meaningful patterns, before I can finally decide how to process it.
+
+My process of video data exploration is highly dependent on computer processing.  While a human would easily enough look at some specific video and say what data it represents, that would take too long given the amount of video to be processed, so I am looking here for a pattern that can be systematized and automated.  There are just too many pixels in a single video frame for a human brain to fully discern a general pattern in how they correspond desired output data.  Instead, the data needs to be processed, reduced, presented and visualized in ways that one can discern possible ways to decode the data.  This is the nature of the experiments I am undertaking, and along the way maybe producing renditions that are of themselves worthy of exhibiting as artworks - maybe because of the ways that they help to provoke human perceptions of what is hiding in the data?
+
+
+
