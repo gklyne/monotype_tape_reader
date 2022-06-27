@@ -40,7 +40,7 @@ It has struck me that there is some similarity between the process of creating a
 
 [3] https://ora.ox.ac.uk/objects/uuid:8507e218-aa8f-4242-9fe8-9ef29ed69bf5
 
-Compared with straight engineering, both art and research seem to value the process of exploration and discovery as much as the eventual published or exhibited result.  This in turn seems to affect the way that work is conducted, with greater interest in exploring backwaters (and rabbit holes) along the way to some desired end goal.  (At least, when not overly bound by resourcing constraints?)
+Compared with straight engineering, both art and research (as an ideal, if not always in the academy) seem to value the process of exploration and discovery as much as the eventual published or exhibited result.  This in turn seems to affect the way that work is conducted, with greater interest in exploring backwaters (and rabbit holes) along the way to some desired end goal.  (At least, when not overly bound by resourcing constraints?)
 
 @@TODO Implications:
 

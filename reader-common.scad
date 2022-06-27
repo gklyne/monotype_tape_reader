@@ -698,8 +698,8 @@ module phone_camera_holder() {
 
 module winder_assembly() {
     // Spool and crank handle
-    spool_pos_x   = side_t + spool_w/2 + part_gap/2 ;
-    winder_side_x = winder_side_t + spool_w/2 + part_gap/2 + part_gap ;
+    spool_pos_x   = side_t + spool_w_all/2 + part_gap/2 ;
+    winder_side_x = winder_side_t + spool_w_all/2 + part_gap/2 + part_gap ;
     winder_pos_x  = winder_side_x + 2*part_gap ;
     translate([-spool_pos_x,0,winder_side_h])
         rotate([0,90,0])
@@ -734,7 +734,7 @@ module winder_assembly() {
 
 module read_bridge_assembly() {
     // Reader bridge and support
-    side_support_x = side_t + part_gap + spool_end_w + part_gap/2 ;
+    side_support_x = side_t + part_gap + spool_w_mid + part_gap/2 ;
     translate([0,0,read_h])
         tape_reader_bridge() ;
     translate([side_support_x,0,read_h])
@@ -760,8 +760,8 @@ module phone_holder_assembly() {
         rotate([-90,0,180])
             phone_camera_holder() ;
     translate([-rod_fix_x,rod_fix_y,rod_fix_z])
-        rotate([0,0,0])
-            phone_holder_rod_fixing() ;
+        rotate([0,0,-90])
+            phone_holder_rod_fixing_plate() ;
     translate([-rod_holder_x,rod_fix_y,rod_support_h])
         rotate([0,90,0])
             phone_holder_rod_support() ;    
@@ -902,7 +902,7 @@ module layout_print() {
         layout_print_3() ;
 }
 
-// layout_assembly() ;
+layout_assembly() ;
 
 // layout_print() ;
 

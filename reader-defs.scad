@@ -112,7 +112,7 @@ rod_support_shell_w = 24 ;
 
 // Baseplate dimensions
 
-base_l   = 240 ;
+base_l   = 400 ; // was 240 ;
 base_w   = 130 ;
 base_t   = 4 ;
 border_w = 8 ;

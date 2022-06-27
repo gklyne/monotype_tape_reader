@@ -143,7 +143,7 @@ module corner_support_foot(lx, ly, t, h, px, py) {
         translate([px,py,-h])             // clip_profile for angled feet
             rotate(a=ra, v=[-px,py,0])
                 linear_extrude(height=h*4, center=true) 
-                    polygon([[-lx,0], [0,-ly], [+lx,0], [0,+ly] ]) ;
+                    polygon([ [-lx,0], [0,-ly], [+lx,0], [0,+ly] ]) ;
     }        
 }
 
@@ -272,6 +272,7 @@ module main_reader_baseplate() {
             diagonal_brace(base_l, base_w, base_t, brace_w, flip=false) ;
             diagonal_brace(base_l, base_w, base_t, brace_w, flip=true) ;
 
+            // Various mounting plates
             mount_plate(mount_l, mount_w, base_t, winder_side_w/2, hole_d, px=+plate_px, py=+plate_py ) ;
             mount_plate(mount_l, mount_w, base_t, winder_side_w/2, hole_d, px=+plate_px, py=-plate_py) ;
             mount_plate(mount_l, mount_w, base_t, winder_side_w/2, hole_d, px=-plate_px, py=+plate_py ) ;
@@ -279,6 +280,11 @@ module main_reader_baseplate() {
             mount_plate(mount_l, mount_w, base_t, read_side_base_w/2, hole_d, 0, py=+plate_py) ;
             mount_plate(mount_l, mount_w, base_t, read_side_base_w/2, hole_d, 0, py=-plate_py) ;
 
+            // Additional braces for mounting plates
+            // rect_shell(lx, ly, t, w, h)
+            rect_shell(mount_l+(border_w*2), base_w, base_t, border_w, shell_h) ;
+
+            // Support feet
             corner_support_foot(foot_lx, foot_ly, base_t, foot_h, +base_l/2, +base_w/2) ;
             corner_support_foot(foot_lx, foot_ly, base_t, foot_h, +base_l/2, -base_w/2) ;
             corner_support_foot(foot_lx, foot_ly, base_t, foot_h, -base_l/2, +base_w/2) ;
@@ -304,8 +310,55 @@ module reader_baseplate() {
     translate([+rod_support_base_o,-base_w/2 - rod_support_shell_w/2,0]) {
         rod_support_mounting_plate() ;
     }
-    translate([0,-base_w/2 - rod_support_shell_w/2,0]) {
-        rect_shell(rod_support_base_o*2-rod_support_base_w+base_t, rod_support_shell_w, base_t, base_t /*border_w*/ , shell_h) ;
+
+    // Rod support frame
+    rod_support_base_l = rod_support_base_o*2-rod_support_base_w+base_t ;
+    //translate([0,-base_w/2 - rod_support_shell_w/2,0]) {
+    //    rect_shell(rod_support_base_l, rod_support_shell_w, base_t, base_t /*border_w*/ , shell_h) ;
+    //}
+
+    // Rod support bracing
+    // rod_support_brace_l = (base_l-rod_support_base_l)/2 + base_t ; // full length of base plate
+    // translate([-(base_l-rod_support_brace_l)/2,0,0])
+    //     rect_shell(rod_support_brace_l, base_w, base_t, border_w, shell_h) ;
+    rod_support_brace_l = rod_support_base_w ; // Brace each side of mounting plate
+    translate([-(rod_support_base_o),0,0])
+        rect_shell(rod_support_base_w, base_w, base_t, border_w, shell_h) ;
+    translate([+(rod_support_base_o),0,0])
+        rect_shell(rod_support_base_w, base_w, base_t, border_w, shell_h) ;
+}
+
+module reader_half_baseplate_cutaway() {
+    cutaway_l = base_l/2 + delta ;
+    cutaway_w = base_w + 2*rod_support_shell_w + 2*delta ;
+    cutaway_h = foot_h + 2*delta ;
+    notch_h   = border_w/4 ;
+    notch_o   = (base_w/2) - border_w ;
+    translate([0, 0, cutaway_h/2])
+        linear_extrude(height=cutaway_h, center=true) 
+            polygon([ [0,-cutaway_w/2]
+                    , [0,(-notch_h*2)-notch_o], [-notch_h,(-notch_h)-notch_o], [+notch_h,(+notch_h)-notch_o], [0,(+notch_h*2)-notch_o]
+                    , [0,(-notch_h*2)], [-notch_h,(-notch_h)], [+notch_h,(+notch_h)], [0,(+notch_h*2)]
+                    , [0,(-notch_h*2)+notch_o], [-notch_h,(-notch_h)+notch_o], [+notch_h,(+notch_h)+notch_o], [0,(+notch_h*2)+notch_o]
+                    , [0,+cutaway_w/2]
+                    , [+cutaway_l, +cutaway_w/2]
+                    , [+cutaway_l, -cutaway_w/2]
+                    , [0,-cutaway_w/2]
+                    ]) ;
+}
+
+module reader_half_baseplate_1() {
+    difference () {
+        reader_baseplate() ;
+        reader_half_baseplate_cutaway() ;
+    }
+}
+
+module reader_half_baseplate_2() {
+    difference () {
+        reader_baseplate() ;
+        rotate( [0,0,180] )
+            reader_half_baseplate_cutaway() ;
     }
 }
 
@@ -314,6 +367,12 @@ module reader_baseplate() {
 // main_reader_baseplate() ;
 
 // reader_baseplate() ;
+
+// translate( [-10,0,0] )
+//     reader_half_baseplate_1() ;
+
+translate( [+10,0,0] )
+    reader_half_baseplate_2() ;
 
 // for (offset = [0,border_w*4])
 //     translate([0,offset,0])
