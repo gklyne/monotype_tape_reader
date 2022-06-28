@@ -281,7 +281,7 @@ module spool_clip(core_d, outer_d, len) {
             cylinder(d=outer_d, h=len+2*delta) ;
         translate([0,0,0])
             rotate([0,-90,0])
-                # shaft_slot(len*0.25, len*0.75, 0, core_d*0.75, outer_d+delta*2) ;
+                shaft_slot(len*0.25, len*0.75, 0, core_d*0.75, outer_d+delta*2) ;
         // translate([0,0,0])
         //     rotate([0,0,0])
         //         lozenge(len/2, len/8, core_d*0.75, len+2*delta) ;
@@ -372,11 +372,11 @@ module winder_side_support_slotted(r=145) {
     // r  = angle of rotation of slot from vertical
     //
     difference() {
-        s_ox  = 0.6 ;            // Slot offset diameter multiplier
+        s_ox  = 0.55 ;            // Slot offset diameter multiplier
         f_xm = shaft_d*s_ox/2 ;  // Mid-point of flex cutout
         f_oy = -0.675*shaft_d ;  // Y-offset of flex cutout
         f_d  = 1.5 ;             // width of flex cutout
-        f_l  = 3.0 ;             // Length flex cutout (excl radius ends)
+        f_l  = 4.0 ;             // Length flex cutout (excl radius ends)
         winder_side_support() ;
         // Cutout to allow spool to be removed
         rotate([0,0,r]) {

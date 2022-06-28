@@ -7,9 +7,9 @@ m8 = 8.2 ;              // Close clearance hole for M8 screw
 // Winder
 
 shaft_d = m8 ;          // Shaft diameter
-core_d = 18 ;           // Core diameter
-bevel_d = 60 ;          // Bevel inner diameter
-outer_d = 70 ;          // Spool outer diameter
+core_d = 40 ;           // Core diameter
+bevel_d = 72 ;          // Bevel inner diameter
+outer_d = 80 ;          // Spool outer diameter
 crank_hub_d = 25 ;      // Diameter of crank hub
 handle_hub_d = 10 ;     // Diameter of handle end of crank
 handle_d = m4 ;         // Diameter of handle
@@ -34,7 +34,7 @@ shaft_nut_t  = 4 ;      // Nut thickness
 handle_nut_af = 7 ;     // Nut diameter across faces
 handle_nut_t  = 3 ;     // Nut thickness
 
-winder_side_h = 50 ;    // Height to centre of winder shaft
+winder_side_h = 60 ;    // Height to centre of winder shaft
 winder_side_w = 40 ;    // Width base of winder side support
 winder_side_t = 4 ;     // Thickness of winder side support
 winder_apex_d = 19 ;    // Radius of apex of winder side support
