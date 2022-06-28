@@ -49,9 +49,9 @@ module spool_with_spacers() {
             shaft_d=shaft_d, core_d=core_d, bevel_d=bevel_d, outer_d=outer_d, 
             side_t=side_t, side_rim_t=side_rim_t, w_spool_end=spool_w_end
             );
-    translate([spacing*1,0,0])
+    translate([-spacing,spacing,0])
         spool_spacer(shaft_d=shaft_d, core_d=core_d, w_spacer=spool_w_mid/2, w_spool_end=spool_w_end) ;
-    translate([spacing*2,0,0])
+    translate([0,spacing,0])
         spool_spacer(shaft_d=shaft_d, core_d=core_d, w_spacer=spool_w_mid/2, w_spool_end=spool_w_end) ;
 }
 
@@ -60,28 +60,37 @@ module spool_with_spacers() {
 
 // translate([spacing*0.5,+spacing*1.5,0]) winder_side_support_slotted(r=165) ;
 
+// ## winder_side_supports
+//
 // translate([spacing*0.5,-spacing*0.5,0]) winder_side_support_slotted(r=140) ;
 // translate([spacing*1.5,-spacing*0.5,0]) winder_side_support_slotted(r=-140) ;
 // translate([spacing*0.5,+spacing*0.5,0]) winder_side_support_slotted(r=140) ;
 // translate([spacing*1.5,+spacing*0.5,0]) winder_side_support_slotted(r=-140) ;
 
+// ## spool_clips
+//
 // clip_len = spool_w_all-15 ;
 // translate([-spacing,spacing,0])
 //     spool_clip(core_d, core_d+4, clip_len) ;
 // translate([0,spacing,0])
 //     spool_clip(core_d, core_d+4, clip_len) ;
 
+// ## spool_with_spacers
+//
 // spool_with_spacers() ;
 // translate([0,-spacing,0])
 //     spool_with_spacers() ;
 
+
+// ## winder_crank_pulleys
+//
 crank_handle(
-    crank_l=crank_l, 
-    shaft_d=shaft_d, crank_hub_d=crank_hub_d, 
-    handle_hub_d=handle_hub_d, handle_d=handle_d, 
-    crank_hub_t=crank_hub_t, crank_arm_t=crank_arm_t, handle_hub_t=crank_end_t
-    ) ;
+ crank_l=crank_l, 
+ shaft_d=shaft_d, crank_hub_d=crank_hub_d, 
+ handle_hub_d=handle_hub_d, handle_d=handle_d, 
+ crank_hub_t=crank_hub_t, crank_arm_t=crank_arm_t, handle_hub_t=crank_end_t
+ ) ;
 translate([0,spacing,0])
-    drive_pulley(shaft_d=shaft_d, drive_pulley_d=drive_pulley_d) ;
+ drive_pulley(shaft_d=shaft_d, drive_pulley_d=drive_pulley_d) ;
 translate([spacing,spacing,0])
-    drive_pulley(shaft_d=shaft_d, drive_pulley_d=drive_pulley_d) ;
+ drive_pulley(shaft_d=shaft_d, drive_pulley_d=drive_pulley_d) ;
