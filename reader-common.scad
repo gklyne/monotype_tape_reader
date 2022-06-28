@@ -318,6 +318,20 @@ module crank_handle(
     }
 }
 
+module drive_pulley(shaft_d, drive_pulley_d) {
+    difference() {
+        union() {
+            cylinder(d=drive_pulley_d, h=crank_hub_t) ;
+            translate([0,0,crank_hub_t-delta])
+                pulley(drive_pulley_d, crank_hub_t) ;
+        } ;
+        union() {
+            shaft_hole(d=shaft_d, l=crank_hub_t*2) ;
+            nut_recess(af=shaft_nut_af, t=shaft_nut_t) ;
+        } ;
+    }
+}
+
 module winder_side_support() {
     // Side in X-Y plane, shaft centre at origin, extends along +X axis
     module side_profile() {
@@ -480,6 +494,8 @@ module read_side_support() {
         union()
             {
                 shaft_hole(shaft_d, read_side_t) ;
+                translate([(read_h-read_side_base_t-read_side_t)*0.5,0,0])
+                    shaft_hole(shaft_d, read_side_t) ;
                 translate([read_h-read_side_base_t-read_side_t, +0.25*read_side_base_w,0])
                     shaft_hole(read_side_peg_d, read_side_t) ;
                 translate([read_h-read_side_base_t-read_side_t, -0.25*read_side_base_w,0])

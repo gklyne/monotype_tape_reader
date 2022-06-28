@@ -60,8 +60,8 @@ module spool_with_spacers() {
 
 // translate([spacing*0.5,+spacing*1.5,0]) winder_side_support_slotted(r=165) ;
 
-translate([spacing*0.5,-spacing*0.5,0]) winder_side_support_slotted(r=140) ;
-translate([spacing*1.5,-spacing*0.5,0]) winder_side_support_slotted(r=-140) ;
+// translate([spacing*0.5,-spacing*0.5,0]) winder_side_support_slotted(r=140) ;
+// translate([spacing*1.5,-spacing*0.5,0]) winder_side_support_slotted(r=-140) ;
 // translate([spacing*0.5,+spacing*0.5,0]) winder_side_support_slotted(r=140) ;
 // translate([spacing*1.5,+spacing*0.5,0]) winder_side_support_slotted(r=-140) ;
 
@@ -75,9 +75,13 @@ translate([spacing*1.5,-spacing*0.5,0]) winder_side_support_slotted(r=-140) ;
 // translate([0,-spacing,0])
 //     spool_with_spacers() ;
 
-// crank_handle(
-//     crank_l=crank_l, 
-//     shaft_d=shaft_d, crank_hub_d=crank_hub_d, 
-//     handle_hub_d=handle_hub_d, handle_d=handle_d, 
-//     crank_hub_t=crank_hub_t, crank_arm_t=crank_arm_t, handle_hub_t=crank_end_t
-//     ) ;
+crank_handle(
+    crank_l=crank_l, 
+    shaft_d=shaft_d, crank_hub_d=crank_hub_d, 
+    handle_hub_d=handle_hub_d, handle_d=handle_d, 
+    crank_hub_t=crank_hub_t, crank_arm_t=crank_arm_t, handle_hub_t=crank_end_t
+    ) ;
+translate([0,spacing,0])
+    drive_pulley(shaft_d=shaft_d, drive_pulley_d=drive_pulley_d) ;
+translate([spacing,spacing,0])
+    drive_pulley(shaft_d=shaft_d, drive_pulley_d=drive_pulley_d) ;

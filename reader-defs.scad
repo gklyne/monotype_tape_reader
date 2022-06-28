@@ -11,6 +11,7 @@ core_d = 40 ;           // Core diameter
 bevel_d = 72 ;          // Bevel inner diameter
 outer_d = 80 ;          // Spool outer diameter
 crank_hub_d = 25 ;      // Diameter of crank hub
+drive_pulley_d = 60 ;   // Diameter of drive pulley
 handle_hub_d = 10 ;     // Diameter of handle end of crank
 handle_d = m4 ;         // Diameter of handle
 base_fix_d = m4 ;       // Diameter of base fixing screw hole
@@ -20,8 +21,8 @@ crank_l = 40 ;          // Length of crank (between shaft and handle centres
 side_t = 4 ;            // Thickness of spool side
 side_rim_t = 2 ;        // Thickness of spool side rim (beveled)
 crank_hub_t = 10 ;       // Thickness of crank hub
-crank_arm_t = 4 ;       // Thickness of crank arm
-crank_end_t = 7 ;       // Thickness of crank handle hub (at end of arm)
+crank_arm_t = 6 ;       // Thickness of crank arm
+crank_end_t = 8 ;       // Thickness of crank handle hub (at end of arm)
 
 spool_w_all = 112 ;     // Width of spool (overall between ends)
 spool_w_end = 20 ;      // Width of spool (to inside of end)
@@ -63,7 +64,7 @@ read_side_base_w = 40 ;
 read_side_peg_d  = m4 ;
 
 read_groove_w = 2.25 ;  // EL wire goove width
-read_groove_d = 3 ;     // EL wire groove depth
+read_groove_d = 2.5 ;   // EL wire groove depth
 
 // Parts for holding phone camera
 
