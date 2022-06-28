@@ -7,22 +7,21 @@ use <reader-common.scad> ;
 module layout_reader_bridge() {
     // Reader bridge and support
     translate([
-    0,1*spacing,0])
+    0,spacing*1,0])
         tape_reader_bridge() ;
-    translate([-winder_side_h/2,spacing*2,0])
+    translate([-winder_side_h/2,spacing*1.5,0])
         read_side_support() ;
-    translate([-winder_side_h/2,3*spacing,0])
+    translate([-winder_side_h/2,spacing*2,0])
         read_side_support() ;
 }
 
 module layout_reader_bridge_dovetailed() {
     // Reader bridge and support
-    translate([
-    0,1*spacing,0])
+    translate([0,spacing*0,0])
         tape_reader_bridge_dovetailed() ;
-    translate([-winder_side_h/2,spacing*2,0])
+    translate([-winder_side_h/2,spacing*0.6,0])
         read_side_support_dovetailed() ;
-    translate([-winder_side_h/2,3*spacing,0])
+    translate([-winder_side_h/2,spacing*1.2,0])
         read_side_support_dovetailed() ;
 }
 
@@ -49,6 +48,8 @@ module read_side_support_dovetailed() {
     }
 }
 
+// ## reader-bridge
+//
 // translate([spacing*2, 0, 0]) layout_reader_bridge() ;
 // translate([spacing*2, 0, 0]) 
     layout_reader_bridge_dovetailed() ;
