@@ -69,11 +69,15 @@ module spool_with_spacers() {
 
 // ## spool_clips
 //
-// clip_len = spool_w_all-15 ;
-// translate([-spacing,spacing,0])
-//     spool_clip(core_d, core_d+4, clip_len) ;
-// translate([0,spacing,0])
-//     spool_clip(core_d, core_d+4, clip_len) ;
+clip_len = spool_w_all-2 ;
+outer_d  = core_d+4 ;
+translate([-outer_d*0.75,0,0])  // 0.75 comes from 'spool_clip'
+    spool_clip(core_d, outer_d, clip_len) ;
+translate([+outer_d*0.75,0,0])
+    rotate([0,0,180])
+        spool_clip(core_d, outer_d, clip_len) ;
+cylinder(d=outer_d, h=0.4) ;    // Improve print adhesion - cut off later
+
 
 // ## spool_with_spacers
 //
@@ -84,13 +88,14 @@ module spool_with_spacers() {
 
 // ## winder_crank_pulleys
 //
-crank_handle(
- crank_l=crank_l, 
- shaft_d=shaft_d, crank_hub_d=crank_hub_d, 
- handle_hub_d=handle_hub_d, handle_d=handle_d, 
- crank_hub_t=crank_hub_t, crank_arm_t=crank_arm_t, handle_hub_t=crank_end_t
- ) ;
-translate([0,spacing,0])
- drive_pulley(shaft_d=shaft_d, drive_pulley_d=drive_pulley_d) ;
-translate([spacing,spacing,0])
- drive_pulley(shaft_d=shaft_d, drive_pulley_d=drive_pulley_d) ;
+// crank_handle(
+//     crank_l=crank_l, 
+//     shaft_d=shaft_d, crank_hub_d=crank_hub_d, 
+//     handle_hub_d=handle_hub_d, handle_d=handle_d, 
+//     crank_hub_t=crank_hub_t, crank_arm_t=crank_arm_t, handle_hub_t=crank_end_t
+//     ) ;
+// translate([0,spacing,0])
+//     drive_pulley(shaft_d=shaft_d, drive_pulley_d=drive_pulley_d) ;
+// translate([spacing,spacing,0])
+//     drive_pulley(shaft_d=shaft_d, drive_pulley_d=drive_pulley_d) ;
+

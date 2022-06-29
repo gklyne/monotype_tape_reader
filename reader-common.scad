@@ -2,8 +2,8 @@ include <reader-defs.scad> ;
 
 // Utilities
 
-module lozenge(l,slope_l,w,h) {
-    // Lozenge object along Z axis: one point on origin, other on X-axis\
+module lozenge(l,bevel_l,w,h) {
+    // Lozenge object along Z axis: one point on origin, other on X-axis
     //
     // l       = overall length (between points)
     // bevel_l = length of sloping shoulder
@@ -17,8 +17,8 @@ module lozenge(l,slope_l,w,h) {
                 [bevel_l,  w/2],
                 [l-bevel_l,w/2],
                 [l,        0],
-                [bevel_l,  -w/2],
                 [l-bevel_l,-w/2],
+                [bevel_l,  -w/2],
                 ]
             ) ;
     }
@@ -272,19 +272,30 @@ module spool_spacer(shaft_d, core_d, w_spacer, w_spool_end) {
     }
 } ;
 
+// The spool clip is also intended to slide off the winder core
+// It may need the inner diameter increasing slightly
 module spool_clip(core_d, outer_d, len) {
     difference() {
         cylinder(d=outer_d, h=len) ;
         translate([0,0,-delta])
-            cylinder(d=core_d, h=len+2*delta) ;
-        translate([core_d/2,0,-delta])
-            cylinder(d=outer_d, h=len+2*delta) ;
-        translate([0,0,0])
-            rotate([0,-90,0])
-                shaft_slot(len*0.25, len*0.75, 0, core_d*0.75, outer_d+delta*2) ;
+            cylinder(d=core_d, h=len+2*delta) ;   // Core
+        translate([outer_d*0.75,0,-delta])
+            cylinder(d=outer_d, h=len+2*delta) ;  // Clip cutaway
         // translate([0,0,0])
-        //     rotate([0,0,0])
-        //         lozenge(len/2, len/8, core_d*0.75, len+2*delta) ;
+        //     rotate([0,-90,0])
+        //         shaft_slot(len*0.25, len*0.75, 0, core_d*0.75, outer_d+delta*2) ;
+        translate([0,0,len/2])
+            rotate([0,90,0])
+                translate([-len*0.4,0,-outer_d*0.5-delta])
+                    lozenge(len*0.8, core_d*0.4, core_d*0.8, outer_d+2*delta) ;
+        translate([0,0,len/2])
+            rotate([90,0,0])        // Prisms align Y
+                rotate([0,0,90]) {  // Points align Y
+                    translate([+len*0.02,0,-outer_d*0.5-delta])
+                        lozenge(len*0.38, core_d*0.2, core_d*0.4, outer_d+2*delta) ;
+                    translate([-len*0.40,0,-outer_d*0.5-delta])
+                        lozenge(len*0.38, core_d*0.2, core_d*0.4, outer_d+2*delta) ;
+                }
     }
 }
 
