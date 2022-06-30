@@ -392,16 +392,16 @@ module winder_side_support() {
 }
 
 module winder_side_support_slotted(r=145) {
-    // Winddr support with slot for removing shaft
+    // Winder support with slot for removing shaft
     //
     // r  = angle of rotation of slot from vertical
     //
     difference() {
-        s_ox  = 0.55 ;            // Slot offset diameter multiplier
+        s_ox  = 0.50 ;           // Slot offset diameter multiplier
         f_xm = shaft_d*s_ox/2 ;  // Mid-point of flex cutout
         f_oy = -0.675*shaft_d ;  // Y-offset of flex cutout
-        f_d  = 1.5 ;             // width of flex cutout
-        f_l  = 4.0 ;             // Length flex cutout (excl radius ends)
+        f_d  = 1.7 ;             // width of flex cutout
+        f_l  = 6.0 ;             // Length flex cutout (excl radius ends)
         winder_side_support() ;
         // Cutout to allow spool to be removed
         rotate([0,0,r]) {

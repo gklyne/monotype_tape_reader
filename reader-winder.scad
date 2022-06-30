@@ -58,25 +58,23 @@ module spool_with_spacers() {
 
 // translate([spacing*2,spacing,0]) layout_winder() ;
 
-// translate([spacing*0.5,+spacing*1.5,0]) winder_side_support_slotted(r=165) ;
-
 // ## winder_side_supports
 //
-// translate([spacing*0.5,-spacing*0.5,0]) winder_side_support_slotted(r=140) ;
+translate([spacing*0.5,-spacing*0.5,0]) winder_side_support_slotted(r=140) ;
 // translate([spacing*1.5,-spacing*0.5,0]) winder_side_support_slotted(r=-140) ;
-// translate([spacing*0.5,+spacing*0.5,0]) winder_side_support_slotted(r=140) ;
+translate([spacing*0.5,+spacing*0.5,0]) winder_side_support_slotted(r=140) ;
 // translate([spacing*1.5,+spacing*0.5,0]) winder_side_support_slotted(r=-140) ;
 
 // ## spool_clips
 //
-clip_len = spool_w_all-2 ;
-outer_d  = core_d+4 ;
-translate([-outer_d*0.75,0,0])  // 0.75 comes from 'spool_clip'
-    spool_clip(core_d, outer_d, clip_len) ;
-translate([+outer_d*0.75,0,0])
-    rotate([0,0,180])
-        spool_clip(core_d, outer_d, clip_len) ;
-cylinder(d=outer_d, h=0.4) ;    // Improve print adhesion - cut off later
+// clip_len = spool_w_all-2 ;
+// outer_d  = core_d+4 ;
+// translate([-outer_d*0.75,0,0])  // 0.75 comes from 'spool_clip'
+//     spool_clip(core_d, outer_d, clip_len) ;
+// translate([+outer_d*0.75,0,0])
+//     rotate([0,0,180])
+//         spool_clip(core_d, outer_d, clip_len) ;
+// cylinder(d=outer_d, h=0.4) ;    // Improve print adhesion - cut off later
 
 
 // ## spool_with_spacers
