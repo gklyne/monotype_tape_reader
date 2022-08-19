@@ -32,11 +32,11 @@ Changes were made to the tape reader design to reduce these problems:
 
 These changes were only partially successful:
 
-While the tape skew may have been reduced, this did not help the problem of tape being forced against the guide rim of the take-up spool; if anything, the resulting design is more prone than the original to damage the tape, and the problem of guiding the tape needs to be re-thought.
+While the tape skew may have been reduced, this did not help the problem of tape being forced against the guide rim of the take-up spool; if anything, the resulting design is more prone than the original to damage the tape, and the problem of guiding the tape needs to be re-thought.  A factor here appears to be drag in the tape path resulting in the tape being under some tension as it is drawn over the read head.  
 
-The extended baseplate has also meant that the available length of tape leader is not enough to reliably catch under the clips used to hold them on the winder spool cores -- until there is enough tape wound around the core, the core just slips and the tape is not drawn across the reader head.
+The extended baseplate has also meant that the available length of leader tape is not enough to reliably attach under the clips used to hold them on the winder spool cores -- until there is enough tape wound around the core, the core just slips and the tape is not drawn across the reader head.
 
-The stiffened camera mount seems to be working OK, particularly when the baseplate is clamped to a stable service when operating the reader.
+The stiffened camera mount seems to be working OK, particularly when the baseplate is clamped to a stable service when operating the reader.  I've yet to test this in a recording of the full length of the test tape.
 
 It's too soon to tell for sure, but the winder crank speed reduction seems to be working OK.  Originally I tried using rubber bands for the reduction-drive belt, but these proved too stretchy and it was difficult to maintain a steady tape speed over the read head.  So I changed to using a PU (polyurethane?) belt material which can be "welded" to a desired length, which seems to be working reasonably well.  (I have been trying to ensure that the drive belt will slip if there is undue force needed to turn the take-up spool, in an attempt to reduce the likelihood of tape damage if something should jam.)
 
@@ -53,12 +53,11 @@ This leads me to consider a number of changes to be made for a 3rd version of th
 
 3. Use a 3-spoked design for the tape spools to reduce the amount of plastic used in their manufacture, and also to make them lighter.
 
-4. Include a small raised edge on the support brackets for the tape spools, to avoid the spool rims rubbing against the brackets and thereby causing drag.
+4. Include a small raised inner hub on the support brackets for the tape spools, to avoid the spool rims rubbing against the brackets and causing additional drag.
 
 5. Shorten the tape path.  The original baseplate design could be 3D-printed as a single piece on the Prusa printer.  The Mk2 design has to be printed as two separate pieces that are held in position by the support brackets for the read head.
 
 6. Redesign the tape clips to slip on and off the winder spools, and revise the design (maybe with a mating bump and recess?) so that they do not slip around the spool cores.
 
+The immediate next step will be concentrate on redesigning the tape-path guides (item 1).  If successful, I judge that this alone should make a big difference to the usability of the tape reader.
 
-
-\
