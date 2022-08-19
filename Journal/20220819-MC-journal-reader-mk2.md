@@ -1,12 +1,12 @@
 <!-- 20220819-MC-journal-reader-mk2.md -->
 
-It's been a slow time since the last journal entry, during which I've 
+It's been a slow time since the last journal entry, during which we've:
 
 1. prepared and presented a poster about our work to date at the Oxford Digital Humanities Summer School, and 
 
-2. worked on a revised design for the tape reader, attempting tom overcome some problems with the previous design.
+2. worked on a revised design for the tape reader, attempting to overcome some problems with the previous design.
 
-The poster can be seen at [20220516-DHOxSS-Monotype-Reader-poster.pdf](../Notes/20220516-DHOxSS-Monotype-Reader-poster.pdf), and describes in very broad terms the work to date to extract data from the Monotytpe tape. 
+The poster can be seen at [20220516-DHOxSS-Monotype-Reader-poster.pdf](../Notes/DHOxSS-poster/20220516-DHOxSS-Monotype-Reader-poster.pdf), and describes in very broad terms the work to date to extract data from the Monotytpe tape. 
 
 
 ## Monotype reader Mk2
