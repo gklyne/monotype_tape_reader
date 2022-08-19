@@ -60,9 +60,9 @@ module spool_with_spacers() {
 
 // ## winder_side_supports
 //
-// translate([spacing*0.5,-spacing*0.5,0]) winder_side_support_slotted(r=140) ;
+translate([spacing*0.5,-spacing*0.5,0]) winder_side_support_slotted(r=140) ;
 translate([spacing*1.5,-spacing*0.5,0]) winder_side_support_slotted(r=-140) ;
-// translate([spacing*0.5,+spacing*0.5,0]) winder_side_support_slotted(r=140) ;
+translate([spacing*0.5,+spacing*0.5,0]) winder_side_support_slotted(r=140) ;
 translate([spacing*1.5,+spacing*0.5,0]) winder_side_support_slotted(r=-140) ;
 
 // ## spool_clips

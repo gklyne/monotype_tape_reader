@@ -1,6 +1,8 @@
 include <reader-defs.scad> ;
 
-// Utilities
+////////////////////////////////////////////////////////////////////////////////
+// Generic shapes
+////////////////////////////////////////////////////////////////////////////////
 
 module lozenge(l,bevel_l,w,h) {
     // Lozenge object along Z axis: one point on origin, other on X-axis
@@ -221,6 +223,53 @@ module dovetail_tongue_cutout(l, ws, we, wp, t) {
         dovetail_socket_cutout(l+delta, ws, we, t+delta) ;
     }
 }
+
+// Spoked wheel
+
+module wheel(d,t) {
+    // Wheel blank lying on X-Y plane, centered on origin
+    //
+    // d  = diameter
+    // t  = thickness
+    cylinder(d=d, h=t, center=false, $fn=16) ;
+}
+
+
+
+
+
+function sprocket_od_n_from_pitch(od_min, p) =
+    // Calculates outside diameter and number of sprocket pins
+    //
+    // od_min = minimum outside diameter - the actual value is slightly larger than this
+    // p      = sprocket hole pitch
+    //
+    let (
+        oc_min = PI * od_min,           // Minimum outside circumference
+        np     = ceil(oc_min / p),      // Number of sprocket pins
+        oc     = np * p,                // Actual outside circumference for number of pins at given pitch
+        od     = oc / PI                // Actual outside diameter for number of pins at given pitch
+    ) [od, np] ;
+
+module sprocket_wheel_3_spoked(hd, rd, od, np, t) {
+    // 3-spoked sprocket wheel lying on X-Y plane, centered on origin.
+    // No axle hole.
+    //
+    // hd  = hub diameter
+    // rd  = inner rim diameter
+    // od  = outer rim diameter
+    // np  = number of sprockets around diameter
+    // t   = thickness (also diameter of sprocket pins)
+    @@@@
+}
+
+
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+
 
 // Spool and winder
 
