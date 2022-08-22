@@ -68,8 +68,10 @@ module nut_recess(af, t)  {
     translate([0,0,-delta]) {
         cylinder(d=od, h=t+delta*2, $fn=6) ;
     // Pyramid at end to allow printing without support:
+    // Leaves flat shoulders at corners to support nut: 
+    // assume that these are short enough for the printing to bridge.
     translate([0,0,t])
-        cylinder(d1=od, d2=0, h=t/2, $fn=6) ;
+        cylinder(d1=af, d2=0, h=af*0.5, $fn=12) ;
     }
 }
 
@@ -447,7 +449,17 @@ module sprocket_pins(or, ht, np, pd) {
 
 // Test: sprocketed tape guide
 
-ornp = sprocket_or_np_from_pitch(12, mt_sprocket_pitch) ;
+module shaft_nut_cutout(af1, t1, af2, t2, r) {
+    // Recess in hub to hold the nut
+    nut_recess(af1, t1) ;
+    // Opening in rim to allow access
+    // translate([-r,0,-t1/2]) nut_recess(af2, t2) ;
+    // translate([-r,0,t1/2]) cube(size=[r,af2,t2], center=true) ;
+    // cube(size=[r,af2,t2], center=true) ;
+}
+
+
+ornp = sprocket_or_np_from_pitch(11, mt_sprocket_pitch) ;
 or   = ornp[0] ;
 np   = ornp[1] ;
 pd   = mt_sprocket_dia ;
@@ -459,14 +471,29 @@ ht2  = ht1 + mt_sprocket_width ;
 
 difference() {
     union() {
-        spoked_wheel(4, 10, or+delta, fr, wt, 5, sw) ;
+        spoked_wheel(4, 9.5, or+delta, fr, wt, 3, sw) ;
         sprocket_pins(or, ht1, np, pd) ;
         sprocket_pins(or, ht2, np, pd) ;
     }
     shaft_hole(4, wt) ;
+    # translate([0,0,10]) {
+        // M4 nut:  7 AF x 3.1 thick
+        shaft_nut_cutout(7, 3.1, 8, 4, or) ;
+        translate([-4,0,0])
+            shaft_nut_cutout(7, 3.1, 8, 4, or) ;
+        //nut_recess(7, 3) ;
+        //translate([-12-7,-5,-1]) cube(size=[12,7+3, 3+2], center=false) ;
+    }
+    # translate([0,0,wt-10]) {
+        shaft_nut_cutout(7, 3.1, 8, 4, or) ;
+        translate([-4,0,0])
+            shaft_nut_cutout(7, 3.1, 8, 4, or) ;
+    }
 }
 
 
+////////////////////////////////////////////////////////////////////////////////
+// @@ Move...
 
 module sprocket_wheel_3_spoked(hd, rd, od, np, t) {
     // 3-spoked sprocket wheel lying on X-Y plane, centered on origin.
