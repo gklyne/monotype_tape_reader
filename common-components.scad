@@ -466,7 +466,7 @@ pd   = mt_sprocket_dia ;
 wt   = mt_overall_width + 2 ;
 fr   = 1.5 ;
 sw   = 2 ;
-ht1  = (mt_overall_width - mt_sprocket_width)/2 ;
+ht1  = (wt - mt_sprocket_width)/2 ;
 ht2  = ht1 + mt_sprocket_width ;
 
 difference() {
