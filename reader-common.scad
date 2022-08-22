@@ -224,32 +224,347 @@ module dovetail_tongue_cutout(l, ws, we, wp, t) {
     }
 }
 
-// Spoked wheel
+// Spoked wheel and component shapes
 
-module wheel(d,t) {
-    // Wheel blank lying on X-Y plane, centered on origin
+module wheel(r,t) {
+    // Wheel blank lying on X-Y plane, centred on the origin
     //
-    // d  = diameter
+    // r  = radius
     // t  = thickness
-    cylinder(d=d, h=t, center=false, $fn=16) ;
+    cylinder(r=r, h=t, center=false, $fn=48) ;
+}
+
+// wheel(40, 5) ;
+
+module ring(r1, r2, t) {
+    // Circular ring lying on X-Y plane, centred on the origin
+    //
+    // r1 = inner radius
+    // r2 = outer radius
+    // t  = thickness
+    difference() {
+        cylinder(r=r2, h=t, center=false, $fn=48) ;
+        translate([0,0,-delta])
+            cylinder(r=r1, h=t+2*delta, center=false, $fn=48) ;
+    }
+}
+
+// ring(20, 40, 5) ;
+
+module segment_cutout(a1, a2, sr, t) {
+    // Cutout (use with `difference()`) to remove all but a segment of a shape.
+    //
+    // NOTE: only works for angles up to 180 degrees.
+    //
+    // a1 = first radial edge angle for the resulting segment
+    // a2 = second radial edge angle for the resulting segment (a2>a1)
+    // sr = maximum segment radius
+    // t  = thickness of segment
+    rotate([0,0,a1])
+        translate([-(sr+delta), -(sr+delta), -delta])
+            cube(size=[2*(sr+delta), sr+delta, t+2*delta], center=false) ;
+    rotate([0,0,a2])
+        translate([-(sr+delta), 0, -delta])
+            cube(size=[2*(sr+delta), sr+delta, t+2*delta], center=false) ;
 }
 
 
+module segment(a, sr, t) {
+    // Circle segment in X-Y plane with centre on origin, and one radial edge on
+    // the positive X-axis.  The second radial edge is `a` degrees anticlockwise 
+    // from the positive X-axis.
+    //
+    // NOTE: only works for angles up to 180 degrees.
+    //
+    // a  = angle of segment
+    // sr = radius of segment
+    // t  = thickness of segment
+    //
+    difference() {
+        cylinder(r=sr, h=t, center=false, $fn=48) ;
+        segment_cutout(0, a, sr, t) ;
+        //translate([-(sr+delta), -(sr+delta), -delta])
+        //    cube(size=[2*(sr+delta), sr+delta, t+2*delta], center=false) ;
+        //rotate([0,0,a])
+        //    translate([-(sr+delta), 0, -delta])
+        //        cube(size=[2*(sr+delta), sr+delta, t+2*delta], center=false) ;
+    }
+}
+
+// segment(60, 20, 5) ;
+
+module ring_segment(a1, a2, r1, r2, t) {
+    // Circular ring segment lying on X-Y plane, centred on the origin, with radial 
+    // edges at `a1` and `a2` degrees anticlockwise from the positive X-axis.
+    //
+    // NOTE: only works for angles up to 180 degrees.
+    //
+    // a1 = first radial edge angle
+    // a2 = second radial edge angle (a2>a1)
+    // r1 = inner radius
+    // r2 = outer radius
+    // t  = thickness
+    difference() {
+        ring(r1, r2, t) ;
+        segment_cutout(a1, a2, r2, t) ;
+    }
+}
+
+// ring_segment(60, 120, 30, 40, 5) ;
+
+module hub_segment(a, hr, sr, t) {
+    // Circle segment in X-Y plane with hub removed.
+    //
+    // NOTE: only works for angles up to 180 degrees.
+    //
+    // a  = angle of segment
+    // hr = radius of hub
+    // sr = radius of segment
+    // t  = thickness of segment
+    //
+    difference() {
+        segment(a, sr, t) ;
+        translate([0, 0, -delta])
+            cylinder(r=hr, h=t+2*delta, center=false, $fn=24) ;
+    }
+}
+
+// hub_segment(60, 8, 20, 5) ;
+
+module hub_segment_rounded(a, hr, sr, t, fr) {
+    // Circle segment in X-Y plane with hub removed and rounded corners
+    //
+    // NOTE: only works for angles up to 180 degrees.
+    //
+    // NOTE: calculations for p3 and p5 are approximate, based on an assumption
+    // that fr is small compared with hr and sr.  The fillet radius centre is
+    // taken to be on a tangent to the hub/spoke circle, which is not strictly true.
+    //
+    // a  = angle of segment
+    // hr = radius of hub
+    // sr = radius of segment
+    // t  = thickness of segment
+    // fr = fillet radius for rounded corners
+    //
+    bhf1 = asin(fr/(hr+fr)) ;   // Angle to first hub fillet radius centre
+    bhf2 = a - bhf1 ;           // Angle to second hub fillet radius centre
+    bsf1 = asin(fr/(sr-fr)) ;   // Angle to first segment end fillet radius centre
+    bsf2 = a - bsf1 ;           // Angle to second segment end fillet radius centre
+    p1 = [fr / tan(a/2), fr] ;
+    p2 = [(sr-fr)*cos(bsf1), fr] ;
+    p3 = [(sr-fr)*cos(bsf2), (sr-fr)*sin(bsf2)] ;
+    p4 = [(hr+fr)*cos(bhf1), fr] ;
+    p5 = [(hr+fr)*cos(bhf2), (hr+fr)*sin(bhf2)] ;
+
+    union() {
+        hub_segment(a, hr+fr, sr-fr, t) ;
+        rotate([0,0,bsf1])
+            hub_segment(a-2*bsf1, hr+fr, sr, t) ;
+        rotate([0,0,bhf1])
+            hub_segment(a-2*bhf1, hr, sr, t) ;
+        // p2 fillet
+        translate([p2.x, p2.y, 0])
+            cylinder(r=fr, h=t, center=false, $fn=16) ;
+        // p3 fillet
+        translate([p3.x, p3.y, 0])
+            cylinder(r=fr, h=t, center=false, $fn=16) ;
+        // p4 fillet
+        translate([p4.x, p4.y, 0])
+            cylinder(r=fr, h=t, center=false, $fn=16) ;
+        // p5 fillet
+        translate([p5.x, p5.y, 0])
+            cylinder(r=fr, h=t, center=false, $fn=16) ;
+    }
+}
+
+// hub_segment_rounded(110, 8, 20, 5, 2) ;
+
+// for (a=[0,120,240]) rotate([0,0,a]) hub_segment_rounded(100, 8, 20, 5, 2) ;
+
+module segment_rounded(a, sr, t, fr) {
+    // Circle segment (see `segment`) but with corners rounded with 
+    // fillet radius fr.
+    //
+    // NOTE: only works for angles up to 180 degrees.
+    //
+    // NOTE: calculation for p2 and p3 are approximate, based on an assumption
+    // that fr is small compared with sr.  The fillet radius centre is taken 
+    // to be on a tangent to the spoke circle, which is not strictly true.
+    //
+    // a  = angle of segment
+    // sr = radius of segment
+    // t  = thickness of segment
+    // fr = fillet radius
+    //
+    p1 = [fr / tan(a/2), fr] ;
+    p2 = [sr - fr,       fr] ;
+    p3 = [p1.x + (p2.x-p1.x)*cos(a), p1.y + (p2.x-p1.x)*sin(a)] ;
+    union() {
+        // inner wedge (extends to full radius)
+        translate([p1.x, p1.y, 0])
+            segment(a, sr-p1.x, t) ;
+        // outer wedge, removing apex
+        difference() {
+            segment(a, sr - fr, t) ;
+            cylinder(r=p1.x, h=2*(t+delta), center=true, $fn=32) ;
+        }
+        // p1 fillet
+        translate([p1.x, p1.y, 0])
+            cylinder(r=fr, h=t, center=false, $fn=16) ;
+        // p2 fillet
+        translate([p2.x, p2.y, 0])
+            cylinder(r=fr, h=t, center=false, $fn=16) ;
+        // p3 fillet
+        translate([p3.x, p3.y, 0])
+            cylinder(r=fr, h=t, center=false, $fn=16) ;
+    }
+}
+
+// for (a=[0,120,240]) rotate([0,0,a]) segment_rounded(110, 20, 5, 2) ;
+
+//@@@@ needs rework
+module spoked_wheel_cutout(hr, sr, fr, wt, ns, sw) {
+    // Spoked wheel in X-Y plane, centred on the origin.
+    //
+    // NOTE: there is no axle hole: calling code is expected to include this
+    //
+    // hr  = Hub radius (actual hub is larger due to fillets)
+    // sr  = spoke radius (centre to inside of rim)
+    // fr  = fillet radius of spoke cut-outs
+    // wt  = thickness of wheel
+    // ns  = number of spokes
+    // sw  = width of spokes
+    //
+    as   = 360/ns ;                     // Angle between spokes
+
+    ahs1 = asin((sw/2)/hr) ;            // Angle from spoke centre line to end of spoke meeting with hub
+    ahf1 = asin((sw/2+fr)/(hr+fr)) ;    // Angle from spoke centre line to centre of hub fillet
+    ahs2 = as - ahs1 ;                  // Angle from spoke centre line to end of next spoke at hub
+    ahf2 = as - ahf1 ;                  // Angle from spoke centre line to centre of next hub fillet
+
+    asr1 = asin((sw/2)/sr)  ;           // Angle from spoke centre line to end of spoke meeting with rim
+    asf1 = asin((sw/2+fr)/(sr-fr)) ;    // Angle from spoke centre line to centre of rim fillet
+    asr2 = as - asr1 ;                  // Angle from spoke centre line to end of next spoke at rim
+    asf2 = as - asf1 ;                  // Angle from spoke centre line to centre of next rim fillet
+
+    fh1c = [ cos(ahf1)*(hr+fr), sin(ahf1)*(hr+fr) ] ;   // Hub fillet 1 centre
+    fh2c = [ cos(ahf2)*(hr+fr), sin(ahf2)*(hr+fr) ] ;   // Hub fillet 2 centre
+    fs1c = [ cos(asf1)*(sr-fr), sin(asf1)*(sr-fr) ] ;   // Rim fillet 1 centre
+    fs2c = [ cos(asf2)*(sr-fr), sin(asf2)*(sr-fr) ] ;   // Rim fillet 2 centre
+
+    difference() {
+        union() {
+            // main part 
+            // (the `-fr*sin(ahf1)` is an approximate but close adjustment to meet the 
+            // point where the fillet isn tangential to the spoke)
+            ring_segment(0, as, hr+fr-fr*sin(ahf1), sr-fr-fr*sin(asf1), wt) ;
+            // inner ring
+            ring_segment(ahf1, ahf2, hr, hr+2*fr, wt) ;
+            // outer ring
+            ring_segment(asf1, asf2, sr-2*fr, sr, wt) ;
+            // fillets
+            for (fc=[fh1c, fh2c, fs1c, fs2c])
+                translate([fc.x, fc.y, 0])
+                    cylinder(r=fr, h=wt, center=false, $fn=32) ;
+        }
+        // trim off "wings"
+        translate([-sr,sw/2-sr,-delta])
+            cube(size=[2*sr, sr, wt+2*delta], center=false) ;
+        rotate([0,0,as])
+            translate([-sr,-sw/2,-delta])
+                cube(size=[2*sr, sr, wt+2*delta], center=false) ;
+    }
+}  
+
+// spoked_wheel_cutout(15, 30, 2, 5, 6, 4) ;
+
+
+module spoked_wheel(hr, sr, or, fr, wt, ns, sw) {
+    // Spoked wheel in X-Y plane, centred on the origin.
+    //
+    // NOTE: there is no axle hole: calling code is expected to include this
+    //
+    // hr  = Hub radius (actual hub is larger due to fillets)
+    // sr  = spoke radius (centre to inside of rim)
+    // or  = outside radius of wheel
+    // fr  = fillet radius of spoke cut-outs
+    // wt  = thickness of wheel
+    // ns  = number of spokes
+    // sw  = width of spokes
+    //
+    as   = 360/ns ;                     // Angle between spokes
+    difference() {
+        wheel(or, wt) ;
+        for (i=[0:ns-1])
+            rotate([0,0,i*as])
+                translate([0,0,-delta])
+                    spoked_wheel_cutout(hr, sr, fr, wt+2*delta, ns, sw) ;
+    }
+}
+
+//spoked_wheel(8, 16, 20, 2, 5, 5, 4) ;
+
+// Normalized tree is growing past 200000 elements. Aborting normalization
 
 
 
-function sprocket_od_n_from_pitch(od_min, p) =
+// Wheel with sprocket pins ... @@@@
+
+function sprocket_or_np_from_pitch(or_max, p) =
     // Calculates outside diameter and number of sprocket pins
     //
-    // od_min = minimum outside diameter - the actual value is slightly larger than this
+    // Always returns an evenm number of pins, adjusting the 
+    //
+    // or_max = maximum outside radius - the actual value is slightly smaller than this
     // p      = sprocket hole pitch
     //
     let (
-        oc_min = PI * od_min,           // Minimum outside circumference
-        np     = ceil(oc_min / p),      // Number of sprocket pins
-        oc     = np * p,                // Actual outside circumference for number of pins at given pitch
-        od     = oc / PI                // Actual outside diameter for number of pins at given pitch
-    ) [od, np] ;
+        sc_max = PI * or_max,           // Minimum outside semi-circumference
+        np     = floor(sc_max / p),     // Number of sprocket pins on semi-corcumference
+        sc     = np * p,                // Actual semi-circumference for number of pins at given pitch
+        or     = sc / PI                // Actual outside radius for number of pins at given pitch
+    ) [or, np*2] ;
+
+module sprocket_pins(or, wt, np, pd) {
+    // Ring of sprocket teeth (for adding to wheel)
+    // Positioned for wheel on X-Y plane with axis through origin
+    //
+    // NOTE: `or` and `np` should be chosen for even spacing of pins around the wheel:
+    //       see `sprocket_or_np_from_pitch` above for adjustment calculation.
+    //
+    // or  = outside radius of wheel (where sprocket pins are positioned)
+    // wt  = thickness of wheel (pins are centred on thickness)
+    // np  = number of sprocket pins around diameter
+    // pd  = diameter of each sprocket pin
+    //
+    // Array pins around wheel
+    ap = 360 / np ;     // Angle at centre between pins
+    for (i=[0:np-1])
+        rotate([0,0,i*ap])
+            // Translate pin to sit on rim of wheel
+            translate([or, 0, wt/2])
+                // Rotate pin to X-axis
+                rotate([0,90,0])
+                    // Conical pin
+                    cylinder(d1=pd, d2=pd*0, h=pd, center=false, $fn=12) ;
+    
+}
+
+
+mt_sprocket_pitch = 159 / 50 ;
+mt_sprocket_dia   = 1.5 ;
+
+ornp = sprocket_or_np_from_pitch(20, mt_sprocket_pitch) ;
+or = ornp[0] ;
+np = ornp[1] ;
+pd = mt_sprocket_dia ;
+
+sprocket_pins(or, 5, np, pd) ;
+
+spoked_wheel(8, 16, or+delta, 2, 5, 5, 4) ;
+
+
+
 
 module sprocket_wheel_3_spoked(hd, rd, od, np, t) {
     // 3-spoked sprocket wheel lying on X-Y plane, centered on origin.
@@ -260,14 +575,35 @@ module sprocket_wheel_3_spoked(hd, rd, od, np, t) {
     // od  = outer rim diameter
     // np  = number of sprockets around diameter
     // t   = thickness (also diameter of sprocket pins)
-    @@@@
+    //@@@@
 }
 
 
 
+
+
+
+
+
+
+
+
+
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -978,7 +1314,7 @@ module layout_print() {
         layout_print_3() ;
 }
 
-layout_assembly() ;
+// layout_assembly() ;
 
 // layout_print() ;
 
@@ -1000,4 +1336,72 @@ layout_assembly() ;
 //    translate([2*spacing,0,0])
 //        pulley(crank_hub_d, 4) ;
 
+
+
+
+
+
+
+
+
+// 
+// Recap some vector geometry, for calculating centre from straight line to arc 
+// in rounded-corner wheel segments.
+// 
+// On a vector `ab` though `a` and `b`, the closest point `d` to some 
+// other point `c` is given by: 
+// 
+// 1.  d = a + k(b-a)                  // for some k
+// 
+// 2.  (c-d).(b-a) = 0                 // Dot product of perpendicular
+// 
+// 3.  c.(b-a) - d.(b-a) = 0           // Expanding (2)
+// 
+//     c.(b-a) = d.(b-a)
+//             = (a+k(b-a)).(b-a)      // Subst from (1)
+//             = a.(b-a) + k(b-a).(b-a))
+// 
+//     c.(b-a) - a.(b-a) = k(b-a).(b-a)
+// 
+//     (c-a).(b-a) = k(b-a).(b-a)
+// 
+//     k = ((c-a).(b-a)) / ((b-a).(b-a))
+// 
+// Distance from c to vector `ab` is:
+// 
+//     |(c-d)| = |(c-k(b-a))|
+// 
+// To estimate the position of fillet radius centre P5, we have:
+// 
+//     a = (0,0)               // origin
+//     b = (cos a, sin a)      // unit vector, second edge of segment
+//     c = (p5_x, p5_y)        // unknown
+//     |(c-k(b-a))| = fr       // fillet radius
+//     |c|          = hr+fr    // fillet radius centre distance from hub
+// 
+//     k = c.b                 // from what we know about a and b above
+// 
+// Thus
+// 
+//     |c-c.b b| = fr
+// 
+//     fr^2 = (c-c.b b).(c-c.b b)
+//          = (c.c - 2 c.b b.c + (c.b)^2 b.b) 
+//          = c.c - 2 c.b b.c + (c.b)^2    // b.b == 1
+//          = (hr+fr)^2 - (c.b)^2
+//          = (hr+fr)^2 - (p5_x cos a + p5_y sin a)^2
+// 
+//     |c|       = hr + fr     // Copied from above
+// 
+// We need to solve for c, expressed as (p5_x, p5_y):
+// 
+//     p5_x^2 + p5_y^2 = (hr+fr)^2
+// 
+//     (p5_x cos a + p5_y sin a)^2 = (hr + fr)^2 - fr^2 
+// 
+//     (p5_x cos a)^2 + 2 p5_x cos a p5_y sin a + (p5_y sin a)^2 = hr^2 + 2 hr fr + fr^2 - fr^2
+//                                                               = hr^2 + 2 hr fr
+// 
+// <Grumble, gets hard to solve>
+// 
 
