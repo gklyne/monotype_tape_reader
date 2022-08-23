@@ -85,7 +85,7 @@ module nut_recess(af, t)  {
     // assume that these are short enough for the printing to bridge.
     // Similarly, tip of pyramid is truncated.
     translate([0,0,t])
-        cylinder(d1=af, d2=2, h=af*0.4, $fn=12) ;
+        cylinder(d1=af, d2=2, h=af*0.35, $fn=12) ;
     }
 }
 
@@ -487,10 +487,18 @@ module sprocket_pins(or, ht, np, pd) {
 // ht2  = ht1 + mt_sprocket_width ;
 
 module shaft_nut_cutout(af1, t1, af2, t2, r) {
+    // Cutouts for captive nut on shaft axis
+    //
+    // af1 = accoss-faces size of nut on shaft
+    // t1  = thickness of nut on shaft
+    // af2 = width of access hole in rim
+    // t2  = thickness of access hole in rim
+    // r   = radius of rim
+    //
     // Recess in hub to hold the nut
     nut_recess(af1, t1) ;
     // Opening in rim to allow access
-    translate([-r,0,-t1/2]) nut_recess(af2, t2) ;
+    translate([-r,0,-(t2-t1)/2]) nut_recess(af2, t2) ;
     // translate([-r,0,t1/2]) cube(size=[r,af2,t2], center=true) ;
     // cube(size=[r,af2,t2], center=true) ;
 }
@@ -509,8 +517,6 @@ module shaft_middle_cutout(r,l) {
     translate([0,0,-((r+l)/2-delta)])
         cylinder(r1=0, r2=r, h=r, center=true, $fn=12) ;
 }
-
-
 
 module sprocket_guide_3_spoked(sd, hr, rr, or_max, fr, sw, pd, gsw, gow) {
     // 3-spoked sprocket tape guide, end on X-Y plane, centred on origin.
