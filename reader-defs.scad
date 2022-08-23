@@ -43,7 +43,7 @@ winder_base_t = 16 ;    // Thickness at base of winder
 
 // Reader bridge
 
-read_l = spool_w_all-1 ;// Reader bridge length (inner)
+read_l = spool_w_all ;  // Reader bridge length (inner)
 read_w = 16 ;           // Width of bridge
 read_extra_w = 5 ;      // Extra length for reader bridge for tie-down
 

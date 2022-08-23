@@ -59,6 +59,19 @@ module shaft_slot(x1, x2, y, d, h) {
         oval(x2-x1, d, h+2*delta) ;    
 }
 
+module torus(tr, rr) {
+    // Torus centred on origin.
+    //
+    // tr       torus radius (centre of ring to centre of rim)
+    // rr       rim radius
+    //
+    rotate_extrude($fn=64) {
+        translate([tr,0,0])
+            circle(r=rr, $fn=32) ;
+    }
+}
+// torus(20, 3);
+
 // Hex nut recess on centre of X-Y plane
 //
 // af = nut dimension AF (across flats, = spanner size)
@@ -67,11 +80,12 @@ module nut_recess(af, t)  {
     od = af * 2 / sqrt(3) ; // Diameter
     translate([0,0,-delta]) {
         cylinder(d=od, h=t+delta*2, $fn=6) ;
-    // Pyramid at end to allow printing without support:
+    // Cone above to allow printing without support:
     // Leaves flat shoulders at corners to support nut: 
     // assume that these are short enough for the printing to bridge.
+    // Similarly, tip of pyramid is truncated.
     translate([0,0,t])
-        cylinder(d1=af, d2=0, h=af*0.5, $fn=12) ;
+        cylinder(d1=af, d2=2, h=af*0.4, $fn=12) ;
     }
 }
 
@@ -128,8 +142,30 @@ module wheel(r,t) {
     // t  = thickness
     cylinder(r=r, h=t, center=false, $fn=48) ;
 }
-
 // wheel(40, 5) ;
+
+module pulley(d,t) {
+    // Pulley outside diameter d, thickness t, on X-Y plane and centred on Z axis
+    cylinder(d1=d, d2=d-t, h=t/2+delta) ;
+    translate([0,0,t/2])
+        cylinder(d1=d-t, d2=d, h=t/2+delta) ;    
+}
+
+
+module pulley_round_belt(pd, pw, bd) {
+    // Pulley with channel for round belt, lying on X-Y plane, centred at origin.
+    //
+    // pd = diameter of pulley
+    // pw = width of pulley
+    // bd = diameter of drive belt
+    //
+    difference() {
+        cylinder(d=pd, h=pw, center=false, $fn=48) ;
+        translate([0,0,pw/2])
+            torus(pd/2, bd/2) ;
+    }
+}
+// pulley_round_belt(30, 5, 3) ;
 
 
 module ring(r1, r2, t) {
@@ -183,7 +219,6 @@ module segment(a, sr, t) {
         segment_cutout(0, a, sr, t) ;
     }
 }
-
 // segment(60, 20, 5) ;
 
 
@@ -203,7 +238,6 @@ module ring_segment(a1, a2, r1, r2, t) {
         segment_cutout(a1, a2, r2, t) ;
     }
 }
-
 // ring_segment(60, 120, 30, 40, 5) ;
 
 
@@ -245,7 +279,6 @@ module segment_rounded(a, sr, t, fr) {
             cylinder(r=fr, h=t, center=false, $fn=16) ;
     }
 }
-
 // for (a=[0,120,240]) rotate([0,0,a]) segment_rounded(110, 20, 5, 2) ;
 
 
@@ -265,7 +298,6 @@ module hub_segment(a, hr, sr, t) {
             cylinder(r=hr, h=t+2*delta, center=false, $fn=24) ;
     }
 }
-
 // hub_segment(60, 8, 20, 5) ;
 
 
@@ -310,9 +342,7 @@ module hub_segment_rounded(a, hr, sr, t, fr) {
             cylinder(r=fr, h=t, center=false, $fn=16) ;
     }
 }
-
 // hub_segment_rounded(110, 8, 20, 5, 2) ;
-
 // for (a=[0,120,240]) rotate([0,0,a]) hub_segment_rounded(100, 8, 20, 5, 2) ;
 
 
@@ -372,7 +402,6 @@ module spoked_wheel_cutout(hr, sr, fr, wt, ns, sw) {
                 cube(size=[2*sr, sr, wt+2*delta], center=false) ;
     }
 }  
-
 // spoked_wheel_cutout(15, 30, 2, 5, 6, 4) ;
 
 
@@ -398,7 +427,6 @@ module spoked_wheel(hr, sr, or, fr, wt, ns, sw) {
                     spoked_wheel_cutout(hr, sr, fr, wt+2*delta, ns, sw) ;
     }
 }
-
 //spoked_wheel(8, 16, 20, 2, 5, 5, 4) ;
 
 
@@ -447,65 +475,122 @@ module sprocket_pins(or, ht, np, pd) {
 }
 
 
-// Test: sprocketed tape guide
+////////////////////////////////////////////////////////////////////////////////
+// Sprocketed tape guide
+////////////////////////////////////////////////////////////////////////////////
+
+// pd   = mt_sprocket_dia ;
+// wt   = mt_overall_width + 2 ;
+// fr   = 1.5 ;
+// sw   = 2 ;
+// ht1  = (wt - mt_sprocket_width)/2 ;
+// ht2  = ht1 + mt_sprocket_width ;
 
 module shaft_nut_cutout(af1, t1, af2, t2, r) {
     // Recess in hub to hold the nut
     nut_recess(af1, t1) ;
     // Opening in rim to allow access
-    // translate([-r,0,-t1/2]) nut_recess(af2, t2) ;
+    translate([-r,0,-t1/2]) nut_recess(af2, t2) ;
     // translate([-r,0,t1/2]) cube(size=[r,af2,t2], center=true) ;
     // cube(size=[r,af2,t2], center=true) ;
 }
 
+module shaft_middle_cutout(r,l) {
+    // Cylinder with pointed ends lying on the Z-axis, centred around z=0
+    //
+    // Used to cut away middle part of hub to reduce print time and plastic used
+    //
+    // r  = radius of cutaway cylinder
+    // l  = length of cutaway cylinder, not including pointed ends
+    //
+    cylinder(r=r, h=l, center=true, $fn=12) ;
+    translate([0,0,((r+l)/2-delta)])
+        cylinder(r1=r, r2=0, h=r, center=true, $fn=12) ;
+    translate([0,0,-((r+l)/2-delta)])
+        cylinder(r1=0, r2=r, h=r, center=true, $fn=12) ;
+}
 
-ornp = sprocket_or_np_from_pitch(11, mt_sprocket_pitch) ;
-or   = ornp[0] ;
-np   = ornp[1] ;
-pd   = mt_sprocket_dia ;
-wt   = mt_overall_width + 2 ;
-fr   = 1.5 ;
-sw   = 2 ;
-ht1  = (wt - mt_sprocket_width)/2 ;
-ht2  = ht1 + mt_sprocket_width ;
+
+
+module sprocket_guide_3_spoked(sd, hr, rr, or_max, fr, sw, pd, gsw, gow) {
+    // 3-spoked sprocket tape guide, end on X-Y plane, centred on origin.
+    //
+    // sd     = shaft diameter
+    // hr     = hub radius
+    // rr     = inner rim radius
+    // or_max = maximum outer rim radius (reduced for even number of sprocket pins)
+    // fr     = fillet radius of spoke cutout
+    // sw     = spoke width
+    // pd     = sprocket pin diameter
+    // gsw    = width between guide sprocket holes
+    // gow    = overall width of guide
+    ornp = sprocket_or_np_from_pitch(or_max, mt_sprocket_pitch) ;
+    or   = ornp[0] ;
+    np   = ornp[1] ;
+    ht1  = (gow - gsw)/2 ;
+    ht2  = ht1 + gsw ;
+
+    difference() {
+        union() {
+            spoked_wheel(hr, rr, or+delta, fr, gow, 3, sw) ;
+            sprocket_pins(or, ht1, np, pd) ;
+            sprocket_pins(or, ht2, np, pd) ;
+        }
+        shaft_hole(sd, gow) ;
+        translate([0,0,gow/2])
+            # shaft_middle_cutout(rr-fr, gow*0.45) ;
+
+        // # translate([0,0,10]) {
+        //     // M4 nut:  7 AF x 3.1 thick
+        //     shaft_nut_cutout(7, 3.1, 8, 4, or) ;
+        //     translate([-4,0,0])
+        //         shaft_nut_cutout(7, 3.1, 8, 4, or) ;
+        //     //nut_recess(7, 3) ;
+        //     //translate([-12-7,-5,-1]) cube(size=[12,7+3, 3+2], center=false) ;
+        // }
+        // # translate([0,0,wt-10]) {
+        //     shaft_nut_cutout(7, 3.1, 8, 4, or) ;
+        //     translate([-4,0,0])
+        //         shaft_nut_cutout(7, 3.1, 8, 4, or) ;
+        // }
+    }
+} ;
+
+
+sd     = 4 ;
+hr     = 4 ;
+rr     = 9.5 ;
+or_max = 11 ;
+fr     = 1.5 ;
+sw     = 2 ;
+gow    = mt_overall_width + 2 ;
+
+ornp   = sprocket_or_np_from_pitch(or_max, mt_sprocket_pitch) ;
+or     = ornp[0] ;
+np     = ornp[1] ;
 
 difference() {
-    union() {
-        spoked_wheel(4, 9.5, or+delta, fr, wt, 3, sw) ;
-        sprocket_pins(or, ht1, np, pd) ;
-        sprocket_pins(or, ht2, np, pd) ;
+    sprocket_guide_3_spoked(sd, hr,  rr, or_max,  fr, sw, 
+                         mt_sprocket_dia,
+                         mt_sprocket_width, 
+                         gow) ;
+
+    # translate([0,0,12]) {
+     // M4 nut:  7 AF x 3.1 thick
+     shaft_nut_cutout(7, 3.1, 8, 4, or) ;
+     translate([-4,0,0])
+         shaft_nut_cutout(7, 3.1, 8, 4, or) ;
     }
-    shaft_hole(4, wt) ;
-    # translate([0,0,10]) {
-        // M4 nut:  7 AF x 3.1 thick
-        shaft_nut_cutout(7, 3.1, 8, 4, or) ;
-        translate([-4,0,0])
-            shaft_nut_cutout(7, 3.1, 8, 4, or) ;
-        //nut_recess(7, 3) ;
-        //translate([-12-7,-5,-1]) cube(size=[12,7+3, 3+2], center=false) ;
+    # translate([0,0,gow-12]) {
+     shaft_nut_cutout(7, 3.1, 8, 4, or) ;
+     translate([-4,0,0])
+         shaft_nut_cutout(7, 3.1, 8, 4, or) ;
     }
-    # translate([0,0,wt-10]) {
-        shaft_nut_cutout(7, 3.1, 8, 4, or) ;
-        translate([-4,0,0])
-            shaft_nut_cutout(7, 3.1, 8, 4, or) ;
-    }
+
+
+
 }
 
-
-////////////////////////////////////////////////////////////////////////////////
-// @@ Move...
-
-module sprocket_wheel_3_spoked(hd, rd, od, np, t) {
-    // 3-spoked sprocket wheel lying on X-Y plane, centered on origin.
-    // No axle hole.
-    //
-    // hd  = hub diameter
-    // rd  = inner rim diameter
-    // od  = outer rim diameter
-    // np  = number of sprockets around diameter
-    // t   = thickness (also diameter of sprocket pins)
-    //@@@@
-}
 
 
 ////////////////////////////////////////////////////////////////////////////////

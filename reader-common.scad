@@ -1,11 +1,6 @@
 include <reader-defs.scad> ;
 include <common-components.scad> ;
 
-
-
-
-
-
 // Spool and winder
 
 module spool_edge(shaft_d, core_d, bevel_d, outer_d, side_t, side_rim_t) {
@@ -17,13 +12,6 @@ module spool_edge(shaft_d, core_d, bevel_d, outer_d, side_t, side_rim_t) {
         } ;
     } ;
 }
-
-module pulley(d,t) {
-    cylinder(d1=d, d2=d-t, h=t/2+delta) ;
-    translate([0,0,t/2])
-        cylinder(d1=d-t, d2=d, h=t/2+delta) ;    
-}
-
 
 module spool_core(d_core, w_core) {
     cylinder(d=d_core, h=w_core) ;
@@ -198,105 +186,6 @@ module winder_side_support_slotted(r=145) {
                 oval(f_l, f_d, winder_side_t+delta*2) ;
         } 
     }    
-}
-
-// Tape reader bridge (with lighting groove) and supports
-
-module tape_reader_bridge() {
-    difference() {
-        rotate([0,90,0])
-            cylinder(d=read_w, h=read_total_l, center=true) ;
-        translate([0,0,-read_w/2])
-            cube(size=[read_total_l+delta, read_w+delta, read_w+delta], center=true) ;
-        translate([0,0,(read_w-read_groove_d)/2])
-            cube(size=[read_total_l+delta, read_groove_w, read_groove_d], center=true) ;
-    }
-}
-
-module tape_reader_bridge_with_guides() {
-    module guide_flange() {
-        translate([0,0,read_l/2+guide_tb+guide_tr/2])
-            cylinder(d=guide_w, h=guide_tr+delta, center=true) ;        // Rim
-        translate([0,0,read_l/2+guide_tr/2])
-            cylinder(d1=read_w, d2=guide_w, h=guide_tb, center=true) ;  // Bevel
-    }
-    module tension_bar() {
-        translate([-(guide_w-tension_bar_d)/2,0,0])
-            cylinder(d=tension_bar_d, h=read_l+guide_tb*2, center=true, $fn=16) ;
-    }
-    difference() {
-        rotate([0,90,0])
-            union() {
-                cylinder(d=read_w, h=read_total_l, center=true) ;
-                guide_flange() ;
-                mirror(v=[0, 0, 1]) guide_flange() ;
-                rotate([0,0,82])  tension_bar() ;     // Angle determined by trial/error :(
-                rotate([0,0,-82]) tension_bar() ;
-            }
-        translate([0,0,-read_w/2])
-            cube(size=[read_total_l+delta, guide_w+delta, read_w+delta], center=true) ;
-        translate([0,0,(read_w-read_groove_d)/2])
-            cube(size=[read_total_l+delta, read_groove_w, read_groove_d], center=true) ;
-        rotate([0,90,0])
-            translate([-read_w/2-guide_eld*0.2,0,0])
-                cylinder(d=guide_eld, h=read_total_l+delta, center=true, $fn=8) ;
-    }
-}
-
-module read_side_support() {
-    // Side in X-Y plane, shaft centre at origin, extends along +X axis
-    module side_profile() {
-        base_h = read_side_t + (read_side_base_t - read_side_t) ;
-        linear_extrude(height=winder_side_t)
-            {
-            polygon(
-                points=[
-                    [0,-read_w/2], [0,read_w/2],
-                    [-read_side_apex_h,-read_w/2], [-read_side_apex_h,read_w/2],
-                    [-read_side_apex_h,-read_side_apex_w/2], [-read_side_apex_h,read_side_apex_w/2],
-                    [read_h-base_h,-read_side_base_w/2], [read_h-base_h,read_side_base_w/2],
-                    [read_h,-read_side_base_w/2], [read_h,read_side_base_w/2],
-                    ],
-                // paths=[[0,2,4,6,8, 9,7,5,3,1, 0]]
-                paths=[[4,6,8, 9,7,5, 4]]
-                ) ;
-            }
-        }
-    module side_base() {
-        translate([read_h-read_side_t, -read_side_base_w/2, 0])
-            {
-                difference() {
-                    cube(size=[read_side_t, read_side_base_w, read_side_base_t], center=false) ;
-                    translate([0, read_side_base_w*0.25, read_side_base_t/2+read_side_t/2])
-                        rotate([0,90,0])
-                            shaft_hole(read_side_peg_d, read_side_t) ;
-                    translate([0, read_side_base_w*0.75, read_side_base_t/2+read_side_t/2])
-                        rotate([0,90,0])
-                            shaft_hole(read_side_peg_d, read_side_t) ;
-                }
-            }
-        }
-    difference()
-        {
-        union()
-            {
-                side_profile() ;
-                side_base() ;
-                web_side = read_side_base_t - read_side_t ;
-                web_xz(read_h-read_side_t, -read_side_base_w/2, read_side_t, -web_side, web_side, read_side_t) ;
-                web_xz(read_h-read_side_t,  read_side_base_w/2, read_side_t, -web_side, web_side, read_side_t) ;
-            } ;
-        union()
-            {
-                shaft_hole(shaft_d, read_side_t) ;
-                translate([(read_h-read_side_base_t-read_side_t)*0.5,0,0])
-                    shaft_hole(shaft_d, read_side_t) ;
-                translate([read_h-read_side_base_t-read_side_t, +0.25*read_side_base_w,0])
-                    shaft_hole(read_side_peg_d, read_side_t) ;
-                translate([read_h-read_side_base_t-read_side_t, -0.25*read_side_base_w,0])
-                    shaft_hole(read_side_peg_d, read_side_t) ;
-            } ;
-        }
 }
 
 // Parts for holding phone camera
