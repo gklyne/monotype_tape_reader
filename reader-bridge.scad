@@ -19,9 +19,9 @@ module layout_reader_bridge_dovetailed() {
     // Reader bridge and support
     translate([0,spacing*0,0])
         tape_reader_bridge_dovetailed() ;
-    translate([-winder_side_h/2,spacing*1,0])
+    translate([-winder_side_h/2,50,0])
         read_side_support_dovetailed() ;
-    translate([-winder_side_h/2,spacing*2,0])
+    translate([-winder_side_h/2,120,0])
         read_side_support_dovetailed() ;
 }
 
