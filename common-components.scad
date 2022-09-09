@@ -983,7 +983,8 @@ module bayonette_plug(lp, lm, ri, rm, ro, hl, dl, nl) {
 }
 
 // Test bayonette_plug
-bayonette_plug(lp=5, lm=12, ri=20, rm=22, ro=25, hl=2, dl=5, nl=3) ;
+// bayonette_plug(lp=5, lm=12, ri=20, rm=22, ro=25, hl=2, dl=5, nl=3) ;
+bayonette_plug(lp=5, lm=10, ri=20, rm=22-clearance, ro=25, hl=2, dl=5, nl=3) ;
 
 // Add twist handle (along X axis):
 difference() {
