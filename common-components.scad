@@ -3,9 +3,10 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 delta = 0.01 ;
+clearance = 0.1 ;
 
 mt_sprocket_pitch = 159 / 50 ;
-mt_sprocket_dia   = 1.4 ;
+mt_sprocket_dia   = 1.5 ;
 mt_sprocket_width = 104.3 ;
 mt_overall_width  = 110 ;
 
@@ -85,7 +86,7 @@ module nut_recess(af, t)  {
     // assume that these are short enough for the printing to bridge.
     // Similarly, tip of pyramid is truncated.
     translate([0,0,t])
-        cylinder(d1=af, d2=2, h=af*0.35, $fn=12) ;
+        cylinder(d1=af-0.25, d2=2, h=af*0.35, $fn=12) ;
     }
 }
 
@@ -470,7 +471,7 @@ module sprocket_pins(or, ht, np, pd) {
                 // Rotate pin to X-axis
                 rotate([0,90,0])
                     // Conical pin
-                    cylinder(d1=pd, d2=pd*0.1, h=pd*0.75, center=false, $fn=12) ;
+                    cylinder(d1=pd, d2=pd*0.1, h=pd*0.7, center=false, $fn=8) ;
     
 }
 
@@ -497,6 +498,7 @@ module shaft_nut_cutout(af1, t1, af2, t2, r) {
     //
     // Recess in hub to hold the nut
     nut_recess(af1, t1) ;
+    translate([-af1*0.4,0,0]) nut_recess(af1, t1) ;  // Extend along -x for nut entry
     // Opening in rim to allow access
     translate([-r,0,-(t2-t1)/2]) nut_recess(af2, t2) ;
     // translate([-r,0,t1/2]) cube(size=[r,af2,t2], center=true) ;
@@ -575,27 +577,29 @@ ornp   = sprocket_or_np_from_pitch(or_max, mt_sprocket_pitch) ;
 or     = ornp[0] ;
 np     = ornp[1] ;
 
-difference() {
-    sprocket_guide_3_spoked(sd, hr,  rr, or_max,  fr, sw, 
-                         mt_sprocket_dia,
-                         mt_sprocket_width, 
-                         gow) ;
-
-    # translate([0,0,12]) {
-     // M4 nut:  7 AF x 3.1 thick
-     shaft_nut_cutout(7, 3.1, 8, 4, or) ;
-     translate([-4,0,0])
-         shaft_nut_cutout(7, 3.1, 8, 4, or) ;
-    }
-    # translate([0,0,gow-12]) {
-     shaft_nut_cutout(7, 3.1, 8, 4, or) ;
-     translate([-4,0,0])
-         shaft_nut_cutout(7, 3.1, 8, 4, or) ;
-    }
-
-
-
-}
+// Generate part 
+//
+// difference() {
+//     sprocket_guide_3_spoked(sd, hr,  rr, or_max,  fr, sw, 
+//                          mt_sprocket_dia,
+//                          mt_sprocket_width, 
+//                          gow) ;
+// 
+//     # translate([0,0,12]) {
+//      // M4 nut:  7 AF x 3.1 thick
+//      shaft_nut_cutout(7, 3.1, 8, 4, or) ;
+//      //translate([-4,0,0])
+//      //    shaft_nut_cutout(7, 3.1, 8, 4, or) ;
+//     }
+//     # translate([0,0,gow-12]) {
+//      shaft_nut_cutout(7, 3.1, 8, 4, or) ;
+//      //translate([-4,0,0])
+//      //    shaft_nut_cutout(7, 3.1, 8, 4, or) ;
+//     }
+// 
+// 
+// 
+// }
 
 
 
@@ -721,6 +725,291 @@ module dovetail_tongue_cutout(l, ws, we, wp, t) {
         dovetail_socket_cutout(l+delta, ws, we, t+delta) ;
     }
 }
+
+
+////////////////////////////////////////////////////////////////////////////////
+// Helical extrusion of solid object
+////////////////////////////////////////////////////////////////////////////////
+
+
+module helix_extrude(h, r, a, ns) {
+    // A transformation that takes a solid object centred on the origin on the 
+    // X-Y plane, and uses this to create a helical extrusion along the Z axis 
+    // with height h, radius r and angle a.
+    //
+    // The X-axis of the object is aligned along the helix path, and the Y axis
+    // is aligned to Z (the axis of extrusion), such that the top of the shape is 
+    // on the outside of the helix.
+    //
+    // h  = height of extrusion path (the resulting object will be higher by 
+    //      approximately the X-dimension of the nobject)
+    // r  = radius of the helical path of extrusion
+    // a  = angle swept by the helical extrusion path (degrees)
+    // ns = number of segments used to make up the extruded object.
+    //
+    // NOTE: ns must to sufficiently large to allow the desired overlap between
+    //       successive objectson  the extrusion path.
+    //
+    sa = a / ns ;           // swept angle per segment (degrees)
+    sr = sa*PI/180 ;        // swept angle per segment (radians)
+    sc = r*sr ;             // swept circumference per segment
+    sh = h / ns ;           // height increase per segment
+    st = atan2(sh,sc) ;     // segment tilt to align with helical path (degrees)
+    for(i=[1:ns]) {
+        translate([0,0,(i-0.5)*sh])     // Lift
+            rotate([0,0,(i-0.5)*sa])        // Rotate
+                // Swept object
+                translate([r, 0, 0])            // Move out along X-axis
+                    rotate([st,0,0])                // Tilt to path of helix
+                        rotate([0,90,0])                // align shape with direction of extrusion
+                            rotate([0,0,90])                // align shape with direction of extrusion
+                                children() ;
+    }
+}
+
+module tapered_cube(l, w1, w2, h) {
+    // Tapered cube (or symmeyric prism with trapezoidal cross-section), centred
+    // at the origin on the X-Y plane, and extending along the X-axis.
+    //
+    // l   = length of prism
+    // w1  = width of prism at base
+    // w2  = width of prisim at top
+    // h   = height of prism
+    //
+    rotate([0,-90,0])
+        linear_extrude(height=l, center=true) {
+            polygon(
+                points=[
+                    [0, w1/2],  [0, -w1/2],
+                    [h, w2/2],  [h, -w2/2]
+                    ],
+                paths=[[0,1,3,2,0]]
+                ) ;
+        }
+}
+// Test tapered_cube
+// tapered_cube(20,12,10,4) ;
+
+
+module tapered_oval(l, r1, r2, h) {
+    // Tapered oval lug for creating channel with helix_extrude
+    // centred at origin on X-Y plane, extending along X-axis
+    //
+    // l  = distance between rounded-end centres
+    // r1 = radius of rounded end at base
+    // r2 = radius of rounded end at top
+    // h  = height of lug
+    //
+    translate([-l/2,0,0]) cylinder(r1=r1, r2=r2, h=h, $fn=16) ;
+    translate([+l/2,0,0]) cylinder(r1=r1, r2=r2, h=h, $fn=16) ;
+    tapered_cube(l, r1*2, r2*2, h) ;
+}
+// Test tapered_oval
+// tapered_oval(20,6,5,4) ;
+
+
+// Test helix_extrude
+// helix_extrude(h=20, r=20, a=720, ns=36) cylinder(r1=4, r2=3, h=2) ;
+// helix_extrude(h=20, r=20, a=720, ns=36) tapered_oval(l=6, r1=4, r2=3, h=2) ;
+
+// Test helical path for lug
+// intersection() {
+//     helix_extrude(h=20, r=20, a=720, ns=36) tapered_cube(l=8, w1=8, w2=5, h=2) ;
+//     translate([0,0,-4-1])
+//         cylinder(r=20+2, h=20+(4+1)*2, $fn=72 ) ;
+//     
+// }
+
+
+////////////////////////////////////////////////////////////////////////////////
+// Bayonette (push/twist) fitting
+////////////////////////////////////////////////////////////////////////////////
+
+function deg_to_rad(a) =
+    // Convert angle in degrees to radians
+    a/180*PI ;
+
+function segment_length(r, a) =
+    // Calculates circumferencial extent of segment
+    //
+    // r  = radius of segment
+    // a  = angle swept by segment (in degrees)
+    //
+    r*deg_to_rad(a) ; 
+
+function segment_corner_adjustment(rs, a) =
+    // Calculates adjustment to enlarge segment towards centere to ensure full
+    // overlap with a cylinder on which it is placed
+    let (
+        ar  = deg_to_rad(a),
+        dsc = rs * ar * ar              // Approximating r * sin a * tan a (for small a)
+        // _ = echo("segment_chorner_adjustment: rs, ar, dsc", rs, ar, dsc)
+    ) dsc ;
+
+function radius_lug_top(dl, hl) = 
+    // Get radius for top of lug given radius at base and height of lug
+    //
+    // Looking here for the largest value that can print without drooping.
+    // (hl*1 gives 45-degree overhang)
+    dl/2 - hl*0.7 ;
+
+module bayonette_channel_cutout(lm, rm, rlb, rlt, hl, at) {
+    // Bayotte fitting channel cutout
+    //
+    // Centred on the origin and aligned along the Z-axis.  The start of the
+    // "push" channel lying on the X-Y plane.
+    //
+    // lm  = length of mating section of cylinders
+    // rm  = radius of mating section of cylinders
+    // rlb = radius of base of lug
+    // rlt = radius of top of lug
+    // hl  = height of lug above mating service (=> depth of channel)
+    // at  = angle of twist
+    //
+    dp  = lm * 0.6 ;            // Distance for "push" channel
+    dt  = lm / 32 ;             // Distance for "twist" channel
+    dc  = 0.2 ;                 // Distance for final "click"
+    ns  = 12 ;                  // Number of segments in twist
+    rl  = rm + hl ;             // Radius to top of lug
+    ls  = segment_length(rl, at/ns) ;
+    // Values used to extend inner face to fully overlap inner cylinder
+    dsc = segment_corner_adjustment(rm, at/ns) ;
+    rsc = rm - dsc ;
+    intersection() {
+        cylinder(r=rm+hl, h=lm, $fn=72 ) ;
+        union() {
+            translate([rsc,0,dp/2-dt+dc])
+                rotate([0,90,0])
+                    tapered_oval(l=dp, r1=rlb, r2=rlt, h=hl+dsc) ;
+            translate([0,0,dp-dt+dc])
+                helix_extrude(h=dt, r=rsc, a=at, ns=ns)
+                    tapered_cube(l=ls, w1=rlb*2, w2=rlt*2, h=hl+dsc) ;
+            // Round end of channel
+            rotate([0,0,at])
+                translate([rsc, 0, dp+dc])
+                    rotate([0,90,0])        // align shape with direction of extrusion
+                        rotate([0,0,90])        // align shape with direction of extrusion
+                            cylinder(r1=rlb+dc, r2=rlt+dc, h=hl+dsc, $fn=16) ;
+        }
+    }
+}
+
+// Test bayonette_channel_cutout
+// bayonette_channel_cutout(30, 15, 5, 4, 2, 90) ;
+
+
+module bayonette_socket(ls, lm, ri, rm, ro, hl, dl, nl) {
+    // Bayonette (push/twist) socket in cylindrical tube
+    //
+    // ls  = overall length of socket tube
+    // lm  = length of bayonette mating faces
+    // ri  = radius of inside of tube
+    // rm  = radius of mating faces
+    // ro  = radius of outside of tube
+    // hl  = height of locking lug above mating face
+    // dl  = diameter of locking lug
+    // nl  = number of locking lugs (spaced equyally around circumference of mating face)
+    //
+    al  = 360/nl ;                  // Angle between lugs
+    at  = al-30 ;                   // angle of twist
+    rlb = dl/2 ;                    // Radius of lug at base
+    rlt = radius_lug_top(dl, hl) ;  // Radius of lug at top
+    // Values used to extend inner face to fully overlap inner cylinder
+    dsc = segment_corner_adjustment(rm, ls) ;
+    rsc = rm - dsc ;
+    difference() {
+        cylinder(r=ro, h=ls, $fn=32) ;
+        translate([0,0,-delta]) {
+            cylinder(r=ri, h=ls+2*delta, $fn=32) ;
+            cylinder(r=rm, h=lm, $fn=32) ;
+            for (i=[0:nl-1]) {
+                rotate([0,0,al*i])
+                    bayonette_channel_cutout(lm, rm, rlb, rlt, hl, at) ;
+                }
+        }
+    }
+}
+
+// Test bayonette_socket
+// ls = 15 ;
+// ro = 25 ;
+// translate([0,ro*2+20,ls])
+//     rotate([0,180,0])
+//         bayonette_socket(ls=ls, lm=12, ri=20, rm=22, ro=ro, hl=2, dl=5, nl=3) ;
+
+
+module bayonette_plug(lp, lm, ri, rm, ro, hl, dl, nl) {
+    // Bayonette (push/twist) socket in cylindrical tube
+    //
+    // lm  = length of bayonette mating faces
+    // lp  = length of bayonette plug tube (not including mating face)
+    // ri  = radius of inside of tube
+    // rm  = radius of mating faces
+    // ro  = radius of outside of tube
+    // hl  = height of locking lug above mating face
+    // dl  = diameter of locking lug
+    // nl  = number of locking lugs (spaced equyally around circumference of mating face)
+    //
+    dp  = lm * 0.6 ;                // Distance for "push" channel
+    dt  = lm / 32 ;                 // Distance for "twist" channel
+    al  = 360/nl ;                  // Angle between lugs
+    rlb = dl/2 ;                    // Radius of lug at base
+    rlt = radius_lug_top(dl, hl) ;  // Radius of lug at top
+    // Basic shell
+    difference() {
+        union() {
+            cylinder(r=ro, h=lp, $fn=32) ;
+            cylinder(r=rm, h=lp+lm, $fn=32) ;
+        }
+        translate([0,0,-delta]) {
+            cylinder(r=ri, h=lp+lm+2*delta, $fn=32) ;
+        }
+    }
+    // Values used to extend inner face to fully overlap inner cylinder
+    dsc = segment_corner_adjustment(rm, atan2(dl,rm)) ;
+    rsc = rm - dsc ;
+    // Locking lugs
+    translate([0,0,lp+dp+dt]) {
+        for (i=[0:nl-1]) {
+            rotate([0,0,al*i])
+                translate([rm-dsc,0,0])
+                    rotate([0,90,0])
+                        cylinder(r1=rlb, r2=rlt, h=hl+dsc, $fn=12) ;
+        }
+    }
+
+    
+}
+
+// Test bayonette_plug
+// bayonette_plug(lp=5, lm=12, ri=20, rm=22, ro=25, hl=2, dl=5, nl=3) ;
+
+
+module bayonette(ls, lp, lm, ri, rm, ro, hl, dl, nl) {
+    // Bayonette (push/twist) socket in cylindrical tube
+    //
+    // ls  = overall length of socket tube
+    // lm  = length of bayonette mating faces
+    // lp  = length of bayonette plug tube (not including mating face)
+    // ri  = radius of inside of tube
+    // rm  = radius of mating faces
+    // ro  = radius of outside of tube
+    // hl  = height of locking lug above mating face
+    // dl  = diameter of locking lug
+    // nl  = number of locking lugs (spaced equyally around circumference of mating face)
+    //
+    translate([0,ro+10,ls])
+        rotate([0,180,0])
+            bayonette_socket(ls=ls, lm=lm, ri=ri, rm=rm, ro=ro, hl=hl, dl=dl, nl=nl) ;
+    translate([0,-ro-10,0])
+        bayonette_plug(lp=lp, lm=lm, ri=ri, rm=rm-clearance, ro=ro, hl=hl, dl=dl, nl=nl) ;
+}
+
+
+// Test bayonette assembly
+bayonette(ls=15, lp=5, lm=10, ri=20, rm=22, ro=25, hl=2, dl=5, nl=3) ;
+
+
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////

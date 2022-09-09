@@ -36,7 +36,7 @@ Mechanical parts for reading paper tape created by Monotype keyboard.
 
 (see Journal/20220819-MC-journal-reader-mk2.md)
 
-[ ] Redesign the tape-path guides to use guide sprockets.
+[x] Redesign the tape-path guides to use guide sprockets.
 
 
 [ ] Include a small raised inner hub on the support brackets for the tape spools.
@@ -55,4 +55,11 @@ Mechanical parts for reading paper tape created by Monotype keyboard.
 
 [ ] Make the baseplate wider
 
+[ ] Captive nut holders in baseplate
+
 [ ] Shorten the tape path?
+
+
+[ ] Sprocket pins larger (why are they so small?)
+
+[ ] Winder separate from reader bridge (drive belt stresses structure)

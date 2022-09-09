@@ -87,7 +87,7 @@ module tape_reader_bridge_dovetailed() {
 guide_sprocket_dia     = 24 ;
 guide_sprocket_sep     = guide_sprocket_dia + read_w ;
 guide_sprocket_ht_off  = guide_sprocket_dia*0.6 ;
-guide_sprocket_shaft_d = 4 ;
+guide_sprocket_shaft_d = m4 ;
 guide_sprocket_off     = 1 ;
 winder_shaft_height    = (read_h+read_side_base_t)*0.4 ;
 
@@ -130,6 +130,7 @@ module read_side_support() {
         translate([guide_sprocket_ht_off,-guide_sprocket_sep/2,0])
             rotate([0,0,90])
                 oval(guide_sprocket_sep, guide_sprocket_dia, read_side_t) ;
+        // Shaft support hubs
         translate([guide_sprocket_ht_off, guide_sprocket_sep/2, 0])
             cylinder(d=guide_sprocket_shaft_d+2, h=read_side_t+guide_sprocket_off) ;
         translate([guide_sprocket_ht_off, -guide_sprocket_sep/2, 0])
