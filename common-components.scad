@@ -952,6 +952,7 @@ module bayonette_plug(lp, lm, ri, rm, ro, hl, dl, nl) {
     //
     dp  = lm * 0.6 ;                // Distance for "push" channel
     dt  = lm / 32 ;                 // Distance for "twist" channel
+    dc  = 0.4 ;                     // Distance offset for final tightrening "click"
     al  = 360/nl ;                  // Angle between lugs
     rlb = dl/2 ;                    // Radius of lug at base
     rlt = radius_lug_top(dl, hl) ;  // Radius of lug at top
@@ -969,7 +970,7 @@ module bayonette_plug(lp, lm, ri, rm, ro, hl, dl, nl) {
     dsc = segment_corner_adjustment(rm, atan2(dl,rm)) ;
     rsc = rm - dsc ;
     // Locking lugs
-    translate([0,0,lp+dp+dt]) {
+    translate([0,0,lp+dp+dt-dc]) {
         for (i=[0:nl-1]) {
             rotate([0,0,al*i])
                 translate([rm-dsc,0,0])
@@ -982,7 +983,13 @@ module bayonette_plug(lp, lm, ri, rm, ro, hl, dl, nl) {
 }
 
 // Test bayonette_plug
-// bayonette_plug(lp=5, lm=12, ri=20, rm=22, ro=25, hl=2, dl=5, nl=3) ;
+bayonette_plug(lp=5, lm=12, ri=20, rm=22, ro=25, hl=2, dl=5, nl=3) ;
+
+// Add twist handle (along X axis):
+difference() {
+    translate([-25,0,0]) oval(50, 8, 5) ;
+    translate([0,0,-delta]) cylinder(d=40, h=5+delta*2, $fn=32) ;
+}
 
 
 module bayonette(ls, lp, lm, ri, rm, ro, hl, dl, nl) {
@@ -1007,7 +1014,7 @@ module bayonette(ls, lp, lm, ri, rm, ro, hl, dl, nl) {
 
 
 // Test bayonette assembly
-bayonette(ls=15, lp=5, lm=10, ri=20, rm=22, ro=25, hl=2, dl=5, nl=3) ;
+// bayonette(ls=15, lp=5, lm=10, ri=20, rm=22, ro=25, hl=2, dl=5, nl=3) ;
 
 
 
