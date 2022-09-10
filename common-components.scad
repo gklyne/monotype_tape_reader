@@ -952,7 +952,7 @@ module bayonette_plug(lp, lm, ri, rm, ro, hl, dl, nl) {
     //
     dp  = lm * 0.6 ;                // Distance for "push" channel
     dt  = lm / 32 ;                 // Distance for "twist" channel
-    dc  = 0.75 ;                    // Lug offset for snug fit when twisted shut
+    dc  = 0.6 ;                     // Lug offset for snug fit when twisted shut
     al  = 360/nl ;                  // Angle between lugs
     rlb = dl/2 ;                    // Radius of lug at base
     rlt = radius_lug_top(dl, hl) ;  // Radius of lug at top
@@ -992,6 +992,14 @@ module bayonette_plug(lp, lm, ri, rm, ro, hl, dl, nl) {
 //     translate([0,0,-delta]) cylinder(d=40, h=5+delta*2, $fn=32) ;
 // }
 
+bayonette_plug(lp=5, lm=10, ri=20, rm=22-clearance, ro=25, hl=2, dl=6, nl=3) ;
+// Add twist handle (along Y axis):
+difference() {
+    rotate([0,0,90]) translate([-25,0,0]) oval(50, 8, 5) ;
+    translate([0,0,-delta]) cylinder(d=40, h=5+delta*2, $fn=32) ;
+}
+
+
 
 module bayonette(ls, lp, lm, ri, rm, ro, hl, dl, nl) {
     // Bayonette (push/twist) socket in cylindrical tube
@@ -1023,13 +1031,11 @@ module bayonette(ls, lp, lm, ri, rm, ro, hl, dl, nl) {
             rotate([0,0,90]) translate([-25,0,0]) oval(50, 8, 5) ;
             translate([0,0,-delta]) cylinder(d=40, h=5+delta*2, $fn=32) ;
         }
-
-
     }
 }
 
 // Test bayonette assembly
-bayonette(ls=15, lp=5, lm=10, ri=20, rm=22, ro=25, hl=2, dl=6, nl=3) ;
+// bayonette(ls=15, lp=5, lm=10, ri=20, rm=22, ro=25, hl=2, dl=6, nl=3) ;
 
 
 
