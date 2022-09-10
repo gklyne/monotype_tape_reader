@@ -868,7 +868,7 @@ module bayonette_channel_cutout(lm, rm, rlb, rlt, hl, at) {
     //
     dp  = lm * 0.6 ;            // Distance for "push" channel
     dt  = lm / 32 ;             // Distance for "twist" channel
-    dc  = 0.25 ;                // Distance for final "click"
+    dc  = 0.2 ;                 // Distance for final "click" (half)
     ns  = 12 ;                  // Number of segments in twist
     rl  = rm + hl ;             // Radius to top of lug
     ls  = segment_length(rl, at/ns) ;
