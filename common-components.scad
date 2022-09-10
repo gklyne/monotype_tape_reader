@@ -952,7 +952,7 @@ module bayonette_plug(lp, lm, ri, rm, ro, hl, dl, nl) {
     //
     dp  = lm * 0.6 ;                // Distance for "push" channel
     dt  = lm / 32 ;                 // Distance for "twist" channel
-    dc  = 0.6 ;                     // Lug offset for snug fit when twisted shut
+    dc  = 0.5 ;                     // Lug offset for snug fit when twisted shut
     al  = 360/nl ;                  // Angle between lugs
     rlb = dl/2 ;                    // Radius of lug at base
     rlt = radius_lug_top(dl, hl) ;  // Radius of lug at top
@@ -960,7 +960,7 @@ module bayonette_plug(lp, lm, ri, rm, ro, hl, dl, nl) {
     difference() {
         union() {
             cylinder(r=ro, h=lp, $fn=32) ;
-            cylinder(r=rm, h=lp+lm, $fn=32) ;
+            cylinder(r=rm, h=lp+lm-dc, $fn=32) ;
         }
         translate([0,0,-delta]) {
             cylinder(r=ri, h=lp+lm+2*delta, $fn=32) ;
