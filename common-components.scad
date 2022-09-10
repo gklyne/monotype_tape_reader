@@ -851,7 +851,7 @@ function radius_lug_top(dl, hl) =
     //
     // Looking here for the largest value that can print without drooping.
     // (hl*1 gives 45-degree overhang)
-    dl/2 - hl*0.7 ;
+    dl/2 - hl*0.85 ;
 
 module bayonette_channel_cutout(lm, rm, rlb, rlt, hl, at) {
     // Bayotte fitting channel cutout
@@ -908,7 +908,7 @@ module bayonette_socket(ls, lm, ri, rm, ro, hl, dl, nl) {
     // ro  = radius of outside of tube
     // hl  = height of locking lug above mating face
     // dl  = diameter of locking lug
-    // nl  = number of locking lugs (spaced equyally around circumference of mating face)
+    // nl  = number of locking lugs (spaced equally around circumference of mating face)
     //
     al  = 360/nl ;                  // Angle between lugs
     at  = al-30 ;                   // angle of twist
@@ -948,11 +948,11 @@ module bayonette_plug(lp, lm, ri, rm, ro, hl, dl, nl) {
     // ro  = radius of outside of tube
     // hl  = height of locking lug above mating face
     // dl  = diameter of locking lug
-    // nl  = number of locking lugs (spaced equyally around circumference of mating face)
+    // nl  = number of locking lugs (spaced equally around circumference of mating face)
     //
     dp  = lm * 0.6 ;                // Distance for "push" channel
     dt  = lm / 32 ;                 // Distance for "twist" channel
-    dc  = 0.4 ;                     // Distance offset for final tightrening "click"
+    dc  = 0.4 ;                     // Distance offset for final tightening "click"
     al  = 360/nl ;                  // Angle between lugs
     rlb = dl/2 ;                    // Radius of lug at base
     rlt = radius_lug_top(dl, hl) ;  // Radius of lug at top
@@ -984,13 +984,13 @@ module bayonette_plug(lp, lm, ri, rm, ro, hl, dl, nl) {
 
 // Test bayonette_plug
 // bayonette_plug(lp=5, lm=12, ri=20, rm=22, ro=25, hl=2, dl=5, nl=3) ;
-bayonette_plug(lp=5, lm=10, ri=20, rm=22-clearance, ro=25, hl=2, dl=5, nl=3) ;
+// bayonette_plug(lp=5, lm=10, ri=20, rm=22-clearance, ro=25, hl=2, dl=5, nl=3) ;
 
 // Add twist handle (along X axis):
-difference() {
-    translate([-25,0,0]) oval(50, 8, 5) ;
-    translate([0,0,-delta]) cylinder(d=40, h=5+delta*2, $fn=32) ;
-}
+// difference() {
+//     translate([-25,0,0]) oval(50, 8, 5) ;
+//     translate([0,0,-delta]) cylinder(d=40, h=5+delta*2, $fn=32) ;
+// }
 
 
 module bayonette(ls, lp, lm, ri, rm, ro, hl, dl, nl) {
@@ -1004,18 +1004,32 @@ module bayonette(ls, lp, lm, ri, rm, ro, hl, dl, nl) {
     // ro  = radius of outside of tube
     // hl  = height of locking lug above mating face
     // dl  = diameter of locking lug
-    // nl  = number of locking lugs (spaced equyally around circumference of mating face)
+    // nl  = number of locking lugs (spaced equally around circumference of mating face)
     //
-    translate([0,ro+10,ls])
-        rotate([0,180,0])
-            bayonette_socket(ls=ls, lm=lm, ri=ri, rm=rm, ro=ro, hl=hl, dl=dl, nl=nl) ;
-    translate([0,-ro-10,0])
+    translate([0,ro+10,0]) {
+        translate([0,0,ls])
+            rotate([0,180,0])
+                bayonette_socket(ls=ls, lm=lm, ri=ri, rm=rm, ro=ro, hl=hl, dl=dl, nl=nl) ;
+        // Add twist handle (along X axis):
+        difference() {
+            translate([-25,0,0]) oval(50, 8, 5) ;
+            translate([0,0,-delta]) cylinder(d=40, h=5+delta*2, $fn=32) ;
+        }
+    }
+    translate([0,-ro-10,0]) {
         bayonette_plug(lp=lp, lm=lm, ri=ri, rm=rm-clearance, ro=ro, hl=hl, dl=dl, nl=nl) ;
+        // Add twist handle (along Y axis):
+        difference() {
+            rotate([0,0,90]) translate([-25,0,0]) oval(50, 8, 5) ;
+            translate([0,0,-delta]) cylinder(d=40, h=5+delta*2, $fn=32) ;
+        }
+
+
+    }
 }
 
-
 // Test bayonette assembly
-// bayonette(ls=15, lp=5, lm=10, ri=20, rm=22, ro=25, hl=2, dl=5, nl=3) ;
+bayonette(ls=15, lp=5, lm=10, ri=20, rm=22, ro=25, hl=2, dl=6, nl=3) ;
 
 
 
