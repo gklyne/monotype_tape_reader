@@ -829,6 +829,10 @@ function deg_to_rad(a) =
     // Convert angle in degrees to radians
     a/180*PI ;
 
+function rad_to_deg(ar) =
+    // Convert angle in radians to degrees
+    ar*180/PI ;
+
 function segment_length(r, a) =
     // Calculates circumferencial extent of segment
     //
@@ -866,11 +870,12 @@ module bayonette_channel_cutout(lm, rm, rlb, rlt, hl, at) {
     // hl  = height of lug above mating service (=> depth of channel)
     // at  = angle of twist
     //
-    dp  = lm * 0.6 ;            // Distance for "push" channel
-    dt  = lm / 32 ;             // Distance for "twist" channel
-    dc  = 0.2 ;                 // Distance for final "click" (half)
-    ns  = 12 ;                  // Number of segments in twist
-    rl  = rm + hl ;             // Radius to top of lug
+    dp  = lm * 0.6 ;                    // Distance for "push" channel
+    dt  = lm / 32 ;                     // Distance for "twist" channel
+    dc  = 0.0 ;                         // Axial distance for final "click" (half)
+    ac = rad_to_deg((rlb+rlt)*0.5/rm) ; // Angle for final "click"
+    ns  = 12 ;                          // Number of segments in twist
+    rl  = rm + hl ;                     // Radius to top of lug
     ls  = segment_length(rl, at/ns) ;
     // Values used to extend inner face to fully overlap inner cylinder
     dsc = segment_corner_adjustment(rm, at/ns) ;
@@ -882,10 +887,16 @@ module bayonette_channel_cutout(lm, rm, rlb, rlt, hl, at) {
                 rotate([0,90,0])
                     tapered_oval(l=dp, r1=rlb, r2=rlt, h=hl+dsc) ;
             translate([0,0,dp-dt+dc])
-                helix_extrude(h=dt, r=rsc, a=at, ns=ns)
+                helix_extrude(h=dt, r=rsc, a=at-ac, ns=ns)
                     tapered_cube(l=ls, w1=rlb*2, w2=rlt*2, h=hl+dsc) ;
             // Round end of channel: enlarged for final "click"
             rotate([0,0,at])
+                translate([rsc, 0, dp])
+                    rotate([0,90,0])        // align shape with direction of extrusion
+                        rotate([0,0,90])        // align shape with direction of extrusion
+                            cylinder(r1=rlb+dc, r2=rlt+dc, h=hl+dsc, $fn=16) ;
+            // Constriction in channel for "click"
+            rotate([0,0,at-ac])
                 translate([rsc, 0, dp])
                     rotate([0,90,0])        // align shape with direction of extrusion
                         rotate([0,0,90])        // align shape with direction of extrusion
@@ -938,6 +949,13 @@ module bayonette_socket(ls, lm, ri, rm, ro, hl, dl, nl) {
 //         bayonette_socket(ls=ls, lm=12, ri=20, rm=22, ro=ro, hl=2, dl=5, nl=3) ;
 
 
+
+
+// @@@TODO
+//   [x] No radius enlargement at end of channel, and no offset
+//   [x] Bump in bottom of channel for "click"
+//   [ ] Lug offset adjust to match simple channel
+
 module bayonette_plug(lp, lm, ri, rm, ro, hl, dl, nl) {
     // Bayonette (push/twist) socket in cylindrical tube
     //
@@ -952,7 +970,7 @@ module bayonette_plug(lp, lm, ri, rm, ro, hl, dl, nl) {
     //
     dp  = lm * 0.6 ;                // Distance for "push" channel
     dt  = lm / 32 ;                 // Distance for "twist" channel
-    dc  = 0.5 ;                     // Lug offset for snug fit when twisted shut
+    dc  = 0.2 ;                     // Lug offset for snug fit when twisted shut
     al  = 360/nl ;                  // Angle between lugs
     rlb = dl/2 ;                    // Radius of lug at base
     rlt = radius_lug_top(dl, hl) ;  // Radius of lug at top
@@ -992,12 +1010,12 @@ module bayonette_plug(lp, lm, ri, rm, ro, hl, dl, nl) {
 //     translate([0,0,-delta]) cylinder(d=40, h=5+delta*2, $fn=32) ;
 // }
 
-bayonette_plug(lp=5, lm=10, ri=20, rm=22-clearance, ro=25, hl=2, dl=6, nl=3) ;
+// bayonette_plug(lp=5, lm=10, ri=20, rm=22-clearance, ro=25, hl=2, dl=6, nl=3) ;
 // Add twist handle (along Y axis):
-difference() {
-    rotate([0,0,90]) translate([-25,0,0]) oval(50, 8, 5) ;
-    translate([0,0,-delta]) cylinder(d=40, h=5+delta*2, $fn=32) ;
-}
+// difference() {
+//     rotate([0,0,90]) translate([-25,0,0]) oval(50, 8, 5) ;
+//     translate([0,0,-delta]) cylinder(d=40, h=5+delta*2, $fn=32) ;
+// }
 
 
 
@@ -1035,7 +1053,7 @@ module bayonette(ls, lp, lm, ri, rm, ro, hl, dl, nl) {
 }
 
 // Test bayonette assembly
-// bayonette(ls=15, lp=5, lm=10, ri=20, rm=22, ro=25, hl=2, dl=6, nl=3) ;
+bayonette(ls=15, lp=5, lm=10, ri=20, rm=22, ro=25, hl=2, dl=6, nl=3) ;
 
 
 
