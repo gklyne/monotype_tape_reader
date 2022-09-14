@@ -181,6 +181,7 @@ module spool_core(d_core, w_core) {
 }
 
 module spool_end(shaft_d, core_d, bevel_d, outer_d, side_t, side_rim_t, w_spool_end) {
+    r_inner = core_d/2-3 ;
     difference() {
         union() {
             spool_edge(
@@ -190,14 +191,14 @@ module spool_end(shaft_d, core_d, bevel_d, outer_d, side_t, side_rim_t, w_spool_
             cylinder(d=core_d, h=w_spool_end+side_t) ;
             bayonette_plug(
                 lp=w_spool_end+side_t, lm=spool_w_plug, 
-                ri=core_d/2-5, rm=core_d/2-3-clearance, ro=core_d/2, hl=2, dl=6, nl=3
+                ri=core_d/2-5, rm=r_inner-clearance, ro=core_d/2, hl=2, dl=6, nl=3
                 ) ;
         } ;
         union() {
             translate([0,0,-delta]) {
                 spoked_wheel_cutouts(hr=shaft_d, sr=core_d/2-5, fr=2, 
                     wt=w_spool_end+side_t+2*delta, ns=3, sw=4) ;
-                spoked_wheel_cutouts(hr=core_d/2, sr=bevel_d/2, fr=3, 
+                spoked_wheel_cutouts(hr=core_d/2, sr=bevel_d/2-1, fr=3, 
                     wt=w_spool_end+side_t+2*delta, ns=6, sw=4) ;
             }
             shaft_hole(d=shaft_d, l=w_spool_end+side_t) ;
@@ -209,7 +210,7 @@ module spool_end(shaft_d, core_d, bevel_d, outer_d, side_t, side_rim_t, w_spool_
 
 module spool_middle(w_middle) {
     w_half  = w_middle/2+delta ;
-    r_inner = core_d/2-3-clearance ;
+    r_inner = core_d/2-3 ;
     difference() {
         union() {
             bayonette_socket(
@@ -222,40 +223,17 @@ module spool_middle(w_middle) {
                         ls=w_half, lm=spool_w_plug, 
                         ri=r_inner, rm=r_inner, ro=core_d/2, 
                         hl=2, dl=6, nl=3) ;
-                // bayonette_socket(
-                //     ls=w_half, lm=spool_w_plug, 
-                //     ri=core_d/2-5, rm=core_d/2-3-clearance, ro=core_d/2, 
-                //     hl=2, dl=6, nl=3) ;
             }
-            // bayonette_plug(
-            //     lp=w_spool_end+side_t, lm=spool_w_plug, 
-            //     ri=core_d/2-5, rm=core_d/2-3-clearance, ro=core_d/2, hl=2, dl=6, nl=3
-            //     ) ;
         } ;
         union() {
-            // Groove to stop tape carrier 
+            // Groove to stop tape carrier rotating
             for (ra=[105, 225, 345])
                 rotate([0,0,ra])
                     translate([core_d/2,0,-delta])
-                        cylinder(d=3, h=w_middle+2*delta, $fn=10) ;
+                        cylinder(d=2.5, h=w_middle+2*delta, $fn=10) ;
         } ;
     }
 } ;
-
-
-module spool_parts() {
-    for (x=[0,1])
-        translate([x*(outer_d*1.2),0,0])
-            spool_end(
-                shaft_d=shaft_d, core_d=core_d, bevel_d=bevel_d, outer_d=outer_d, 
-                side_t=side_t, side_rim_t=side_rim_t, w_spool_end=spool_w_end
-                );
-    translate([0,outer_d,0])
-        spool_middle(spool_w_mid) ;
-}
-
-
-// spool_parts() ;
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -272,11 +250,12 @@ module spool_clip(core_d, outer_d, len) {
                 translate([0,0,-delta])
                     cylinder(d=core_d, h=len+2*delta) ;   // Core
             }
-            rotate([0,0,60])
+            for (ar=[60,180,300])
+            rotate([0,0,ar])
                 translate([core_d/2,0,0])
-                    cylinder(d=1, h=len, $fn=8) ;
+                    cylinder(d=2, h=len, $fn=10) ;
         }
-        translate([outer_d*0.80,0,-delta])
+        translate([outer_d*0.85,0,-delta])
             cylinder(d=outer_d, h=len+2*delta) ;  // Clip cutaway
         // translate([0,0,0])
         //     rotate([0,-90,0])
@@ -296,8 +275,26 @@ module spool_clip(core_d, outer_d, len) {
     }
 }
 
-clip_len = spool_w_all-15 ;
-spool_clip(core_d, core_d+4, clip_len) ;
+// spool_clip(core_d, core_d+4, spool_w_all) ;
+
+////////////////////////////////////////////////////////////////////////////////
+// Tape spool full set of parts
+////////////////////////////////////////////////////////////////////////////////
+
+module spool_parts() {
+    for (x=[0,1])
+        translate([x*(outer_d*1.2),0,0])
+            spool_end(
+                shaft_d=shaft_d, core_d=core_d, bevel_d=bevel_d, outer_d=outer_d, 
+                side_t=side_t, side_rim_t=side_rim_t, w_spool_end=spool_w_end
+                );
+    translate([0,outer_d,0])
+        spool_middle(spool_w_mid) ;
+    translate([outer_d*1.2,outer_d,0])
+        spool_clip(core_d, core_d+4, spool_w_mid) ;
+}
+
+spool_parts() ;
 
 // ## spool_clips
 //
