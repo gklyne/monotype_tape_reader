@@ -352,9 +352,8 @@ module hub_segment_rounded(a, hr, sr, t, fr) {
 ////////////////////////////////////////////////////////////////////////////////
 
 module spoked_wheel_cutout(hr, sr, fr, wt, ns, sw) {
-    // Spoked wheel in X-Y plane, centred on the origin.
-    //
-    // NOTE: there is no axle hole: calling code is expected to include this
+    // Single spoke cutout for spoked wheel in X-Y plane, centred on the origin,
+    // with segment edge aligned with (but offset from) X-axis.
     //
     // hr  = Hub radius (actual hub is larger due to fillets)
     // sr  = spoke radius (centre to inside of rim)
@@ -384,7 +383,7 @@ module spoked_wheel_cutout(hr, sr, fr, wt, ns, sw) {
         union() {
             // main part 
             // (the `-fr*sin(ahf1)` is an approximate but close adjustment to meet the 
-            // point where the fillet isn tangential to the spoke)
+            // point where the fillet is tangential to the spoke)
             ring_segment(0, as, hr+fr-fr*sin(ahf1), sr-fr-fr*sin(asf1), wt) ;
             // inner ring
             ring_segment(ahf1, ahf2, hr, hr+2*fr, wt) ;
@@ -405,6 +404,63 @@ module spoked_wheel_cutout(hr, sr, fr, wt, ns, sw) {
 }  
 // spoked_wheel_cutout(15, 30, 2, 5, 6, 4) ;
 
+module spoked_wheel_cutouts(hr, sr, fr, wt, ns, sw) {
+    // Single spoke cutout for spoked wheel in X-Y plane, centred on the origin,
+    // with segment edge aligned with (but offset from) X-axis.
+    //
+    // hr  = Hub radius (actual hub is larger due to fillets)
+    // sr  = spoke radius (centre to inside of rim)
+    // fr  = fillet radius of spoke cut-outs
+    // wt  = thickness of wheel
+    // ns  = number of spokes
+    // sw  = width of spokes
+    //
+    as   = 360/ns ;                     // Angle between spokes
+
+    ahs1 = asin((sw/2)/hr) ;            // Angle from spoke centre line to end of spoke meeting with hub
+    ahf1 = asin((sw/2+fr)/(hr+fr)) ;    // Angle from spoke centre line to centre of hub fillet
+    ahs2 = as - ahs1 ;                  // Angle from spoke centre line to end of next spoke at hub
+    ahf2 = as - ahf1 ;                  // Angle from spoke centre line to centre of next hub fillet
+
+    asr1 = asin((sw/2)/sr)  ;           // Angle from spoke centre line to end of spoke meeting with rim
+    asf1 = asin((sw/2+fr)/(sr-fr)) ;    // Angle from spoke centre line to centre of rim fillet
+    asr2 = as - asr1 ;                  // Angle from spoke centre line to end of next spoke at rim
+    asf2 = as - asf1 ;                  // Angle from spoke centre line to centre of next rim fillet
+
+    fh1c = [ cos(ahf1)*(hr+fr), sin(ahf1)*(hr+fr) ] ;   // Hub fillet 1 centre
+    fh2c = [ cos(ahf2)*(hr+fr), sin(ahf2)*(hr+fr) ] ;   // Hub fillet 2 centre
+    fs1c = [ cos(asf1)*(sr-fr), sin(asf1)*(sr-fr) ] ;   // Rim fillet 1 centre
+    fs2c = [ cos(asf2)*(sr-fr), sin(asf2)*(sr-fr) ] ;   // Rim fillet 2 centre
+
+    // Using `render()` here seems to avoid explosion of CSG tree elements in preview
+    // https://en.wikibooks.org/wiki/OpenSCAD_User_Manual/The_OpenSCAD_Language#render_2    
+    render()
+        for (i=[0:ns-1])
+            rotate([0,0,i*as])
+                difference() {
+                    union() {
+                        // main part 
+                        // (the `-fr*sin(ahf1)` is an approximate but close adjustment to meet the 
+                        // point where the fillet is tangential to the spoke)
+                        ring_segment(0, as, hr+fr-fr*sin(ahf1), sr-fr-fr*sin(asf1), wt) ;
+                        // inner ring
+                        ring_segment(ahf1, ahf2, hr, hr+2*fr, wt) ;
+                        // outer ring
+                        ring_segment(asf1, asf2, sr-2*fr, sr, wt) ;
+                        // fillets
+                        for (fc=[fh1c, fh2c, fs1c, fs2c])
+                            translate([fc.x, fc.y, 0])
+                                cylinder(r=fr, h=wt, center=false, $fn=32) ;
+                    }
+                    // trim off "wings"
+                    translate([-sr,sw/2-sr,-delta])
+                        cube(size=[2*sr, sr, wt+2*delta], center=false) ;
+                    rotate([0,0,as])
+                        translate([-sr,-sw/2,-delta])
+                            cube(size=[2*sr, sr, wt+2*delta], center=false) ;
+                }
+}
+// spoked_wheel_cutouts(hr=15, sr=30, fr=2, wt=5, ns=6, sw=4) ;
 
 module spoked_wheel(hr, sr, or, fr, wt, ns, sw) {
     // Spoked wheel in X-Y plane, centred on the origin.
@@ -419,16 +475,14 @@ module spoked_wheel(hr, sr, or, fr, wt, ns, sw) {
     // ns  = number of spokes
     // sw  = width of spokes
     //
-    as   = 360/ns ;                     // Angle between spokes
+    // as   = 360/ns ;                     // Angle between spokes
     difference() {
         wheel(or, wt) ;
-        for (i=[0:ns-1])
-            rotate([0,0,i*as])
-                translate([0,0,-delta])
-                    spoked_wheel_cutout(hr, sr, fr, wt+2*delta, ns, sw) ;
+        translate([0,0,-delta])
+            spoked_wheel_cutouts(hr, sr, fr, wt+2*delta, ns, sw) ;
     }
 }
-//spoked_wheel(8, 16, 20, 2, 5, 5, 4) ;
+// spoked_wheel(hr=8, sr=16, or=20, fr=2, wt=5, ns=5, sw=4) ;
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -929,10 +983,10 @@ module bayonette_socket(ls, lm, ri, rm, ro, hl, dl, nl) {
     dsc = segment_corner_adjustment(rm, ls) ;
     rsc = rm - dsc ;
     difference() {
-        cylinder(r=ro, h=ls, $fn=32) ;
+        cylinder(r=ro, h=ls, $fn=48) ;
         translate([0,0,-delta]) {
-            cylinder(r=ri, h=ls+2*delta, $fn=32) ;
-            cylinder(r=rm, h=lm, $fn=32) ;
+            cylinder(r=ri, h=ls+2*delta, $fn=48) ;
+            cylinder(r=rm, h=lm, $fn=48) ;
             for (i=[0:nl-1]) {
                 rotate([0,0,al*i])
                     bayonette_channel_cutout(lm, rm, rlb, rlt, hl, at) ;
@@ -948,13 +1002,6 @@ module bayonette_socket(ls, lm, ri, rm, ro, hl, dl, nl) {
 //     rotate([0,180,0])
 //         bayonette_socket(ls=ls, lm=12, ri=20, rm=22, ro=ro, hl=2, dl=5, nl=3) ;
 
-
-
-
-// @@@TODO
-//   [x] No radius enlargement at end of channel, and no offset
-//   [x] Bump in bottom of channel for "click"
-//   [ ] Lug offset adjust to match simple channel
 
 module bayonette_plug(lp, lm, ri, rm, ro, hl, dl, nl) {
     // Bayonette (push/twist) socket in cylindrical tube
@@ -978,10 +1025,10 @@ module bayonette_plug(lp, lm, ri, rm, ro, hl, dl, nl) {
     difference() {
         union() {
             cylinder(r=ro, h=lp, $fn=32) ;
-            cylinder(r=rm, h=lp+lm-clearance, $fn=32) ;
+            cylinder(r=rm, h=lp+lm-clearance, $fn=48) ;
         }
         translate([0,0,-delta]) {
-            cylinder(r=ri, h=lp+lm+2*delta, $fn=32) ;
+            cylinder(r=ri, h=lp+lm+2*delta, $fn=48) ;
         }
     }
     // Values used to extend inner face to fully overlap inner cylinder
@@ -996,28 +1043,16 @@ module bayonette_plug(lp, lm, ri, rm, ro, hl, dl, nl) {
                         cylinder(r1=rlb, r2=rlt, h=hl+dsc, $fn=12) ;
         }
     }
-
-    
 }
 
 // Test bayonette_plug
-// bayonette_plug(lp=5, lm=12, ri=20, rm=22, ro=25, hl=2, dl=5, nl=3) ;
-// bayonette_plug(lp=5, lm=10, ri=20, rm=22-clearance, ro=25, hl=2, dl=5, nl=3) ;
-
-// Add twist handle (along X axis):
+//
+// bayonette_plug(lp=5, lm=10, ri=20, rm=22-clearance, ro=25, hl=2, dl=6, nl=3) ;
+// // Add twist handle (along Y axis):
 // difference() {
-//     translate([-25,0,0]) oval(50, 8, 5) ;
-//     translate([0,0,-delta]) cylinder(d=40, h=5+delta*2, $fn=32) ;
+//     rotate([0,0,90]) translate([-25,0,0]) oval(50, 8, 5) ;
+//     translate([0,0,-delta]) cylinder(d=40, h=5+delta*2, $fn=48) ;
 // }
-
-bayonette_plug(lp=5, lm=10, ri=20, rm=22-clearance, ro=25, hl=2, dl=6, nl=3) ;
-// Add twist handle (along Y axis):
-difference() {
-    rotate([0,0,90]) translate([-25,0,0]) oval(50, 8, 5) ;
-    translate([0,0,-delta]) cylinder(d=40, h=5+delta*2, $fn=32) ;
-}
-
-
 
 module bayonette(ls, lp, lm, ri, rm, ro, hl, dl, nl) {
     // Bayonette (push/twist) socket in cylindrical tube

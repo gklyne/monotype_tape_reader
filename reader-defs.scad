@@ -18,14 +18,15 @@ base_fix_d = m4 ;       // Diameter of base fixing screw hole
 
 crank_l = 40 ;          // Length of crank (between shaft and handle centres
 
-side_t = 4 ;            // Thickness of spool side
-side_rim_t = 2 ;        // Thickness of spool side rim (beveled)
-crank_hub_t = 10 ;       // Thickness of crank hub
+side_t = 2.5 ;          // Thickness of spool side
+side_rim_t = 1 ;        // Thickness of spool side rim (bevelled)
+crank_hub_t = 10 ;      // Thickness of crank hub
 crank_arm_t = 6 ;       // Thickness of crank arm
 crank_end_t = 8 ;       // Thickness of crank handle hub (at end of arm)
 
-spool_w_all = 112 ;     // Width of spool (overall between ends)
-spool_w_end = 20 ;      // Width of spool (to inside of end)
+spool_w_all = 114 ;     // Width of spool (overall between ends)
+spool_w_end = 5 ;       // Width of spool (to inside of end)
+spool_w_plug = 8 ;      // Width of spool-end plug overlap
 spool_w_mid = spool_w_all - 2*spool_w_end ;
                         // width of spool middle spacer
 
