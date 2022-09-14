@@ -255,7 +255,7 @@ module spool_parts() {
 }
 
 
-spool_parts() ;
+// spool_parts() ;
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -266,10 +266,17 @@ spool_parts() ;
 // It may need the inner diameter increasing slightly
 module spool_clip(core_d, outer_d, len) {
     difference() {
-        cylinder(d=outer_d, h=len) ;
-        translate([0,0,-delta])
-            cylinder(d=core_d, h=len+2*delta) ;   // Core
-        translate([outer_d*0.75,0,-delta])
+        union () {
+            difference() {
+                cylinder(d=outer_d, h=len) ;
+                translate([0,0,-delta])
+                    cylinder(d=core_d, h=len+2*delta) ;   // Core
+            }
+            rotate([0,0,60])
+                translate([core_d/2,0,0])
+                    cylinder(d=1, h=len, $fn=8) ;
+        }
+        translate([outer_d*0.80,0,-delta])
             cylinder(d=outer_d, h=len+2*delta) ;  // Clip cutaway
         // translate([0,0,0])
         //     rotate([0,-90,0])
@@ -289,47 +296,12 @@ module spool_clip(core_d, outer_d, len) {
     }
 }
 
-// clip_len = spool_w_all-15 ;
-// spool_clip(core_d, core_d+4, clip_len) ;
-
-module layout_winder() {
-    // Spools
-    translate([-spacing,0,0])
-        spool_end(
-            shaft_d=shaft_d, core_d=core_d, bevel_d=bevel_d, outer_d=outer_d, 
-            side_t=side_t, side_rim_t=side_rim_t, w_spool_end=spool_w_end
-            );
-    translate([0,0,0])
-        spool_end(
-            shaft_d=shaft_d, core_d=core_d, bevel_d=bevel_d, outer_d=outer_d, 
-            side_t=side_t, side_rim_t=side_rim_t, w_spool_end=spool_w_end
-            );
-    translate([spacing*1,0,0])
-        spool_spacer(shaft_d=shaft_d, core_d=core_d, w_spacer=spool_w_mid/2, w_spool_end=spool_w_end) ;
-    translate([spacing*2,0,0])
-        spool_spacer(shaft_d=shaft_d, core_d=core_d, w_spacer=spool_w_mid/2, w_spool_end=spool_w_end) ;
-
-    // Crank handle
-    translate([0, spacing*2,0])
-        crank_handle(
-            crank_l=crank_l, 
-            shaft_d=shaft_d, crank_hub_d=crank_hub_d, 
-            handle_hub_d=handle_hub_d, handle_d=handle_d, 
-            crank_hub_t=crank_hub_t, crank_arm_t=crank_arm_t, handle_hub_t=crank_end_t
-            ) ;
-    
-    // Winder supports
-    translate([spacing,spacing,0])
-        spool_side_support() ;
-    translate([-spacing,spacing,0])
-        spool_side_support() ;
-}
-
-// translate([spacing*2,spacing,0]) layout_winder() ;
+clip_len = spool_w_all-15 ;
+spool_clip(core_d, core_d+4, clip_len) ;
 
 // ## spool_clips
 //
-// clip_len = spool_w_all-2 ;
+// clip_len = spool_w_mid ;
 // outer_d  = core_d+4 ;
 // translate([-outer_d*0.75,0,0])  // 0.75 comes from 'spool_clip'
 //     spool_clip(core_d, outer_d, clip_len) ;
@@ -417,5 +389,39 @@ module winder_assembly() {
 
 // winder_assembly()
 
+module layout_winder() {
+    // Spools
+    translate([-spacing,0,0])
+        spool_end(
+            shaft_d=shaft_d, core_d=core_d, bevel_d=bevel_d, outer_d=outer_d, 
+            side_t=side_t, side_rim_t=side_rim_t, w_spool_end=spool_w_end
+            );
+    translate([0,0,0])
+        spool_end(
+            shaft_d=shaft_d, core_d=core_d, bevel_d=bevel_d, outer_d=outer_d, 
+            side_t=side_t, side_rim_t=side_rim_t, w_spool_end=spool_w_end
+            );
+    translate([spacing*1,0,0])
+        spool_spacer(shaft_d=shaft_d, core_d=core_d, w_spacer=spool_w_mid/2, w_spool_end=spool_w_end) ;
+    translate([spacing*2,0,0])
+        spool_spacer(shaft_d=shaft_d, core_d=core_d, w_spacer=spool_w_mid/2, w_spool_end=spool_w_end) ;
+
+    // Crank handle
+    translate([0, spacing*2,0])
+        crank_handle(
+            crank_l=crank_l, 
+            shaft_d=shaft_d, crank_hub_d=crank_hub_d, 
+            handle_hub_d=handle_hub_d, handle_d=handle_d, 
+            crank_hub_t=crank_hub_t, crank_arm_t=crank_arm_t, handle_hub_t=crank_end_t
+            ) ;
+    
+    // Winder supports
+    translate([spacing,spacing,0])
+        spool_side_support() ;
+    translate([-spacing,spacing,0])
+        spool_side_support() ;
+}
+
+// translate([spacing*2,spacing,0]) layout_winder() ;
 
 
