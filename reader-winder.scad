@@ -255,7 +255,7 @@ module spool_clip(core_d, outer_d, len, end) {
                 union() {
                     cylinder(d=outer_d, h=len) ;
                     // Rim for better print adhesion...
-                    cylinder(d1=outer_d+5, d2=core_d, h=0.4) ;
+                    cylinder(d1=outer_d+8, d2=outer_d+2, h=0.5) ;
                 }
                 translate([0,0,-delta])
                     cylinder(d=core_d, h=len+2*delta) ;   // Core
