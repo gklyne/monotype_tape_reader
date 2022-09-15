@@ -218,7 +218,7 @@ module spool_middle(w_middle) {
                 ri=r_inner, rm=r_inner, ro=core_d/2, 
                 hl=2, dl=6, nl=3) ;
             translate([0,0,w_middle]) {
-                rotate([180,0,-30])
+                rotate([180,0,60])
                     bayonette_socket(
                         ls=w_half, lm=spool_w_plug, 
                         ri=r_inner, rm=r_inner, ro=core_d/2, 
@@ -226,11 +226,12 @@ module spool_middle(w_middle) {
             }
         } ;
         union() {
-            // Groove to stop tape carrier rotating
-            for (ra=[105, 225, 345])
+            // Anti-rotation grooves
+            // for (ra=[105, 225, 345])
+            for (ra=[30, 150, 270])
                 rotate([0,0,ra])
                     translate([core_d/2,0,-delta])
-                        cylinder(d=2.5, h=w_middle+2*delta, $fn=10) ;
+                        cylinder(d=2.6, h=w_middle+2*delta, $fn=10) ;
         } ;
     }
 } ;
@@ -240,20 +241,30 @@ module spool_middle(w_middle) {
 // Tape spool clip
 ////////////////////////////////////////////////////////////////////////////////
 
-// The spool clip is also intended to slide off the winder core
-// It may need the inner diameter increasing slightly
-module spool_clip(core_d, outer_d, len) {
+module spool_clip(core_d, outer_d, len, end) {
+    // The spool clip is also intended to slide off the winder core
+    //
+    // core_d  = inner diameter of clip
+    // outer_d = outer diameter of clip
+    // len     = overall length of clip (width of spool)
+    // end     = width of spool ends with no cutout for anti-rotation ribs
+    //
     difference() {
         union () {
             difference() {
-                cylinder(d=outer_d, h=len) ;
+                union() {
+                    cylinder(d=outer_d, h=len) ;
+                    // Rim for better print adhesion...
+                    cylinder(d1=outer_d+5, d2=core_d, h=0.4) ;
+                }
                 translate([0,0,-delta])
                     cylinder(d=core_d, h=len+2*delta) ;   // Core
             }
+            // Anti-rotation ribs
             for (ar=[60,180,300])
-            rotate([0,0,ar])
-                translate([core_d/2,0,0])
-                    cylinder(d=2, h=len, $fn=10) ;
+                rotate([0,0,ar])
+                    translate([core_d/2,0,end])
+                        cylinder(d=2.2, h=len-2*end, $fn=10) ;
         }
         translate([outer_d*0.85,0,-delta])
             cylinder(d=outer_d, h=len+2*delta) ;  // Clip cutaway
@@ -275,7 +286,7 @@ module spool_clip(core_d, outer_d, len) {
     }
 }
 
-// spool_clip(core_d, core_d+4, spool_w_all) ;
+spool_clip(core_d+clearance, core_d+3, spool_w_all-clearance, spool_w_end) ;
 
 ////////////////////////////////////////////////////////////////////////////////
 // Tape spool full set of parts
@@ -290,11 +301,11 @@ module spool_parts() {
                 );
     translate([0,outer_d,0])
         spool_middle(spool_w_mid) ;
-    translate([outer_d*1.2,outer_d,0])
-        spool_clip(core_d, core_d+4, spool_w_mid) ;
+    // translate([outer_d*1.2,outer_d,0])
+    //     spool_clip(core_d, core_d+4, spool_w_mid) ;
 }
 
-spool_parts() ;
+// spool_parts() ;
 
 // ## spool_clips
 //

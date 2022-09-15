@@ -924,12 +924,12 @@ module bayonette_channel_cutout(lm, rm, rlb, rlt, hl, at) {
     // hl  = height of lug above mating service (=> depth of channel)
     // at  = angle of twist
     //
-    dp  = lm * 0.6 ;                    // Distance for "push" channel
-    dt  = lm / 32 ;                     // Distance for "twist" channel
-    dc  = 0.0 ;                         // Axial distance for final "click" (half)
-    ac = rad_to_deg((rlb+rlt)*0.5/rm) ; // Angle for final "click"
-    ns  = 12 ;                          // Number of segments in twist
-    rl  = rm + hl ;                     // Radius to top of lug
+    dp  = lm * 0.6 ;                        // Distance for "push" channel
+    dt  = lm / 32 ;                         // Distance for "twist" channel
+    dc  = 0.0 ;                             // Axial distance for final "click" (half)
+    ac = rad_to_deg((rlb+rlt)*0.55/rm) ;    // Angle for final "click"
+    ns  = 12 ;                              // Number of segments in twist
+    rl  = rm + hl ;                         // Radius to top of lug
     ls  = segment_length(rl, at/ns) ;
     // Values used to extend inner face to fully overlap inner cylinder
     dsc = segment_corner_adjustment(rm, at/ns) ;
@@ -943,14 +943,14 @@ module bayonette_channel_cutout(lm, rm, rlb, rlt, hl, at) {
             translate([0,0,dp-dt+dc])
                 helix_extrude(h=dt, r=rsc, a=at-ac, ns=ns)
                     tapered_cube(l=ls, w1=rlb*2, w2=rlt*2, h=hl+dsc) ;
-            // Round end of channel: enlarged for final "click"
-            rotate([0,0,at])
+            // Round end of channel before final "click"
+            rotate([0,0,at-ac])
                 translate([rsc, 0, dp])
                     rotate([0,90,0])        // align shape with direction of extrusion
                         rotate([0,0,90])        // align shape with direction of extrusion
                             cylinder(r1=rlb+dc, r2=rlt+dc, h=hl+dsc, $fn=16) ;
-            // Constriction in channel for "click"
-            rotate([0,0,at-ac])
+            // Final end of channel after "click"
+            rotate([0,0,at])
                 translate([rsc, 0, dp])
                     rotate([0,90,0])        // align shape with direction of extrusion
                         rotate([0,0,90])        // align shape with direction of extrusion
