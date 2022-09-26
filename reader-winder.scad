@@ -132,27 +132,40 @@ module spool_side_support_slotted(r=145) {
     difference() {
         s_ox  = 0.50 ;           // Slot offset diameter multiplier
         f_xm = shaft_d*s_ox/2 ;  // Mid-point of flex cutout
-        f_oy = -0.675*shaft_d ;  // Y-offset of flex cutout
+        f_oy = -0.660*shaft_d ;  // Y-offset of flex cutout
         f_d  = 1.7 ;             // width of flex cutout
-        f_l  = 6.0 ;             // Length flex cutout (excl radius ends)
-        spool_side_support() ;
+        f_l  = 7.0 ;             // Length flex cutout (excl radius ends)
+        winder_side_spacer_h = winder_side_t+0.3 ;
+        union() {
+            spool_side_support() ;
+            difference() {
+                // Hub is double diameter of shaft
+                cylinder(r=shaft_d, h=winder_side_spacer_h) ;
+                translate([0,0,-delta]) {
+                    cylinder(r=shaft_d-1, h=winder_side_spacer_h+2*delta) ;
+                }
+            }
+        }
         // Cutout to allow spool to be removed
         rotate([0,0,r]) {
             translate([shaft_d*s_ox,0,-delta])
-                oval(shaft_d, shaft_d, winder_side_t+delta*2) ;
+                oval(shaft_d, shaft_d, winder_side_spacer_h+delta*2) ;
             // Cutouts to flex retaining lugs
             translate([f_xm-f_l/2, f_oy, 0])
-                oval(f_l, f_d, winder_side_t+delta*2) ;
+                oval(f_l, f_d, winder_side_spacer_h+delta*2) ;
             translate([f_xm-f_l/2, -f_oy, 0])
-                oval(f_l, f_d, winder_side_t+delta*2) ;
+                oval(f_l, f_d, winder_side_spacer_h+delta*2) ;
+            // Remove part of spacer ring
+            translate([shaft_d*0.4,-shaft_d,winder_side_t-delta])
+                cube(size=[shaft_d*2, shaft_d*2, winder_side_spacer_h]) ;
         } 
     }    
 }
 
 // spool_side_support instances
 //
-// translate([spacing*0.5,-spacing*0.5,0]) spool_side_support_slotted(r=140) ;
-// translate([spacing*1.5,-spacing*0.5,0]) spool_side_support_slotted(r=-140) ;
+translate([spacing*0.5,-spacing*0.5,0]) spool_side_support_slotted(r=140) ;
+translate([spacing*1.5,-spacing*0.5,0]) spool_side_support_slotted(r=-140) ;
 // translate([spacing*0.5,+spacing*0.5,0]) spool_side_support_slotted(r=140) ;
 // translate([spacing*1.5,+spacing*0.5,0]) spool_side_support_slotted(r=-140) ;
 
@@ -286,7 +299,7 @@ module spool_clip(core_d, outer_d, len, end) {
     }
 }
 
-spool_clip(core_d+clearance, core_d+3, spool_w_all-clearance, spool_w_end) ;
+// spool_clip(core_d+clearance, core_d+3, spool_w_all-clearance, spool_w_end) ;
 
 ////////////////////////////////////////////////////////////////////////////////
 // Tape spool full set of parts
