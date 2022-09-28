@@ -135,7 +135,7 @@ module spool_side_support_slotted(r=145) {
         f_oy = -0.660*shaft_d ;  // Y-offset of flex cutout
         f_d  = 1.7 ;             // width of flex cutout
         f_l  = 7.0 ;             // Length flex cutout (excl radius ends)
-        winder_side_spacer_h = winder_side_t+0.3 ;
+        winder_side_spacer_h = winder_side_t+0.5 ;
         union() {
             spool_side_support() ;
             difference() {
@@ -156,7 +156,7 @@ module spool_side_support_slotted(r=145) {
             translate([f_xm-f_l/2, -f_oy, 0])
                 oval(f_l, f_d, winder_side_spacer_h+delta*2) ;
             // Remove part of spacer ring
-            translate([shaft_d*0.4,-shaft_d,winder_side_t-delta])
+            translate([shaft_d*0.4,-shaft_d,winder_side_t+delta])
                 cube(size=[shaft_d*2, shaft_d*2, winder_side_spacer_h]) ;
         } 
     }    
@@ -250,6 +250,23 @@ module spool_middle(w_middle) {
 } ;
 
 
+module spool_middle_hub(w_hub) {
+    // A push-in hub for the spool moddile piece to support the spool when
+    // one end has been removed.
+    difference() {
+        cylinder(r=core_d/2-clearance, h=w_hub) ;
+        shaft_hole(d=shaft_d, l=w_hub) ;
+        translate([0,0,-delta]) {
+            spoked_wheel_cutouts(hr=shaft_d, sr=core_d/2-5, fr=2, 
+                wt=w_hub+2*delta, ns=3, sw=4) ;
+        }
+    }
+
+}
+
+// spool_middle_hub(w_hub=spool_w_end) ;
+
+
 ////////////////////////////////////////////////////////////////////////////////
 // Tape spool clip
 ////////////////////////////////////////////////////////////////////////////////
@@ -314,9 +331,12 @@ module spool_parts() {
                 );
     translate([0,outer_d,0])
         spool_middle(spool_w_mid) ;
+    translate([0,0,0])
+        spool_middle_hub(w_hub=spool_w_end) ;
     // translate([outer_d*1.2,outer_d,0])
     //     spool_clip(core_d, core_d+4, spool_w_mid) ;
 }
+
 
 // spool_parts() ;
 
