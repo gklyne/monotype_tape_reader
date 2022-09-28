@@ -164,8 +164,8 @@ module spool_side_support_slotted(r=145) {
 
 // spool_side_support instances
 //
-translate([spacing*0.5,-spacing*0.5,0]) spool_side_support_slotted(r=140) ;
-translate([spacing*1.5,-spacing*0.5,0]) spool_side_support_slotted(r=-140) ;
+// translate([spacing*0.5,-spacing*0.5,0]) spool_side_support_slotted(r=140) ;
+// translate([spacing*1.5,-spacing*0.5,0]) spool_side_support_slotted(r=-140) ;
 // translate([spacing*0.5,+spacing*0.5,0]) spool_side_support_slotted(r=140) ;
 // translate([spacing*1.5,+spacing*0.5,0]) spool_side_support_slotted(r=-140) ;
 
@@ -253,8 +253,9 @@ module spool_middle(w_middle) {
 module spool_middle_hub(w_hub) {
     // A push-in hub for the spool moddile piece to support the spool when
     // one end has been removed.
+    r_inner = core_d/2-3 ;
     difference() {
-        cylinder(r=core_d/2-clearance, h=w_hub) ;
+        cylinder(r=r_inner-clearance, h=w_hub) ;
         shaft_hole(d=shaft_d, l=w_hub) ;
         translate([0,0,-delta]) {
             spoked_wheel_cutouts(hr=shaft_d, sr=core_d/2-5, fr=2, 
@@ -264,7 +265,7 @@ module spool_middle_hub(w_hub) {
 
 }
 
-// spool_middle_hub(w_hub=spool_w_end) ;
+spool_middle_hub(w_hub=spool_w_end) ;
 
 
 ////////////////////////////////////////////////////////////////////////////////
