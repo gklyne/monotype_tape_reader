@@ -41,8 +41,8 @@ module drive_pulley(shaft_d, drive_pulley_d) {
     intersection() {
         difference() {
             union() {
-                cylinder(d=drive_pulley_d, h=crank_hub_t) ;
-                translate([0,0,crank_hub_t-delta])
+                cylinder(d=drive_pulley_d, h=crank_hub_t*0.5) ;
+                translate([0,0,crank_hub_t*0.5-delta])
                     pulley(drive_pulley_d, crank_hub_t) ;
             } ;
             union() {
@@ -52,7 +52,7 @@ module drive_pulley(shaft_d, drive_pulley_d) {
         }
     spoked_wheel(
         hr=shaft_d, sr=drive_pulley_d/2-crank_hub_t*0.6, or=drive_pulley_d, fr=3, 
-        wt=crank_hub_t*2, 
+        wt=crank_hub_t*1.5, 
         ns=6, sw=3
         ) ;
     }
@@ -60,12 +60,12 @@ module drive_pulley(shaft_d, drive_pulley_d) {
 
 // Crank and drive pulley instances
 //
-// crank_handle(
-//     crank_l=crank_l, 
-//     shaft_d=shaft_d, crank_hub_d=crank_hub_d, 
-//     handle_hub_d=handle_hub_d, handle_d=handle_d, 
-//     crank_hub_t=crank_hub_t, crank_arm_t=crank_arm_t, handle_hub_t=crank_end_t
-//     ) ;
+crank_handle(
+    crank_l=crank_l, 
+    shaft_d=shaft_d, crank_hub_d=crank_hub_d, 
+    handle_hub_d=handle_hub_d, handle_d=handle_d, 
+    crank_hub_t=crank_hub_t, crank_arm_t=crank_arm_t, handle_hub_t=crank_end_t
+    ) ;
 // translate([0,spacing,0])
 //     drive_pulley(shaft_d=shaft_d, drive_pulley_d=drive_pulley_d) ;
 // translate([spacing,spacing,0])
@@ -265,7 +265,7 @@ module spool_middle_hub(w_hub) {
 
 }
 
-spool_middle_hub(w_hub=spool_w_end) ;
+// spool_middle_hub(w_hub=spool_w_end) ;
 
 
 ////////////////////////////////////////////////////////////////////////////////

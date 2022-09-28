@@ -20,7 +20,7 @@ crank_l = 40 ;          // Length of crank (between shaft and handle centres
 
 side_t = 2.5 ;          // Thickness of spool side
 side_rim_t = 1 ;        // Thickness of spool side rim (bevelled)
-crank_hub_t = 10 ;      // Thickness of crank hub
+crank_hub_t = 8 ;      // Thickness of crank hub
 crank_arm_t = 6 ;       // Thickness of crank arm
 crank_end_t = 8 ;       // Thickness of crank handle hub (at end of arm)
 

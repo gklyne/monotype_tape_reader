@@ -147,9 +147,9 @@ module wheel(r,t) {
 
 module pulley(d,t) {
     // Pulley outside diameter d, thickness t, on X-Y plane and centred on Z axis
-    cylinder(d1=d, d2=d-t, h=t/2+delta) ;
+    cylinder(d1=d, d2=d-t*0.85, h=t/2+delta) ;
     translate([0,0,t/2])
-        cylinder(d1=d-t, d2=d, h=t/2+delta) ;    
+        cylinder(d1=d-t*0.85, d2=d, h=t/2+delta) ;    
 }
 
 
