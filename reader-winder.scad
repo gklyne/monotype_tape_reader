@@ -60,12 +60,12 @@ module drive_pulley(shaft_d, drive_pulley_d) {
 
 // Crank and drive pulley instances
 //
-crank_handle(
-    crank_l=crank_l, 
-    shaft_d=shaft_d, crank_hub_d=crank_hub_d, 
-    handle_hub_d=handle_hub_d, handle_d=handle_d, 
-    crank_hub_t=crank_hub_t, crank_arm_t=crank_arm_t, handle_hub_t=crank_end_t
-    ) ;
+// crank_handle(
+//     crank_l=crank_l, 
+//     shaft_d=shaft_d, crank_hub_d=crank_hub_d, 
+//     handle_hub_d=handle_hub_d, handle_d=handle_d, 
+//     crank_hub_t=crank_hub_t, crank_arm_t=crank_arm_t, handle_hub_t=crank_end_t
+//     ) ;
 // translate([0,spacing,0])
 //     drive_pulley(shaft_d=shaft_d, drive_pulley_d=drive_pulley_d) ;
 // translate([spacing,spacing,0])
@@ -317,7 +317,7 @@ module spool_clip(core_d, outer_d, len, end) {
     }
 }
 
-// spool_clip(core_d+clearance, core_d+3, spool_w_all-clearance, spool_w_end) ;
+spool_clip(core_d+clearance, core_d+3, spool_w_all-clearance, spool_w_end) ;
 
 ////////////////////////////////////////////////////////////////////////////////
 // Tape spool full set of parts
