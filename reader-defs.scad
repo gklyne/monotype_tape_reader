@@ -133,6 +133,7 @@ plate_py = base_w/2 ;
 
 // Misc
 delta = 0.01 ;          // Small value to force overlap
+clearance = 0.1 ;       // Clearance for close-fitting objects
 spacing = outer_d+10 ;  // Object spacing (layout pitch)
 part_gap = 10 ;         // Spacing between exploded assembly parts
 

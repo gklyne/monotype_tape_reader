@@ -272,7 +272,7 @@ module spool_middle_hub(w_hub) {
 // Tape spool clip
 ////////////////////////////////////////////////////////////////////////////////
 
-module spool_clip(core_d, outer_d, len, end) {
+module spool_clip_closed(core_d, outer_d, flange_d, len, end) {
     // The spool clip is also intended to slide off the winder core
     //
     // core_d  = inner diameter of clip
@@ -285,8 +285,8 @@ module spool_clip(core_d, outer_d, len, end) {
             difference() {
                 union() {
                     cylinder(d=outer_d, h=len) ;
-                    // Rim for better print adhesion...
-                    cylinder(d1=outer_d+8, d2=outer_d+2, h=0.5) ;
+                    // Flance to protect tape, and for better print adhesion...
+                    cylinder(d1=flange_d, d2=flange_d-8, h=0.45) ;
                 }
                 translate([0,0,-delta])
                     cylinder(d=core_d, h=len+2*delta) ;   // Core
@@ -297,11 +297,6 @@ module spool_clip(core_d, outer_d, len, end) {
                     translate([core_d/2,0,end])
                         cylinder(d=2.2, h=len-2*end, $fn=10) ;
         }
-        translate([outer_d*0.85,0,-delta])
-            cylinder(d=outer_d, h=len+2*delta) ;  // Clip cutaway
-        // translate([0,0,0])
-        //     rotate([0,-90,0])
-        //         shaft_slot(len*0.25, len*0.75, 0, core_d*0.75, outer_d+delta*2) ;
         translate([0,0,len/2])
             rotate([0,90,0])
                 translate([-len*0.4,0,-outer_d*0.5-delta])
@@ -317,7 +312,22 @@ module spool_clip(core_d, outer_d, len, end) {
     }
 }
 
-spool_clip(core_d+clearance, core_d+3, spool_w_all-clearance, spool_w_end) ;
+module spool_clip_open(core_d, outer_d, flange_d, len, end) {
+    // The spool clip is also intended to slide off the winder core
+    //
+    // core_d  = inner diameter of clip
+    // outer_d = outer diameter of clip
+    // len     = overall length of clip (width of spool)
+    // end     = width of spool ends with no cutout for anti-rotation ribs
+    //
+    difference() {
+        spool_clip_closed(core_d, outer_d, flange_d, len, end) ;
+        translate([outer_d*0.85,0,-delta])
+            cylinder(d=outer_d, h=len+2*delta) ;  // Clip cutaway
+    }
+}
+
+spool_clip_closed(core_d+clearance*2, core_d+3, bevel_d-2, spool_w_all-clearance, spool_w_end) ;
 
 ////////////////////////////////////////////////////////////////////////////////
 // Tape spool full set of parts

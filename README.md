@@ -38,28 +38,34 @@ Mechanical parts for reading paper tape created by Monotype keyboard.
 
 [x] Redesign the tape-path guides to use guide sprockets.
 
+[x] Include a small raised inner hub on the support brackets for the tape spools.
 
-[ ] Include a small raised inner hub on the support brackets for the tape spools.
+[x] Make the tape spools wider (more excess over width of the tape)
 
+[x] Use a spoked design for the tape spools (less plastic, print time and weight).
 
-[ ] Make the tape spools wider (more excess over width of the tape)
+[x] Replace axle for tape spools with a plastic locking arrangement, so they are more easily separated to remove the tape.
 
-[ ] Use a 3-spoked design for the tape spools.
-
-[ ] Replace axle for tape spools with a bolt and captive nut, or plastic locking, arrangement, so they are more easily separated to remove the tape.  (cf. puzzle boxes)
-
-    - 3-part arrangement with centre section?
-
-[ ] Redesign the tape clips to slip on and off the winder spools, and with a lip to stop them spinning
+[x] Redesign the tape clips to slip on and off the winder spools, and with a lip to stop them spinning
 
 
-[ ] Make the baseplate wider
+### 2022-10-02: revisions to Mk2.5
+
+[ ] Clip wider flange
+
+[ ] Storage clip more clearance, no break.  This to allow it to slide off.
+
+[ ] Stiffer baseplate (8 -> 12mm edge height?)
+
+[ ] Additional mount and foot for winder/stepper (front edge)
+
+[ ] Winder separate from reader bridge (drive belt stresses structure)
 
 [ ] Captive nut holders in baseplate
 
 [ ] Shorten the tape path?
 
+[ ] Make the baseplate wider (doesn't seem necessary?)
 
-[ ] Sprocket pins larger (why are they so small?)
 
-[ ] Winder separate from reader bridge (drive belt stresses structure)
+[x] Sprocket pins larger (why are they so small?)
