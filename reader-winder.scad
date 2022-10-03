@@ -327,7 +327,7 @@ module spool_clip_open(core_d, outer_d, flange_d, len, end) {
     }
 }
 
-spool_clip_closed(core_d+clearance*2, core_d+3, bevel_d-2, spool_w_all-clearance, spool_w_end) ;
+spool_clip_closed(core_d+clearance*5, core_d+3, bevel_d-2, spool_w_all-clearance, spool_w_end) ;
 
 ////////////////////////////////////////////////////////////////////////////////
 // Tape spool full set of parts
