@@ -330,7 +330,7 @@ module spool_clip_closed(core_d, outer_d, flange_d, len, end) {
                 union() {
                     cylinder(d=outer_d, h=len) ;
                     // Flance to protect tape, and for better print adhesion...
-                    cylinder(d1=flange_d, d2=flange_d-8, h=0.45) ;
+                    cylinder(d1=flange_d, d2=flange_d-4, h=0.65) ;
                 }
                 translate([0,0,-delta])
                     cylinder(d=core_d, h=len+2*delta) ;   // Core
@@ -371,7 +371,7 @@ module spool_clip_open(core_d, outer_d, flange_d, len, end) {
     }
 }
 
-spool_clip_closed(core_d+clearance*5, core_d+3.5, bevel_d-2, spool_w_all-clearance, spool_w_end) ;
+spool_clip_closed(core_d+0.8, core_d+3.8, bevel_d-2, spool_w_all-clearance, spool_w_end) ;
 
 ////////////////////////////////////////////////////////////////////////////////
 // Tape spool full set of parts
