@@ -84,7 +84,8 @@ module spool_side_support() {
             polygon(
                 points=[
                     [0,-winder_apex_d/2], [0,winder_apex_d/2],
-                    [winder_side_h-winder_base_t,-winder_side_w/2], [winder_side_h-winder_base_t,winder_side_w/2],
+                    [winder_side_h-winder_base_t,-winder_side_w/2], 
+                    [winder_side_h-winder_base_t,winder_side_w/2],
                     [winder_side_h,-winder_side_w/2], [winder_side_h,winder_side_w/2]
                     ],
                 paths=[[0,2,4,5,3,1,0]]
@@ -125,7 +126,7 @@ module spool_side_support() {
 }
 
 module spool_side_support_slotted(r=145) {
-    // Winder support with slot for removing shaft
+    // Spool support with slot for removing shaft
     //
     // r  = angle of rotation of slot from vertical
     //
@@ -162,12 +163,55 @@ module spool_side_support_slotted(r=145) {
     }    
 }
 
+
 // spool_side_support instances
 //
 // translate([spacing*0.5,-spacing*0.5,0]) spool_side_support_slotted(r=140) ;
 // translate([spacing*1.5,-spacing*0.5,0]) spool_side_support_slotted(r=-140) ;
 // translate([spacing*0.5,+spacing*0.5,0]) spool_side_support_slotted(r=140) ;
 // translate([spacing*1.5,+spacing*0.5,0]) spool_side_support_slotted(r=-140) ;
+
+module spool_and_winder_side_support(side) {
+    // Spool and winder support
+    //
+    // side = +/- 1, for different sides
+    //
+    slot_rotation = 140*side ;
+    lower_arm_x = winder_side_h-winder_base_t ;
+    lower_arm_y = 0 ;
+    upper_arm_x = winder_apex_d/2 ;
+    upper_arm_y = 0 ;
+    winder_x    = winder_apex_d/2 ;
+    winder_y    = -outer_d*0.6*side ;
+    cutout_r    = winder_apex_d*0.4 ;
+    difference() {
+        union () {
+            spool_side_support_slotted(r=slot_rotation) ;
+            difference() {
+                // Side arms to hold winder
+                union() {
+                    brace_xy(lower_arm_x,lower_arm_y, winder_x,winder_y,shaft_d*0.8,shaft_d,winder_side_t) ;
+                    brace_xy(upper_arm_x,upper_arm_y, winder_x,winder_y,shaft_d*0.8,shaft_d,winder_side_t) ;
+                }
+                translate([winder_x,winder_y,0])
+                    shaft_hole(shaft_d, winder_side_t) ;
+            }
+        }
+        // Cutout to reduce plastic used
+        translate([0,0,-delta])
+            rounded_triangle_plate(
+                winder_apex_d, 0, 
+                winder_side_h-winder_base_t,  (winder_side_w/2-cutout_r*2),
+                winder_side_h-winder_base_t, -(winder_side_w/2-cutout_r*2),
+                cutout_r, winder_side_t+2*delta
+            ) ;
+    }
+}
+
+// spool_and_winder_side_support instances
+//
+translate([spacing*0.5,-spacing*0.75,0]) spool_and_winder_side_support(-1) ;
+translate([spacing*0.5,+spacing*0.75,0]) spool_and_winder_side_support(+1) ;
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -327,7 +371,7 @@ module spool_clip_open(core_d, outer_d, flange_d, len, end) {
     }
 }
 
-spool_clip_closed(core_d+clearance*5, core_d+3, bevel_d-2, spool_w_all-clearance, spool_w_end) ;
+// spool_clip_closed(core_d+clearance*5, core_d+3, bevel_d-2, spool_w_all-clearance, spool_w_end) ;
 
 ////////////////////////////////////////////////////////////////////////////////
 // Tape spool full set of parts

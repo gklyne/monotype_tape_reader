@@ -10,6 +10,29 @@ mt_sprocket_dia   = 1.5 ;
 mt_sprocket_width = 104.3 ;
 mt_overall_width  = 110 ;
 
+module triangle_plate(x1,y1,x2,y2,x3,y3,h) {
+    // Trangular plate on X-Y plane
+    //
+    // x1 = X position of first apex
+    // y1 = Y position of first apex
+    // x2 = X position of second apex
+    // y2 = Y position of second apex
+    // x3 = X position of third apex
+    // y3 = Y position of third apex
+    // h  = heighjt (thickness) of plate
+    linear_extrude(height=h, center=false) {
+        polygon(
+            points=[
+                [x1,y1],
+                [x2,y2],
+                [x3,y3],
+                [x1,y1],
+                ]
+            ) ;
+    }
+}
+// triangle_plate(-10,-10,-10,+10,10,5,5) ;
+
 module lozenge(l,bevel_l,w,h) {
     // Lozenge object along Z axis: one point on origin, other on X-axis
     //
@@ -46,6 +69,73 @@ module oval(x, d, h) {
         cube(size=[x, d, h], center=true) ;
 }
 
+module oval_xy(x1, y1, x2, y2, d, h) {
+    // Oval shape on the X-Y axis, with ends at the indicated positions
+    //
+    // x1 = X position of first centre of curvature
+    // y1 = Y position of first centre of curvature
+    // x2 = X position of second centre of curvature
+    // y2 = Y position of second centre of curvature
+    // d  = width of oval, also diameter of curved ends
+    // h  = height (thickness) of oval
+    //
+    l = sqrt((x2-x1)^2+(y2-y1)^2) ;     // Length of oval (between radius centres)
+    a = atan2(y2-y1,x2-x1) ;            // Angle of oval from X-axis
+    translate([x1,y1,0]) {
+        cylinder(d=d, h=h, $fn=16) ;
+        rotate([0,0,a])
+            translate([0,-d/2,0])
+                cube(size=[l, d, h], center=false) ;
+    }
+    translate([x2,y2,0])
+        cylinder(d=d, h=h, $fn=16) ;
+}
+// oval_xy(-20,30,-60,-60,10,5) ;
+
+
+module boss(d, h) {
+    // Boss: cylinder with hole for fixing, on X=-Y plane, centred on the origin
+    //
+    // d  = diameter of fixing hole
+    // h  = height (thickness) of boss
+    //
+    difference() {
+        cylinder(d=d*1.5, h=h, $fn=16) ;
+        shaft_hole(d, h) ;
+    }
+}
+
+module brace_xy(x1, y1, x2, y2, w, d, h) {
+    // Brace with rounded ends with fixing holes
+    //
+    // x1 = X position of first fixing hole
+    // y1 = Y position of first fixing hole
+    // x2 = X position of second fixing hole
+    // y2 = Y position of second fixing hole
+    // w  = width of brace
+    // d  = diameter of fixing holes
+    // h  = height (thickness) of brace
+    //
+    l = sqrt((x2-x1)^2+(y2-y1)^2) ;     // Length of brace (between radius centres)
+    a = atan2(y2-y1,x2-x1) ;            // Angle of brace from X-axis
+    difference() {
+        union() {
+            translate([x1,y1,0]) {
+                cylinder(d=d*1.6, h=h, $fn=16) ;
+                rotate([0,0,a])
+                    translate([0,-w/2,0])
+                        cube(size=[l, w, h], center=false) ;
+            }
+            translate([x2,y2,0])
+                cylinder(d=d*1.5, h=h, $fn=16) ;
+        }
+        translate([x1,y1,0]) shaft_hole(d, h) ;
+        translate([x2,y2,0]) shaft_hole(d, h) ;
+    }
+}
+// brace_xy(-20,30,-60,-60,8,8,5) ;
+
+
 module shaft_hole(d, l) {
     // Cutout for shaft hole diameter d and length l
     // Shaft axis on Z axis.
@@ -59,6 +149,25 @@ module shaft_slot(x1, x2, y, d, h) {
     translate([x1,y,-delta])
         oval(x2-x1, d, h+2*delta) ;    
 }
+
+module rounded_triangle_plate(x1,y1,x2,y2,x3,y3,r,h) {
+    // Trangular plate on X-Y plane with rounded corners
+    //
+    // x1 = X position of first corner (centre of radius)
+    // y1 = Y position of first corner (centre of radius)
+    // x2 = X position of second corner (centre of radius)
+    // y2 = Y position of second corner (centre of radius)
+    // x3 = X position of third corner (centre of radius)
+    // y3 = Y position of third corner (centre of radius)
+    // r  = radius of rounded corners
+    // h  = heighjt (thickness) of plate
+    d = r*2 ;
+    triangle_plate(x1,y1,x2,y2,x3,y3,h) ;
+    oval_xy(x1,y1,x2,y2,d,h) ;
+    oval_xy(x2,y2,x3,y3,d,h) ;
+    oval_xy(x3,y3,x1,y1,d,h) ;
+}
+// rounded_triangle_plate(-20,-20, -10,+10, 10,5, 3,5) ;
 
 module torus(tr, rr) {
     // Torus centred on origin.
