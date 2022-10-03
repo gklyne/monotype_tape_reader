@@ -343,15 +343,15 @@ module spool_clip_closed(core_d, outer_d, flange_d, len, end) {
         }
         translate([0,0,len/2])
             rotate([0,90,0])
-                translate([-len*0.37,0,-outer_d*0.5-delta])
-                    lozenge(len*0.74, core_d*0.5, core_d*0.7, outer_d+2*delta) ;
+                translate([-len*0.4,0,-outer_d*0.5-delta])
+                    lozenge(len*0.8, core_d*0.4, core_d*0.8, outer_d+2*delta) ;
         translate([0,0,len/2])
             rotate([90,0,0])        // Prisms align Y
                 rotate([0,0,90]) {  // Points align Y
                     translate([+len*0.02,0,-outer_d*0.5-delta])
-                        lozenge(len*0.38, core_d*0.25, core_d*0.4, outer_d+2*delta) ;
+                        lozenge(len*0.38, core_d*0.2, core_d*0.4, outer_d+2*delta) ;
                     translate([-len*0.40,0,-outer_d*0.5-delta])
-                        lozenge(len*0.38, core_d*0.25, core_d*0.4, outer_d+2*delta) ;
+                        lozenge(len*0.38, core_d*0.2, core_d*0.4, outer_d+2*delta) ;
                 }
     }
 }
@@ -371,7 +371,7 @@ module spool_clip_open(core_d, outer_d, flange_d, len, end) {
     }
 }
 
-spool_clip_closed(core_d+clearance*5, core_d+3.5, bevel_d-2, spool_w_all-clearance, spool_w_end) ;
+// spool_clip_closed(core_d+clearance*5, core_d+3, bevel_d-2, spool_w_all-clearance, spool_w_end) ;
 
 ////////////////////////////////////////////////////////////////////////////////
 // Tape spool full set of parts
@@ -414,4 +414,110 @@ module spool_parts() {
 //     spool_with_spacers() ;
 
 
-// End.
+
+////////////////////////////////////////////////////////////////////////////////
+// Obsolete design elements?
+////////////////////////////////////////////////////////////////////////////////
+
+module spool_spacer(shaft_d, core_d, w_spacer, w_spool_end) {
+    difference() {
+        union() {
+            spool_core(d_core=core_d, w_core=w_spacer);
+        } ;
+        union() {
+            shaft_hole(d=shaft_d, l=w_spacer) ;
+        } ;
+    }
+} ;
+
+module spool_with_spacers() {
+    translate([-spacing,0,0])
+        spool_end(
+            shaft_d=shaft_d, core_d=core_d, bevel_d=bevel_d, outer_d=outer_d, 
+            side_t=side_t, side_rim_t=side_rim_t, w_spool_end=spool_w_end
+            );
+    translate([0,0,0])
+        spool_end(
+            shaft_d=shaft_d, core_d=core_d, bevel_d=bevel_d, outer_d=outer_d, 
+            side_t=side_t, side_rim_t=side_rim_t, w_spool_end=spool_w_end
+            );
+    translate([-spacing,spacing,0])
+        spool_spacer(shaft_d=shaft_d, core_d=core_d, w_spacer=spool_w_mid/2, w_spool_end=spool_w_end) ;
+    translate([0,spacing,0])
+        spool_spacer(shaft_d=shaft_d, core_d=core_d, w_spacer=spool_w_mid/2, w_spool_end=spool_w_end) ;
+}
+
+module winder_assembly() {
+    // Spool and crank handle
+    spool_pos_x   = side_t + spool_w_all/2 + part_gap/2 ;
+    winder_side_x = winder_side_t + spool_w_all/2 + part_gap/2 + part_gap ;
+    winder_pos_x  = winder_side_x + 2*part_gap ;
+    translate([-spool_pos_x,0,winder_side_h])
+        rotate([0,90,0])
+            spool_end(
+                shaft_d=shaft_d, core_d=core_d, bevel_d=bevel_d, outer_d=outer_d, 
+                side_t=side_t, side_rim_t=side_rim_t, w_spool_end=spool_w_end
+                );
+    translate([spool_pos_x,0,winder_side_h])
+        rotate([0,-90,0])
+            spool_end(
+                shaft_d=shaft_d, core_d=core_d, bevel_d=bevel_d, outer_d=outer_d, 
+                side_t=side_t, side_rim_t=side_rim_t, w_spool_end=spool_w_end
+                );
+    translate([winder_pos_x,0,winder_side_h])
+        rotate([-45,0,0])
+            rotate([0,90,0])
+                crank_handle(
+                    crank_l=crank_l, 
+                    shaft_d=shaft_d, crank_hub_d=crank_hub_d, 
+                    handle_hub_d=handle_hub_d, handle_d=handle_d, 
+                    crank_hub_t=crank_hub_t, crank_arm_t=crank_arm_t, 
+                    handle_hub_t=crank_end_t
+                    ) ;
+    // Winder supports
+    translate([winder_side_x,0,winder_side_h])
+        rotate([0,90,180])
+            spool_side_support() ;
+    translate([-winder_side_x,0,winder_side_h])
+        rotate([0,90,0])
+            spool_side_support() ;
+}
+
+// winder_assembly()
+
+module layout_winder() {
+    // Spools
+    translate([-spacing,0,0])
+        spool_end(
+            shaft_d=shaft_d, core_d=core_d, bevel_d=bevel_d, outer_d=outer_d, 
+            side_t=side_t, side_rim_t=side_rim_t, w_spool_end=spool_w_end
+            );
+    translate([0,0,0])
+        spool_end(
+            shaft_d=shaft_d, core_d=core_d, bevel_d=bevel_d, outer_d=outer_d, 
+            side_t=side_t, side_rim_t=side_rim_t, w_spool_end=spool_w_end
+            );
+    translate([spacing*1,0,0])
+        spool_spacer(shaft_d=shaft_d, core_d=core_d, w_spacer=spool_w_mid/2, w_spool_end=spool_w_end) ;
+    translate([spacing*2,0,0])
+        spool_spacer(shaft_d=shaft_d, core_d=core_d, w_spacer=spool_w_mid/2, w_spool_end=spool_w_end) ;
+
+    // Crank handle
+    translate([0, spacing*2,0])
+        crank_handle(
+            crank_l=crank_l, 
+            shaft_d=shaft_d, crank_hub_d=crank_hub_d, 
+            handle_hub_d=handle_hub_d, handle_d=handle_d, 
+            crank_hub_t=crank_hub_t, crank_arm_t=crank_arm_t, handle_hub_t=crank_end_t
+            ) ;
+    
+    // Winder supports
+    translate([spacing,spacing,0])
+        spool_side_support() ;
+    translate([-spacing,spacing,0])
+        spool_side_support() ;
+}
+
+// translate([spacing*2,spacing,0]) layout_winder() ;
+
+
