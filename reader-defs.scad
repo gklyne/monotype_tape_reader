@@ -3,6 +3,13 @@
 m4 = 4.2 ;              // Close clearance hole for M4 screw
 m8 = 8.2 ;              // Close clearance hole for M8 screw
 
+// Monotype system parameters
+
+mt_sprocket_pitch = 159 / 50 ;
+mt_sprocket_dia   = 1.6 ;
+mt_sprocket_width = 104.3 ;
+mt_overall_width  = 110 ;
+
 
 // Winder
 
@@ -16,15 +23,18 @@ drive_pulley_t = 8 ;    // Thickness of drive pulley
 handle_hub_d = 10 ;     // Diameter of handle end of crank
 handle_d = m4 ;         // Diameter of handle
 base_fix_d = m4 ;       // Diameter of base fixing screw hole
+sup_t = 4 ;            // Default thickness for side supports @@was side_t
 
 crank_l = 40 ;          // Length of crank (between shaft and handle centres
 
-side_t = 2.5 ;          // Thickness of carrier spool side
-side_rim_t = 1 ;        // Thickness of carrier spool side rim (bevelled)
+// side_t = 2.5 ;          // Thickness of carrier spool side
+// side_rim_t = 1 ;        // Thickness of carrier spool side rim (bevelled)
 crank_hub_t = 16 ;      // Thickness of crank hub
 crank_arm_t = 6 ;       // Thickness of crank arm
 crank_end_t = 8 ;       // Thickness of crank handle hub (at end of arm)
 
+spool_side_t = 2.5 ;    // Thickness of carrier spool side
+spool_side_rim_t = 1 ;  // Thickness of carrier spool side rim (bevelled)
 spool_w_all = 114 ;     // Width of spool (overall between ends)
 spool_w_end = 5 ;       // Width of spool (to inside of end)
 spool_w_plug = 8 ;      // Width of spool-end plug overlap
@@ -39,7 +49,7 @@ handle_nut_t  = 3 ;     // Nut thickness
 
 winder_side_h = 60 ;    // Height to centre of winder shaft
 winder_side_w = 40 ;    // Width base of winder side support
-winder_side_t = 4 ;     // Thickness of winder side support
+winder_side_t = sup_t ; // Thickness of winder side support
 winder_apex_d = 19 ;    // Radius of apex of winder side support
 winder_base_t = 16 ;    // Thickness at base of winder
 
@@ -57,7 +67,7 @@ guide_eld = 4.5 ;       // EL wire threading hole diameter
 tension_bar_d = 4 ;     // Tensioning bar diameter
 
 read_h = 90 ;           // Height of reader bridge above base plate
-read_side_t = side_t ;  // Reader bridge side support thickness
+read_side_t = sup_t ;   // Reader bridge side support thickness
 read_side_base_t = 16 ; // Reader bridge side support thickness at base 
 read_total_l     = spool_w_all + 2*(read_side_t + read_extra_w) ;
 read_side_apex_w = 24 ;
@@ -105,7 +115,7 @@ hold_slot_plate_l = hold_slot_o_x2 + hold_fix_rod_d ;
 // Bracket to hold phone camera support rod
 
 rod_support_h = 50 ;
-rod_support_t = side_t ;    // Rod support side support thickness
+rod_support_t = sup_t ;     // Rod support side support thickness
 rod_support_base_t = 20 ;   // Rod support side support thickness at base 
 rod_support_base_o = 89 ;   // X-offset from reader bar to phone support rod
 

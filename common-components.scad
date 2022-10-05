@@ -5,11 +5,6 @@
 delta = 0.01 ;
 clearance = 0.1 ;
 
-mt_sprocket_pitch = 159 / 50 ;
-mt_sprocket_dia   = 1.5 ;
-mt_sprocket_width = 104.3 ;
-mt_overall_width  = 110 ;
-
 module triangle_plate(x1,y1,x2,y2,x3,y3,h) {
     // Trangular plate on X-Y plane
     //
@@ -602,7 +597,7 @@ module spoked_wheel(hr, sr, or, fr, wt, ns, sw) {
 function sprocket_or_np_from_pitch(or_max, p) =
     // Calculates outside diameter and number of sprocket pins
     //
-    // Always returns an even number of pins, adjusting the 
+    // Always returns an even number of pins, adjusting the supplied radius accordingly.
     //
     // or_max = maximum outside radius - the actual value is slightly smaller than this
     // p      = sprocket hole pitch
@@ -635,135 +630,9 @@ module sprocket_pins(or, ht, np, pd) {
                 // Rotate pin to X-axis
                 rotate([0,90,0])
                     // Conical pin
-                    cylinder(d1=pd, d2=pd*0.1, h=pd*0.7, center=false, $fn=8) ;
+                    cylinder(d1=pd, d2=pd*0.1, h=pd*0.75, center=false, $fn=8) ;
     
 }
-
-
-////////////////////////////////////////////////////////////////////////////////
-// Sprocketed tape guide
-////////////////////////////////////////////////////////////////////////////////
-
-// pd   = mt_sprocket_dia ;
-// wt   = mt_overall_width + 2 ;
-// fr   = 1.5 ;
-// sw   = 2 ;
-// ht1  = (wt - mt_sprocket_width)/2 ;
-// ht2  = ht1 + mt_sprocket_width ;
-
-module shaft_nut_cutout(af1, t1, af2, t2, r) {
-    // Cutouts for captive nut on shaft axis
-    //
-    // af1 = accoss-faces size of nut on shaft
-    // t1  = thickness of nut on shaft
-    // af2 = width of access hole in rim
-    // t2  = thickness of access hole in rim
-    // r   = radius of rim
-    //
-    // Recess in hub to hold the nut
-    nut_recess(af1, t1) ;
-    translate([-af1*0.4,0,0]) nut_recess(af1, t1) ;  // Extend along -x for nut entry
-    // Opening in rim to allow access
-    translate([-r,0,-(t2-t1)/2]) nut_recess(af2, t2) ;
-    // translate([-r,0,t1/2]) cube(size=[r,af2,t2], center=true) ;
-    // cube(size=[r,af2,t2], center=true) ;
-}
-
-module shaft_middle_cutout(r,l) {
-    // Cylinder with pointed ends lying on the Z-axis, centred around z=0
-    //
-    // Used to cut away middle part of hub to reduce print time and plastic used
-    //
-    // r  = radius of cutaway cylinder
-    // l  = length of cutaway cylinder, not including pointed ends
-    //
-    cylinder(r=r, h=l, center=true, $fn=12) ;
-    translate([0,0,((r+l)/2-delta)])
-        cylinder(r1=r, r2=0, h=r, center=true, $fn=12) ;
-    translate([0,0,-((r+l)/2-delta)])
-        cylinder(r1=0, r2=r, h=r, center=true, $fn=12) ;
-}
-
-module sprocket_guide_3_spoked(sd, hr, rr, or_max, fr, sw, pd, gsw, gow) {
-    // 3-spoked sprocket tape guide, end on X-Y plane, centred on origin.
-    //
-    // sd     = shaft diameter
-    // hr     = hub radius
-    // rr     = inner rim radius
-    // or_max = maximum outer rim radius (reduced for even number of sprocket pins)
-    // fr     = fillet radius of spoke cutout
-    // sw     = spoke width
-    // pd     = sprocket pin diameter
-    // gsw    = width between guide sprocket holes
-    // gow    = overall width of guide
-    ornp = sprocket_or_np_from_pitch(or_max, mt_sprocket_pitch) ;
-    or   = ornp[0] ;
-    np   = ornp[1] ;
-    ht1  = (gow - gsw)/2 ;
-    ht2  = ht1 + gsw ;
-
-    difference() {
-        union() {
-            spoked_wheel(hr, rr, or+delta, fr, gow, 3, sw) ;
-            sprocket_pins(or, ht1, np, pd) ;
-            sprocket_pins(or, ht2, np, pd) ;
-        }
-        shaft_hole(sd, gow) ;
-        translate([0,0,gow/2])
-            # shaft_middle_cutout(rr-fr, gow*0.45) ;
-
-        // # translate([0,0,10]) {
-        //     // M4 nut:  7 AF x 3.1 thick
-        //     shaft_nut_cutout(7, 3.1, 8, 4, or) ;
-        //     translate([-4,0,0])
-        //         shaft_nut_cutout(7, 3.1, 8, 4, or) ;
-        //     //nut_recess(7, 3) ;
-        //     //translate([-12-7,-5,-1]) cube(size=[12,7+3, 3+2], center=false) ;
-        // }
-        // # translate([0,0,wt-10]) {
-        //     shaft_nut_cutout(7, 3.1, 8, 4, or) ;
-        //     translate([-4,0,0])
-        //         shaft_nut_cutout(7, 3.1, 8, 4, or) ;
-        // }
-    }
-} ;
-
-
-sd     = 4 ;
-hr     = 4 ;
-rr     = 9.5 ;
-or_max = 11 ;
-fr     = 1.5 ;
-sw     = 2 ;
-gow    = mt_overall_width + 2 ;
-
-ornp   = sprocket_or_np_from_pitch(or_max, mt_sprocket_pitch) ;
-or     = ornp[0] ;
-np     = ornp[1] ;
-
-// Generate part 
-//
-// difference() {
-//     sprocket_guide_3_spoked(sd, hr,  rr, or_max,  fr, sw, 
-//                          mt_sprocket_dia,
-//                          mt_sprocket_width, 
-//                          gow) ;
-// 
-//     # translate([0,0,12]) {
-//      // M4 nut:  7 AF x 3.1 thick
-//      shaft_nut_cutout(7, 3.1, 8, 4, or) ;
-//      //translate([-4,0,0])
-//      //    shaft_nut_cutout(7, 3.1, 8, 4, or) ;
-//     }
-//     # translate([0,0,gow-12]) {
-//      shaft_nut_cutout(7, 3.1, 8, 4, or) ;
-//      //translate([-4,0,0])
-//      //    shaft_nut_cutout(7, 3.1, 8, 4, or) ;
-//     }
-// 
-// 
-// 
-// }
 
 
 

@@ -217,8 +217,8 @@ module spool_and_winder_side_support(side) {
 
 // spool_and_winder_side_support instances
 //
-translate([spacing*0.5,-spacing*0.75,0]) spool_and_winder_side_support(-1) ;
-translate([spacing*0.5,+spacing*0.75,0]) spool_and_winder_side_support(+1) ;
+// translate([spacing*0.5,-spacing*0.75,0]) spool_and_winder_side_support(-1) ;
+// translate([spacing*0.5,+spacing*0.75,0]) spool_and_winder_side_support(+1) ;
 
 
 ////////////////////////////////////////////////////////////////////////////////
