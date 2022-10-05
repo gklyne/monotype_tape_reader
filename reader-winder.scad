@@ -26,8 +26,9 @@ module crank_handle(
         } ;
         union() {
             shaft_hole(d=shaft_d, l=crank_hub_t*2) ;
-            nut_recess(af=shaft_nut_af, t=crank_hub_t-drive_pulley_t+shaft_nut_t) ;
             // OLD: nut_recess(af=shaft_nut_af, t=shaft_nut_t) ;
+            // NEW: extends crank so it doesn't foul drive pulley:
+            nut_recess(af=shaft_nut_af, t=crank_hub_t-drive_pulley_t+shaft_nut_t) ;
             translate([crank_l,0,0]) {
                 nut_recess(af=handle_nut_af, t=handle_nut_t) ;
                 translate([0,0,handle_hub_t+delta])
@@ -60,12 +61,12 @@ module drive_pulley(shaft_d, drive_pulley_d) {
 
 // Crank and drive pulley instances
 //
-crank_handle(
-    crank_l=crank_l, 
-    shaft_d=shaft_d, crank_hub_d=crank_hub_d, 
-    handle_hub_d=handle_hub_d, handle_d=handle_d, 
-    crank_hub_t=crank_hub_t, crank_arm_t=crank_arm_t, handle_hub_t=crank_end_t
-    ) ;
+// crank_handle(
+//     crank_l=crank_l, 
+//     shaft_d=shaft_d, crank_hub_d=crank_hub_d, 
+//     handle_hub_d=handle_hub_d, handle_d=handle_d, 
+//     crank_hub_t=crank_hub_t, crank_arm_t=crank_arm_t, handle_hub_t=crank_end_t
+//     ) ;
 // translate([0,spacing,0])
 //     drive_pulley(shaft_d=shaft_d, drive_pulley_d=drive_pulley_d) ;
 // translate([spacing,spacing,0])
@@ -182,7 +183,7 @@ module spool_and_winder_side_support(side) {
     upper_arm_x = winder_apex_d/2 ;
     upper_arm_y = 0 ;
     winder_x    = winder_apex_d/2 ;
-    winder_y    = -outer_d*0.6*side ;
+    winder_y    = -outer_d*0.7*side ;
     cutout_r    = winder_apex_d*0.4 ;
     difference() {
         union () {
@@ -216,8 +217,8 @@ module spool_and_winder_side_support(side) {
 
 // spool_and_winder_side_support instances
 //
-// translate([spacing*0.5,-spacing*0.75,0]) spool_and_winder_side_support(-1) ;
-// translate([spacing*0.5,+spacing*0.75,0]) spool_and_winder_side_support(+1) ;
+translate([spacing*0.5,-spacing*0.75,0]) spool_and_winder_side_support(-1) ;
+translate([spacing*0.5,+spacing*0.75,0]) spool_and_winder_side_support(+1) ;
 
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -93,14 +93,14 @@ module oval_xy(x1, y1, x2, y2, d, h) {
 // oval_xy(-20,30,-60,-60,10,5) ;
 
 
-module boss(d, h) {
-    // Boss: cylinder with hole for fixing, on X=-Y plane, centred on the origin
+module hub(d, h) {
+    // Hub: cylinder with hole for fixing, on X-Y plane, centred on the origin
     //
     // d  = diameter of fixing hole
-    // h  = height (thickness) of boss
+    // h  = height (thickness) of hub
     //
     difference() {
-        cylinder(d=d*1.5, h=h, $fn=16) ;
+        cylinder(d=d*1.6, h=h, $fn=16) ;
         shaft_hole(d, h) ;
     }
 }
