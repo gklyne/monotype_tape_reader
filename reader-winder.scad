@@ -190,8 +190,14 @@ module spool_and_winder_side_support(side) {
             difference() {
                 // Side arms to hold winder
                 union() {
-                    brace_xy(lower_arm_x,lower_arm_y, winder_x,winder_y,shaft_d*0.8,shaft_d,winder_side_t) ;
-                    brace_xy(upper_arm_x,upper_arm_y, winder_x,winder_y,shaft_d*0.8,shaft_d,winder_side_t) ;
+                    brace_xy(lower_arm_x,lower_arm_y,
+                        winder_x,winder_y,
+                        shaft_d*0.8,shaft_d*1.6,shaft_d,winder_side_t
+                    ) ;
+                    brace_xy(upper_arm_x,upper_arm_y,
+                        winder_x,winder_y,
+                        shaft_d*0.8,shaft_d*0,shaft_d,winder_side_t
+                        ) ;
                 }
                 translate([winder_x,winder_y,0])
                     shaft_hole(shaft_d, winder_side_t) ;
@@ -210,8 +216,8 @@ module spool_and_winder_side_support(side) {
 
 // spool_and_winder_side_support instances
 //
-// translate([spacing*0.5,-spacing*0.75,0]) spool_and_winder_side_support(-1) ;
-// translate([spacing*0.5,+spacing*0.75,0]) spool_and_winder_side_support(+1) ;
+translate([spacing*0.5,-spacing*0.75,0]) spool_and_winder_side_support(-1) ;
+translate([spacing*0.5,+spacing*0.75,0]) spool_and_winder_side_support(+1) ;
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -371,7 +377,7 @@ module spool_clip_open(core_d, outer_d, flange_d, len, end) {
     }
 }
 
-spool_clip_closed(core_d+0.8, core_d+3.8, bevel_d-2, spool_w_all-clearance, spool_w_end) ;
+// spool_clip_closed(core_d+0.8, core_d+3.8, bevel_d-2, spool_w_all-clearance, spool_w_end) ;
 
 ////////////////////////////////////////////////////////////////////////////////
 // Tape spool full set of parts

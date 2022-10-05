@@ -105,7 +105,7 @@ module boss(d, h) {
     }
 }
 
-module brace_xy(x1, y1, x2, y2, w, d, h) {
+module brace_xy(x1, y1, x2, y2, w, d1, d2, h) {
     // Brace with rounded ends with fixing holes
     //
     // x1 = X position of first fixing hole
@@ -113,7 +113,8 @@ module brace_xy(x1, y1, x2, y2, w, d, h) {
     // x2 = X position of second fixing hole
     // y2 = Y position of second fixing hole
     // w  = width of brace
-    // d  = diameter of fixing holes
+    // d1 = diameter of fixing bosses
+    // d2 = diameter of fixing holes
     // h  = height (thickness) of brace
     //
     l = sqrt((x2-x1)^2+(y2-y1)^2) ;     // Length of brace (between radius centres)
@@ -121,19 +122,19 @@ module brace_xy(x1, y1, x2, y2, w, d, h) {
     difference() {
         union() {
             translate([x1,y1,0]) {
-                cylinder(d=d*1.6, h=h, $fn=16) ;
+                cylinder(d=d1, h=h, $fn=16) ;
                 rotate([0,0,a])
                     translate([0,-w/2,0])
                         cube(size=[l, w, h], center=false) ;
             }
             translate([x2,y2,0])
-                cylinder(d=d*1.5, h=h, $fn=16) ;
+                cylinder(d=d1, h=h, $fn=16) ;
         }
-        translate([x1,y1,0]) shaft_hole(d, h) ;
-        translate([x2,y2,0]) shaft_hole(d, h) ;
+        translate([x1,y1,0]) shaft_hole(d2, h) ;
+        translate([x2,y2,0]) shaft_hole(d2, h) ;
     }
 }
-// brace_xy(-20,30,-60,-60,8,8,5) ;
+// brace_xy(-20,30,-60,-60,8,12,8,5) ;
 
 
 module shaft_hole(d, l) {
