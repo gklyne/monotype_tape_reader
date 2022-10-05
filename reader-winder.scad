@@ -18,7 +18,7 @@ module crank_handle(
         union() {
             cylinder(d=crank_hub_d, h=crank_hub_t) ;
             translate([0,0,crank_hub_t-delta])
-                pulley(crank_hub_d, crank_hub_t) ;
+                pulley(crank_hub_d, drive_pulley_t) ;
             translate([crank_l/2,0,crank_arm_t/2]) 
                 cube(size=[crank_l,handle_hub_d,crank_arm_t], center=true) ;
             translate([crank_l,0,0]) 
@@ -26,12 +26,12 @@ module crank_handle(
         } ;
         union() {
             shaft_hole(d=shaft_d, l=crank_hub_t*2) ;
-            nut_recess(af=shaft_nut_af, t=shaft_nut_t) ;
+            nut_recess(af=shaft_nut_af, t=crank_hub_t-drive_pulley_t+shaft_nut_t) ;
+            // OLD: nut_recess(af=shaft_nut_af, t=shaft_nut_t) ;
             translate([crank_l,0,0]) {
-                //shaft_hole(d=handle_d, l=crank_hub_t) ;
                 nut_recess(af=handle_nut_af, t=handle_nut_t) ;
-                translate([0,0,handle_hub_t])
-                    countersinkZ(od=handle_d*2,oh=crank_hub_t, sd=handle_d, sh=handle_hub_t) ;
+                translate([0,0,handle_hub_t+delta])
+                    countersinkZ(od=handle_d*2, oh=handle_hub_t+2*delta, sd=handle_d, sh=handle_hub_t) ;
             }
         } ;
     }
@@ -41,12 +41,12 @@ module drive_pulley(shaft_d, drive_pulley_d) {
     intersection() {
         difference() {
             union() {
-                cylinder(d=drive_pulley_d, h=crank_hub_t*0.5) ;
-                translate([0,0,crank_hub_t*0.5-delta])
-                    pulley(drive_pulley_d, crank_hub_t) ;
+                cylinder(d=drive_pulley_d, h=drive_pulley_t*0.5) ;
+                translate([0,0,drive_pulley_t*0.5-delta])
+                    pulley(drive_pulley_d, drive_pulley_t) ;
             } ;
             union() {
-                shaft_hole(d=shaft_d, l=crank_hub_t*2) ;
+                shaft_hole(d=shaft_d, l=drive_pulley_t*2) ;
                 nut_recess(af=shaft_nut_af, t=shaft_nut_t) ;
             } ;
         }
@@ -60,12 +60,12 @@ module drive_pulley(shaft_d, drive_pulley_d) {
 
 // Crank and drive pulley instances
 //
-// crank_handle(
-//     crank_l=crank_l, 
-//     shaft_d=shaft_d, crank_hub_d=crank_hub_d, 
-//     handle_hub_d=handle_hub_d, handle_d=handle_d, 
-//     crank_hub_t=crank_hub_t, crank_arm_t=crank_arm_t, handle_hub_t=crank_end_t
-//     ) ;
+crank_handle(
+    crank_l=crank_l, 
+    shaft_d=shaft_d, crank_hub_d=crank_hub_d, 
+    handle_hub_d=handle_hub_d, handle_d=handle_d, 
+    crank_hub_t=crank_hub_t, crank_arm_t=crank_arm_t, handle_hub_t=crank_end_t
+    ) ;
 // translate([0,spacing,0])
 //     drive_pulley(shaft_d=shaft_d, drive_pulley_d=drive_pulley_d) ;
 // translate([spacing,spacing,0])
@@ -216,8 +216,8 @@ module spool_and_winder_side_support(side) {
 
 // spool_and_winder_side_support instances
 //
-translate([spacing*0.5,-spacing*0.75,0]) spool_and_winder_side_support(-1) ;
-translate([spacing*0.5,+spacing*0.75,0]) spool_and_winder_side_support(+1) ;
+// translate([spacing*0.5,-spacing*0.75,0]) spool_and_winder_side_support(-1) ;
+// translate([spacing*0.5,+spacing*0.75,0]) spool_and_winder_side_support(+1) ;
 
 
 ////////////////////////////////////////////////////////////////////////////////

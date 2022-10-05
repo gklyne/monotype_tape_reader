@@ -12,15 +12,16 @@ bevel_d = 72 ;          // Bevel inner diameter
 outer_d = 80 ;          // Spool outer diameter
 crank_hub_d = 25 ;      // Diameter of crank hub
 drive_pulley_d = 60 ;   // Diameter of drive pulley
+drive_pulley_t = 8 ;    // Thickness of drive pulley
 handle_hub_d = 10 ;     // Diameter of handle end of crank
 handle_d = m4 ;         // Diameter of handle
 base_fix_d = m4 ;       // Diameter of base fixing screw hole
 
 crank_l = 40 ;          // Length of crank (between shaft and handle centres
 
-side_t = 2.5 ;          // Thickness of spool side
-side_rim_t = 1 ;        // Thickness of spool side rim (bevelled)
-crank_hub_t = 8 ;      // Thickness of crank hub
+side_t = 2.5 ;          // Thickness of carrier spool side
+side_rim_t = 1 ;        // Thickness of carrier spool side rim (bevelled)
+crank_hub_t = 16 ;      // Thickness of crank hub
 crank_arm_t = 6 ;       // Thickness of crank arm
 crank_end_t = 8 ;       // Thickness of crank handle hub (at end of arm)
 

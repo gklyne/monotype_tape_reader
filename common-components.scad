@@ -113,7 +113,7 @@ module brace_xy(x1, y1, x2, y2, w, d1, d2, h) {
     // x2 = X position of second fixing hole
     // y2 = Y position of second fixing hole
     // w  = width of brace
-    // d1 = diameter of fixing bosses
+    // d1 = diameter of fixing hubs
     // d2 = diameter of fixing holes
     // h  = height (thickness) of brace
     //
