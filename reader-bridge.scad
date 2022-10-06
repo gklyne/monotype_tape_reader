@@ -148,7 +148,6 @@ module sprocket_guide_3_spoked(sd, hr, rr, or_max, fr, sw, pd, gsw, gow) {
 } ;
 
 
-
 sd     = 4 ;
 hr     = 4 ;
 rr     = 9.5 ;
@@ -159,24 +158,6 @@ gow    = mt_overall_width + 2.5 ;
 
 // Generate part 
 //
-// @@@@ OLD code:
-// difference() {
-//     sprocket_guide_3_spoked(sd, hr,  rr, or_max,  fr, sw, 
-//                          mt_sprocket_dia,
-//                          mt_sprocket_width, 
-//                          gow) ;
-//     # translate([0,0,12]) {
-//      // M4 nut:  7 AF x 3.1 thick
-//      shaft_nut_cutout(7, 3.1, 8, 4, or) ;
-//      //translate([-4,0,0])
-//      //    shaft_nut_cutout(7, 3.1, 8, 4, or) ;
-//     }
-//     # translate([0,0,gow-12]) {
-//      shaft_nut_cutout(7, 3.1, 8, 4, or) ;
-//      //translate([-4,0,0])
-//      //    shaft_nut_cutout(7, 3.1, 8, 4, or) ;
-//     }
-// }
 
 module sprocket_tape_guide() {
     ornp = sprocket_or_np_from_pitch(or_max, mt_sprocket_pitch) ;

@@ -604,8 +604,9 @@ function sprocket_or_np_from_pitch(or_max, p) =
     //
     let (
         sc_max = PI * or_max,           // Minimum outside semi-circumference
-        np     = floor(sc_max / p),     // Number of sprocket pins on semi-corcumference
+        np     = floor(sc_max / p),     // Number of sprocket pins on semi-circumference
         sc     = np * p,                // Actual semi-circumference for number of pins at given pitch
+        // @@QUERY: reduce to allow for thickness of paper (0.08mm)?
         or     = sc / PI                // Actual outside radius for number of pins at given pitch
     ) [or, np*2] ;
 

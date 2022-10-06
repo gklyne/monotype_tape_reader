@@ -5,11 +5,13 @@ m8 = 8.2 ;              // Close clearance hole for M8 screw
 
 // Monotype system parameters
 
-mt_sprocket_pitch = 159 / 50 ;
-mt_sprocket_dia   = 1.6 ;
-mt_sprocket_width = 104.3 ;
-mt_overall_width  = 110 ;
-
+// 159/50 = 3.18
+// 285.5/90 = 3.172
+mt_sprocket_pitch = 3.2 ;   // was: 159/50; paper was riding up on pins after about 20 holes
+mt_sprocket_dia   = 1.6 ;   // was: 1.5
+mt_sprocket_width = 104.3 ; // Between sprocket hole rows
+mt_overall_width  = 110 ;   // Overall width of tape
+mt_paper_tickness = 0.08 ;  // Thickness of paper tape
 
 // Winder
 
@@ -23,12 +25,10 @@ drive_pulley_t = 8 ;    // Thickness of drive pulley
 handle_hub_d = 10 ;     // Diameter of handle end of crank
 handle_d = m4 ;         // Diameter of handle
 base_fix_d = m4 ;       // Diameter of base fixing screw hole
-sup_t = 4 ;            // Default thickness for side supports @@was side_t
+sup_t = 4 ;             // Default thickness for side supports @@was side_t
 
 crank_l = 40 ;          // Length of crank (between shaft and handle centres
 
-// side_t = 2.5 ;          // Thickness of carrier spool side
-// side_rim_t = 1 ;        // Thickness of carrier spool side rim (bevelled)
 crank_hub_t = 16 ;      // Thickness of crank hub
 crank_arm_t = 6 ;       // Thickness of crank arm
 crank_end_t = 8 ;       // Thickness of crank handle hub (at end of arm)
