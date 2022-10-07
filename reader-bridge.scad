@@ -70,7 +70,7 @@ module tape_reader_bridge_dovetailed() {
 module shaft_nut_cutout(af1, t1, af2, t2, r) {
     // Cutouts for captive nut on shaft axis
     //
-    // af1 = accoss-faces size of nut on shaft
+    // af1 = across-faces size of nut on shaft
     // t1  = thickness of nut on shaft
     // af2 = width of access hole in rim
     // t2  = thickness of access hole in rim
@@ -80,7 +80,8 @@ module shaft_nut_cutout(af1, t1, af2, t2, r) {
     nut_recess(af1, t1) ;
     translate([-af1*0.4,0,0]) nut_recess(af1, t1) ;  // Extend along -x for nut entry
     // Opening in rim to allow access
-    translate([-r,0,-(t2-t1)/2]) nut_recess(af2, t2) ;
+    translate([-r,0,0]) nut_recess(af2, t2) ;
+    // translate([-r,0,-(t2-t1)/2]) nut_recess(af2, t2) ;
     // translate([-r,0,t1/2]) cube(size=[r,af2,t2], center=true) ;
     // cube(size=[r,af2,t2], center=true) ;
 }
@@ -148,59 +149,132 @@ module sprocket_guide_3_spoked(sd, hr, rr, or_max, fr, sw, pd, gsw, gow) {
 } ;
 
 
-sd     = 4 ;
-hr     = 4 ;
-rr     = 9.5 ;
-or_max = 11 ;
-fr     = 1.5 ;
-sw     = 2 ;
-gow    = mt_overall_width + 2.5 ;
-
 // Generate part 
 //
 
+guide_sprocket_fillet_r = 1.5 ;  
+guide_sprocket_spoke_w  = 2 ;
+
+guide_sprocket_dia      = 22 ;
+guide_sprocket_shaft_d  = m4 ;
+guide_sprocket_hub_r    = m4 ;
+guide_sprocket_rim_r    = guide_sprocket_dia/2 - 1.5 ;
+guide_sprocket_width    = mt_overall_width + 2.5 ;
+guide_sprocket_off      = 1 ;       // Offset from side (standoff hub thickness)
+
+// Positioning...
+guide_sprocket_sep      = guide_sprocket_dia*1.8 + read_w ;
+guide_sprocket_ht_off   = guide_sprocket_dia*0.5 ;
+
 module sprocket_tape_guide() {
-    ornp = sprocket_or_np_from_pitch(or_max, mt_sprocket_pitch) ;
+    ornp = sprocket_or_np_from_pitch(guide_sprocket_dia/2, mt_sprocket_pitch) ;
     or   = ornp[0] ;
     np   = ornp[1] ;
     difference() {
-        sprocket_guide_3_spoked(sd, hr,  rr, or_max,  fr, sw, 
-                             mt_sprocket_dia,
-                             mt_sprocket_width, 
-                             gow) ;
+        sprocket_guide_3_spoked(
+            guide_sprocket_shaft_d, 
+            guide_sprocket_hub_r,  guide_sprocket_rim_r, guide_sprocket_dia/2,  
+            guide_sprocket_fillet_r, guide_sprocket_spoke_w, 
+            mt_sprocket_dia,
+            mt_sprocket_width, 
+            guide_sprocket_width) ;
+        // M4 nut cutouts:  7 AF x 3.1 thick
         translate([0,0,12]) {
-         // M4 nut:  7 AF x 3.1 thick
-         shaft_nut_cutout(7, 3.1, 8, 4, or) ;
-         //translate([-4,0,0])
-         //    shaft_nut_cutout(7, 3.1, 8, 4, or) ;
+            shaft_nut_cutout(7, 3.1, 8, 4, or) ;
         }
-        translate([0,0,gow-12]) {
-         shaft_nut_cutout(7, 3.1, 8, 4, or) ;
-         //translate([-4,0,0])
-         //    shaft_nut_cutout(7, 3.1, 8, 4, or) ;
+        translate([0,0,guide_sprocket_width-12]) {
+            shaft_nut_cutout(7, 3.1, 8, 4, or) ;
         }
     }
 }
 
-// sprocket_tape_guide() ;
+sprocket_tape_guide() ;
 
+////////////////////////////////////////////////////////////////////////////////
+// Roller tape guide
+////////////////////////////////////////////////////////////////////////////////
+//
+// The purpose of this guide is to keep the tape wrapped around the sprocket guide.
+// Implemented as roller to reduce friction.
+//
+
+module roller_guide_3_spoked(sd, hr, rr, or, fr, sw, gow) {
+    // 3-spoked roller tape guide, end on X-Y plane, centred on origin.
+    //
+    // sd     = shaft diameter
+    // hr     = hub radius
+    // rr     = inner rim radius
+    // or     = outer radius
+    // fr     = fillet radius of spoke cutout
+    // sw     = spoke width
+    // gow    = overall width of guide
+    //
+
+    difference() {
+        union() {
+            wheel(or+delta, gow) ;
+            rr1 = or + 1 ;          // Rim end ..
+            rw1 = 0.2 ;
+            rr2 = or + 0.25 ;       // Rim bevel ..
+            rw2 = 0.6 ;
+            // Bottom rim...
+            cylinder(r=rr1, h=rw1, $fn=24) ;
+            translate([0,0,rw1-delta])
+               cylinder(r1=rr1, r2=rr2, h=rw2, $fn=24) ;
+            // Top rim
+            translate([0,0,gow-rw1-rw2+delta])
+                cylinder(r1=rr2, r2=rr1, h=rw2, $fn=24) ;
+            translate([0,0,gow-rw1])
+                cylinder(r=rr1, h=rw1, $fn=24) ;
+        }
+        shaft_hole(sd, gow) ;
+        translate([0,0,gow/2])
+            shaft_middle_cutout(rr-fr, gow*0.45) ;
+        translate([0,0,-delta])
+            spoked_wheel_cutouts(hr, rr, fr, gow+2*delta, 3, sw) ;
+    }
+} ;
+
+// Generate part 
+//
+
+guide_roller_fillet_r   = 0.5 ;  
+guide_roller_spoke_w    = 1.5 ;
+
+guide_roller_outer_d    = 14 ;
+guide_roller_shaft_d    = guide_sprocket_shaft_d ;
+guide_roller_hub_r      = guide_roller_shaft_d ;
+guide_roller_rim_r      = guide_roller_outer_d/2 - 0.8 ;
+guide_roller_width      = mt_overall_width + 2.5 ;
+guide_roller_off        = guide_sprocket_off ;
+
+guide_roller_centre_x   = guide_sprocket_ht_off*1.6 ;
+guide_roller_centre_y   = guide_sprocket_sep/2 + guide_sprocket_dia*0.5 + guide_roller_outer_d*0.6 ;
+
+module roller_tape_guide() {
+    or = guide_roller_outer_d/2 ;
+    difference() {
+        roller_guide_3_spoked(
+            guide_roller_shaft_d, guide_roller_hub_r,  
+            guide_roller_rim_r, or,  
+            guide_roller_fillet_r, guide_roller_spoke_w, 
+            guide_roller_width
+            ) ;
+        // M4 nut cutouts:  7 AF x 3.1 thick
+        translate([0,0,12]) {
+            shaft_nut_cutout(7, 3.1, 8, 4, or) ;
+        }
+        translate([0,0,guide_roller_width-12]) {
+            shaft_nut_cutout(7, 3.1, 8, 4, or) ;
+        }
+    }
+}
+
+// roller_tape_guide() ;
 
 ////////////////////////////////////////////////////////////////////////////////
 // Tape reader bridge supports
 ////////////////////////////////////////////////////////////////////////////////
-
-guide_sprocket_dia     = 24 ;
-guide_sprocket_sep     = guide_sprocket_dia*1.5 + read_w ;
-guide_sprocket_ht_off  = guide_sprocket_dia*0.5 ;
-guide_sprocket_shaft_d = m4 ;
-guide_sprocket_off     = 1 ;
-
-roller_shaft_d   = guide_sprocket_shaft_d ;
-roller_outer_d   = roller_shaft_d*2 ;
-roller_centre_x  = guide_sprocket_ht_off ;
-roller_centre_y  = guide_sprocket_sep/2 + guide_sprocket_dia/2 + roller_shaft_d*1.5 ;
-roller_shaft_off = guide_sprocket_off ;
-
 
 module read_side_support() {
     // Side in X-Y plane, shaft centre at origin, extends along +X axis
@@ -252,12 +326,12 @@ module read_side_support() {
         // Extend side arms to include pivot for roller
         // oval_xy(x1, y1, x2, y2, d, h)
         oval_xy(
-            roller_centre_x, roller_centre_y*side, 
+            guide_roller_centre_x, guide_roller_centre_y*side, 
             guide_sprocket_ht_off, (guide_sprocket_sep/2)*side,
-            roller_outer_d, winder_side_t
+            guide_roller_outer_d, winder_side_t
         ) ;
-        translate([roller_centre_x, roller_centre_y*side, 0])
-            cylinder(d=roller_shaft_d+2, h=read_side_t+guide_sprocket_off) ;
+        translate([guide_roller_centre_x, guide_roller_centre_y*side, 0])
+            cylinder(d=guide_roller_shaft_d+2, h=read_side_t+guide_sprocket_off) ;
     }
 
     // Reader side support assembly...
@@ -278,9 +352,9 @@ module read_side_support() {
         translate([guide_sprocket_ht_off, -guide_sprocket_sep/2, 0])
             shaft_hole(guide_sprocket_shaft_d, read_side_t+guide_sprocket_off) ;
         // Shaft holes for guide rollers
-        translate([roller_centre_x, roller_centre_y, 0])
+        translate([guide_roller_centre_x, guide_roller_centre_y, 0])
             shaft_hole(guide_sprocket_shaft_d, read_side_t+guide_sprocket_off) ;
-        translate([roller_centre_x, -roller_centre_y, 0])
+        translate([guide_roller_centre_x, -guide_roller_centre_y, 0])
             shaft_hole(guide_sprocket_shaft_d, read_side_t+guide_sprocket_off) ;
         // Cutout to reduce plastic used
         cutout_r = shaft_d ;
@@ -305,7 +379,7 @@ module read_side_support_dovetailed() {
 }
 
 // read_side_support() ;
-read_side_support_dovetailed() ;
+// read_side_support_dovetailed() ;
 
 ////////////////////////////////////////////////////////////////////////////////
 // Assemblies...
