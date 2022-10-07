@@ -27,6 +27,9 @@ module shaft_nut_carrier(d1, d2, h, af, t) {
         shaft_hole(d2, h) ;
         translate([0,0,(h-(t+nut_recess_height(af)))*0.5])
             extended_nut_recess(af, t, d1) ;
+        translate([0,0,h*0.5])
+            rotate([0,90,0])
+                cylinder(d=d2,h=d1+2*delta, $fn=6, center=true) ;
     }
 }
 // Instance shaft_nut_carrier(d1, d2, h, af, t)
