@@ -182,7 +182,7 @@ module sprocket_tape_guide() {
     }
 }
 
-sprocket_tape_guide() ;
+// sprocket_tape_guide() ;
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -194,7 +194,13 @@ guide_sprocket_sep     = guide_sprocket_dia*1.5 + read_w ;
 guide_sprocket_ht_off  = guide_sprocket_dia*0.5 ;
 guide_sprocket_shaft_d = m4 ;
 guide_sprocket_off     = 1 ;
-winder_shaft_height    = (read_h+read_side_base_t)*0.4 ;
+
+roller_shaft_d   = guide_sprocket_shaft_d ;
+roller_outer_d   = roller_shaft_d*2 ;
+roller_centre_x  = guide_sprocket_ht_off ;
+roller_centre_y  = guide_sprocket_sep/2 + guide_sprocket_dia/2 + roller_shaft_d*1.5 ;
+roller_shaft_off = guide_sprocket_off ;
+
 
 module read_side_support() {
     // Side in X-Y plane, shaft centre at origin, extends along +X axis
@@ -242,27 +248,39 @@ module read_side_support() {
             cylinder(d=guide_sprocket_shaft_d+2, h=read_side_t+guide_sprocket_off) ;
     }
 
+    module side_guide_roller_arms(side) {
+        // Extend side arms to include pivot for roller
+        // oval_xy(x1, y1, x2, y2, d, h)
+        oval_xy(
+            roller_centre_x, roller_centre_y*side, 
+            guide_sprocket_ht_off, (guide_sprocket_sep/2)*side,
+            roller_outer_d, winder_side_t
+        ) ;
+        translate([roller_centre_x, roller_centre_y*side, 0])
+            cylinder(d=roller_shaft_d+2, h=read_side_t+guide_sprocket_off) ;
+    }
+
     // Reader side support assembly...
     difference() {
         union() {
             side_profile() ;
             side_guide_sprocket_arms() ;
+            side_guide_roller_arms(+1) ;
+            side_guide_roller_arms(-1) ;
             side_base() ;
             web_side = read_side_base_t - read_side_t ;
             web_xz(read_h-read_side_t, -read_side_base_w/2, read_side_t, -web_side, web_side, read_side_t) ;
             web_xz(read_h-read_side_t,  read_side_base_w/2, read_side_t, -web_side, web_side, read_side_t) ;
         } ;
-
-        // shaft_hole(shaft_d, read_side_t) ;
-        // translate([read_h-winder_shaft_height,0,0])
-        //     shaft_hole(shaft_d, read_side_t) ;
-        // translate([read_h-read_side_base_t-read_side_t, +0.25*read_side_base_w, 0])
-        //     shaft_hole(read_side_peg_d, read_side_t) ;
-        // translate([read_h-read_side_base_t-read_side_t, -0.25*read_side_base_w, 0])
-        //     shaft_hole(read_side_peg_d, read_side_t) ;
+        // Shaft holes for guide sprockets
         translate([guide_sprocket_ht_off, guide_sprocket_sep/2, 0])
             shaft_hole(guide_sprocket_shaft_d, read_side_t+guide_sprocket_off) ;
         translate([guide_sprocket_ht_off, -guide_sprocket_sep/2, 0])
+            shaft_hole(guide_sprocket_shaft_d, read_side_t+guide_sprocket_off) ;
+        // Shaft holes for guide rollers
+        translate([roller_centre_x, roller_centre_y, 0])
+            shaft_hole(guide_sprocket_shaft_d, read_side_t+guide_sprocket_off) ;
+        translate([roller_centre_x, -roller_centre_y, 0])
             shaft_hole(guide_sprocket_shaft_d, read_side_t+guide_sprocket_off) ;
         // Cutout to reduce plastic used
         cutout_r = shaft_d ;
@@ -287,7 +305,7 @@ module read_side_support_dovetailed() {
 }
 
 // read_side_support() ;
-// read_side_support_dovetailed() ;
+read_side_support_dovetailed() ;
 
 ////////////////////////////////////////////////////////////////////////////////
 // Assemblies...
