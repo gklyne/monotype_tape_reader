@@ -178,9 +178,54 @@ module torus(tr, rr) {
 }
 // torus(20, 3);
 
+// Triangular prism on X-Y plane, centred and aligned on X-axis, one end at origin
+//
+// w  = width of base of prism
+// h  = height of apex
+// l  = length of prism
+//
+module triangular_prism(w,h,l) {
+    rotate([0,90,0])
+        linear_extrude(height=l)
+            polygon(
+                points=[
+                    [0,  -w/2], 
+                    [0,  +w/2],
+                    [-h, 0],
+                    ],
+                paths=[[0,1,2,0]]
+                ) ;
+}
+
+// Trapezoidal prism on X-Y plane, centred and aligned on X-axis, one end at origin
+//
+// w1 = width of base of prism
+// w2 = width at top of prism
+// h  = height of top of prism
+// l  = length of prism
+//
+module trapezoidal_prism(w1,w2,h,l) {
+    rotate([0,90,0])
+        linear_extrude(height=l)
+            polygon(
+                points=[
+                    [0,  -w1/2], 
+                    [0,  +w1/2],
+                    [-h, -w2/2],
+                    [-h, +w2/2],
+                    ],
+                paths=[[0,2,3,1,0]]
+                ) ;
+}
+
+// Return height of nut recess given across-flats size of nut
+//
+function nut_recess_height(af) = af*0.35 ;
+
 // Hex nut recess on centre of X-Y plane
 //
 // af = nut dimension AF (across flats, = spanner size)
+// t  = thickness of nut
 //
 module nut_recess(af, t)  {
     od = af * 2 / sqrt(3) ; // Diameter
@@ -191,9 +236,32 @@ module nut_recess(af, t)  {
     // assume that these are short enough for the printing to bridge.
     // Similarly, tip of pyramid is truncated.
     translate([0,0,t])
-        cylinder(d1=af-0.25, d2=2, h=af*0.35, $fn=12) ;
+        cylinder(d1=af-0.25, d2=2, h=nut_recess_height(af), $fn=12) ;
     }
 }
+
+module extended_nut_recess(af, t, l) {
+    // Extended nut cutout on X-Y plane, with nut centred on the origin, extends along X-axis
+    //
+    // af = size of nut across faces (across flats, = spanner size)
+    // t  = thickness of nut
+    // l  = length of cutout
+    //
+    od = af * 2 / sqrt(3) ; // Diameter (across corners)
+    translate([0,0,-delta]) {
+        cylinder(d=od, h=t+delta*2, $fn=6) ;
+        translate([0,-af/2,0])
+            cube(size=[l,af,t+delta*2]) ;
+    }
+    // Cone and "roof" above for printing overhang
+    translate([0,0,t]) {
+        cylinder(d1=af-0.4, d2=2, h=nut_recess_height(af), $fn=12) ;
+        translate([af*0.25,0,0])
+            trapezoidal_prism(w1=af-0.4, w2=2, h=nut_recess_height(af), l=l-af*0.25) ;
+    }
+}
+// extended_nut_recess(af, t, l) instance
+// extended_nut_recess(7, 3.1, 20) ;
 
 // Cutout for vertical screw hole with downward-facing countersink at top, 
 // centred on origin.

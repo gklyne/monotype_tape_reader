@@ -4,6 +4,69 @@ include <reader-defs.scad> ;
 
 use <reader-common.scad> ;
 
+
+////////////////////////////////////////////////////////////////////////////////
+// Utilities for tape guide objects
+////////////////////////////////////////////////////////////////////////////////
+
+// extended_nut_recess(af, t, l) instance
+
+
+module shaft_nut_carrier(d1, d2, h, af, t) {
+    // Cylindrical section on X-Y plane, centred on origin, with shaft hole and
+    // nut carrier cutout.
+    //
+    // d1 = diameter of cylindrical section
+    // d2 = diameter of shaft hole
+    // h  = height of cylindrical section
+    // af = size (across flats) of nut
+    // t  = thickness of nut
+    // 
+    difference() {
+        cylinder(d=d1, h=h, $fn=16) ;
+        shaft_hole(d2, h) ;
+        translate([0,0,(h-(t+nut_recess_height(af)))*0.5])
+            extended_nut_recess(af, t, d1) ;
+    }
+}
+// Instance shaft_nut_carrier(d1, d2, h, af, t)
+shaft_nut_carrier(16, m4, 8, 7, 3.1) ;
+
+module shaft_nut_cutout(af1, t1, af2, t2, r) {
+    // Cutouts for captive nut on shaft axis
+    //
+    // af1 = across-faces size of nut on shaft
+    // t1  = thickness of nut on shaft
+    // af2 = width of access hole in rim
+    // t2  = thickness of access hole in rim
+    // r   = radius of rim
+    //
+    // Recess in hub to hold the nut
+    nut_recess(af1, t1) ;
+    translate([-af1*0.4,0,0]) nut_recess(af1, t1) ;  // Extend along -x for nut entry
+    // Opening in rim to allow access
+    translate([-r,0,0]) nut_recess(af2, t2) ;
+    // translate([-r,0,-(t2-t1)/2]) nut_recess(af2, t2) ;
+    // translate([-r,0,t1/2]) cube(size=[r,af2,t2], center=true) ;
+    // cube(size=[r,af2,t2], center=true) ;
+}
+
+module shaft_middle_cutout(r,l) {
+    // Cylinder with pointed ends lying on the Z-axis, centred around z=0
+    //
+    // Used to cut away middle part of hub to reduce print time and plastic used
+    //
+    // r  = radius of cutaway cylinder
+    // l  = length of cutaway cylinder, not including pointed ends
+    //
+    cylinder(r=r, h=l, center=true, $fn=12) ;
+    translate([0,0,((r+l)/2-delta)])
+        cylinder(r1=r, r2=0, h=r, center=true, $fn=12) ;
+    translate([0,0,-((r+l)/2-delta)])
+        cylinder(r1=0, r2=r, h=r, center=true, $fn=12) ;
+}
+
+
 ////////////////////////////////////////////////////////////////////////////////
 // Tape reader bridge (with lighting groove)
 ////////////////////////////////////////////////////////////////////////////////
@@ -66,40 +129,6 @@ module tape_reader_bridge_dovetailed() {
 ////////////////////////////////////////////////////////////////////////////////
 // Sprocketed tape guide
 ////////////////////////////////////////////////////////////////////////////////
-
-module shaft_nut_cutout(af1, t1, af2, t2, r) {
-    // Cutouts for captive nut on shaft axis
-    //
-    // af1 = across-faces size of nut on shaft
-    // t1  = thickness of nut on shaft
-    // af2 = width of access hole in rim
-    // t2  = thickness of access hole in rim
-    // r   = radius of rim
-    //
-    // Recess in hub to hold the nut
-    nut_recess(af1, t1) ;
-    translate([-af1*0.4,0,0]) nut_recess(af1, t1) ;  // Extend along -x for nut entry
-    // Opening in rim to allow access
-    translate([-r,0,0]) nut_recess(af2, t2) ;
-    // translate([-r,0,-(t2-t1)/2]) nut_recess(af2, t2) ;
-    // translate([-r,0,t1/2]) cube(size=[r,af2,t2], center=true) ;
-    // cube(size=[r,af2,t2], center=true) ;
-}
-
-module shaft_middle_cutout(r,l) {
-    // Cylinder with pointed ends lying on the Z-axis, centred around z=0
-    //
-    // Used to cut away middle part of hub to reduce print time and plastic used
-    //
-    // r  = radius of cutaway cylinder
-    // l  = length of cutaway cylinder, not including pointed ends
-    //
-    cylinder(r=r, h=l, center=true, $fn=12) ;
-    translate([0,0,((r+l)/2-delta)])
-        cylinder(r1=r, r2=0, h=r, center=true, $fn=12) ;
-    translate([0,0,-((r+l)/2-delta)])
-        cylinder(r1=0, r2=r, h=r, center=true, $fn=12) ;
-}
 
 module sprocket_guide_3_spoked(sd, hr, rr, or_max, fr, sw, pd, gsw, gow) {
     // 3-spoked sprocket tape guide, end on X-Y plane, centred on origin.
@@ -188,7 +217,7 @@ module sprocket_tape_guide() {
     }
 }
 
-sprocket_tape_guide() ;
+// sprocket_tape_guide() ;
 
 ////////////////////////////////////////////////////////////////////////////////
 // Roller tape guide
