@@ -9,9 +9,6 @@ use <reader-common.scad> ;
 // Utilities for tape guide objects
 ////////////////////////////////////////////////////////////////////////////////
 
-// extended_nut_recess(af, t, l) instance
-
-
 module shaft_nut_carrier(d1, d2, h, af, t) {
     // Cylindrical section on X-Y plane, centred on origin, with shaft hole and
     // nut carrier cutout.
@@ -22,20 +19,23 @@ module shaft_nut_carrier(d1, d2, h, af, t) {
     // af = size (across flats) of nut
     // t  = thickness of nut
     // 
+    t1 = t + nut_recess_height(af) ;    // Overall height of nut recess
+    h1 = (h-t1)*0.5 ;                   // Height to bottom of nut recess
+    h2 = h1 + t/2 ;                     // Height to centre of nut ejection shaft
     difference() {
         cylinder(d=d1, h=h, $fn=16) ;
         shaft_hole(d2, h) ;
-        translate([0,0,(h-(t+nut_recess_height(af)))*0.5])
+        translate([0,0,h1])
             extended_nut_recess(af, t, d1) ;
-        translate([0,0,h*0.5])
+        translate([0,0,h2])
             rotate([0,90,0])
-                cylinder(d=d2,h=d1+2*delta, $fn=6, center=true) ;
+                cylinder(d=t,h=d1+2*delta, $fn=6, center=true) ;
     }
 }
 // Instance shaft_nut_carrier(d1, d2, h, af, t)
-shaft_nut_carrier(16, m4, 8, 7, 3.1) ;
+// shaft_nut_carrier(16, m4, 8, 7, 3.1) ;
 
-module shaft_nut_cutout(af1, t1, af2, t2, r) {
+module shaft_nut_cutout_____unused____(af1, t1, af2, t2, r) {
     // Cutouts for captive nut on shaft axis
     //
     // af1 = across-faces size of nut on shaft
@@ -49,9 +49,6 @@ module shaft_nut_cutout(af1, t1, af2, t2, r) {
     translate([-af1*0.4,0,0]) nut_recess(af1, t1) ;  // Extend along -x for nut entry
     // Opening in rim to allow access
     translate([-r,0,0]) nut_recess(af2, t2) ;
-    // translate([-r,0,-(t2-t1)/2]) nut_recess(af2, t2) ;
-    // translate([-r,0,t1/2]) cube(size=[r,af2,t2], center=true) ;
-    // cube(size=[r,af2,t2], center=true) ;
 }
 
 module shaft_middle_cutout(r,l) {
@@ -155,7 +152,6 @@ module sprocket_guide_3_spoked(sd, hr, rr, or_max, fr, sw, pd, gsw, gow) {
     difference() {
         union() {
             wheel(or+delta, gow) ;
-            //@@@@ spoked_wheel(hr, rr, or+delta, fr, gow, 3, sw) ;
             sprocket_pins(or, ht1, np, pd) ;
             sprocket_pins(or, ht2, np, pd) ;
             rr1 = or + 1 ;      // Rim end ..
@@ -203,24 +199,31 @@ module sprocket_tape_guide() {
     or   = ornp[0] ;
     np   = ornp[1] ;
     difference() {
-        sprocket_guide_3_spoked(
-            guide_sprocket_shaft_d, 
-            guide_sprocket_hub_r,  guide_sprocket_rim_r, guide_sprocket_dia/2,  
-            guide_sprocket_fillet_r, guide_sprocket_spoke_w, 
-            mt_sprocket_dia,
-            mt_sprocket_width, 
-            guide_sprocket_width) ;
+        union() {
+            sprocket_guide_3_spoked(
+                guide_sprocket_shaft_d, 
+                guide_sprocket_hub_r,  guide_sprocket_rim_r, guide_sprocket_dia/2,  
+                guide_sprocket_fillet_r, guide_sprocket_spoke_w, 
+                mt_sprocket_dia,
+                mt_sprocket_width, 
+                guide_sprocket_width) ;
+            translate([0,0,12+3.5])
+                circular_platform(r=guide_sprocket_rim_r+delta, h=10) ;
+            translate([0,0,guide_sprocket_width-12+3.5])
+                circular_platform(r=guide_sprocket_rim_r+delta, h=10) ;
+        }
         // M4 nut cutouts:  7 AF x 3.1 thick
         translate([0,0,12]) {
-            shaft_nut_cutout(7, 3.1, 8, 4, or) ;
+            extended_nut_recess_with_ejection_hole(7, 3.1, guide_sprocket_dia) ;
         }
         translate([0,0,guide_sprocket_width-12]) {
-            shaft_nut_cutout(7, 3.1, 8, 4, or) ;
+            extended_nut_recess_with_ejection_hole(7, 3.1, guide_sprocket_dia) ;
         }
+        shaft_hole(guide_sprocket_shaft_d, guide_sprocket_width) ;
     }
 }
 
-// sprocket_tape_guide() ;
+sprocket_tape_guide() ;
 
 ////////////////////////////////////////////////////////////////////////////////
 // Roller tape guide
@@ -261,14 +264,11 @@ module roller_guide_3_spoked(sd, hr, rr, or, fr, sw, gow) {
         }
         shaft_hole(sd, gow) ;
         translate([0,0,gow/2])
-            shaft_middle_cutout(rr-fr, gow*0.45) ;
+            shaft_middle_cutout(rr-fr, gow*0.6) ;
         translate([0,0,-delta])
             spoked_wheel_cutouts(hr, rr, fr, gow+2*delta, 3, sw) ;
     }
 } ;
-
-// Generate part 
-//
 
 guide_roller_fillet_r   = 0.5 ;  
 guide_roller_spoke_w    = 1.5 ;
@@ -286,23 +286,34 @@ guide_roller_centre_y   = guide_sprocket_sep/2 + guide_sprocket_dia*0.5 + guide_
 module roller_tape_guide() {
     or = guide_roller_outer_d/2 ;
     difference() {
-        roller_guide_3_spoked(
-            guide_roller_shaft_d, guide_roller_hub_r,  
-            guide_roller_rim_r, or,  
-            guide_roller_fillet_r, guide_roller_spoke_w, 
-            guide_roller_width
-            ) ;
+        union() {
+            roller_guide_3_spoked(
+                guide_roller_shaft_d, guide_roller_hub_r,  
+                guide_roller_rim_r, or,  
+                guide_roller_fillet_r, guide_roller_spoke_w, 
+                guide_roller_width
+                ) ;
+            translate([0,0,12+3.5])
+                circular_platform(r=guide_roller_rim_r+clearance*4, h=6) ;
+            translate([0,0,guide_roller_width-12+3.5])
+                circular_platform(r=guide_roller_rim_r+clearance*4, h=6) ;
+        }
         // M4 nut cutouts:  7 AF x 3.1 thick
         translate([0,0,12]) {
-            shaft_nut_cutout(7, 3.1, 8, 4, or) ;
+            // shaft_nut_cutout(7, 3.1, 8, 4, or) ;
+            extended_nut_recess_with_ejection_hole(7, 3.1, guide_roller_outer_d+1) ;
         }
         translate([0,0,guide_roller_width-12]) {
-            shaft_nut_cutout(7, 3.1, 8, 4, or) ;
+            // shaft_nut_cutout(7, 3.1, 8, 4, or) ;
+            extended_nut_recess_with_ejection_hole(7, 3.1, guide_roller_outer_d+1) ;
         }
+        shaft_hole(guide_sprocket_shaft_d, guide_roller_width) ;
     }
 }
 
+// Generate part 
 // roller_tape_guide() ;
+// difference() {roller_tape_guide() ; cube(size=[20,20,160]) ;}
 
 ////////////////////////////////////////////////////////////////////////////////
 // Tape reader bridge supports

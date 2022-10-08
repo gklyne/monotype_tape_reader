@@ -218,6 +218,25 @@ module trapezoidal_prism(w1,w2,h,l) {
                 ) ;
 }
 
+// Platform to fit inside vertically-printed cylinder, with angled infill below.
+// Top of platform lies inX-Y plane, centred on origin.
+//
+// r  = radius of platform
+// h  = height of platform infill
+//
+module circular_platform(r,h) {
+    translate([0,0,-h]) {
+        difference() {
+            cylinder(r=r+delta, h=h) ;
+            translate([0, 0,-delta])
+                cylinder(r1=r+delta, r2=0, h=h) ;  
+        }
+    }
+}
+// Instance of circular_platform(r,h)
+// (With cutaway to reveal angle of support.)
+// difference() { circular_platform(10,8) ; translate([0,0,-10]) cube(size=[20,20,20]) ; }
+
 // Return height of nut recess given across-flats size of nut
 //
 function nut_recess_height(af) = af*0.35 ;
@@ -256,12 +275,30 @@ module extended_nut_recess(af, t, l) {
     // Cone and "roof" above for printing overhang
     translate([0,0,t]) {
         cylinder(d1=af-0.4, d2=2, h=nut_recess_height(af), $fn=12) ;
-        translate([af*0.25,0,0])
-            trapezoidal_prism(w1=af-0.4, w2=2, h=nut_recess_height(af), l=l-af*0.25) ;
+        translate([af*0.28,0,0])
+            trapezoidal_prism(w1=af-0.4, w2=2, h=nut_recess_height(af), l=l-af*0.28) ;
     }
 }
 // extended_nut_recess(af, t, l) instance
 // extended_nut_recess(7, 3.1, 20) ;
+
+
+module extended_nut_recess_with_ejection_hole(af, t, l) {
+    // Extended nut cutout on X-Y plane, with nut centred on the origin, extends along X-axis
+    // and ejection hole extending on -X axis
+    //
+    // af = size of nut across faces (across flats, = spanner size)
+    // t  = thickness of nut
+    // l  = length of cutout (and ejection hole)
+    //
+    extended_nut_recess(af, t, l) ;
+    // Nut ejection hole
+    translate([0,0,t/2])
+        rotate([0,90,0])
+            cylinder(d=t,h=l*2, $fn=6, center=true) ;
+}
+// extended_nut_recess_with_ejection_hole(af, t, l) instance
+// extended_nut_recess_with_ejection_hole(7, 3.1, 20) ;
 
 // Cutout for vertical screw hole with downward-facing countersink at top, 
 // centred on origin.
