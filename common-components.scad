@@ -14,7 +14,7 @@ module triangle_plate(x1,y1,x2,y2,x3,y3,h) {
     // y2 = Y position of second apex
     // x3 = X position of third apex
     // y3 = Y position of third apex
-    // h  = heighjt (thickness) of plate
+    // h  = height (thickness) of plate
     linear_extrude(height=h, center=false) {
         polygon(
             points=[
@@ -27,6 +27,28 @@ module triangle_plate(x1,y1,x2,y2,x3,y3,h) {
     }
 }
 // triangle_plate(-10,-10,-10,+10,10,5,5) ;
+
+module rectangle_plate(x1,y1,x2,y2,h) {
+    // Rectangular plate on X-Y plane
+    //
+    // x1 = X position of first apex
+    // y1 = Y position of first apex
+    // x2 = X position of opposite apex
+    // y2 = Y position of opposite apex
+    // h  = height (thickness) of plate
+    linear_extrude(height=h, center=false) {
+        polygon(
+            points=[
+                [x1,y1],
+                [x2,y1],
+                [x2,y2],
+                [x1,y2],
+                [x1,y1],
+                ]
+            ) ;
+    }
+}
+// rectangle_plate(-10,-10,10,15,5) ;
 
 module lozenge(l,bevel_l,w,h) {
     // Lozenge object along Z axis: one point on origin, other on X-axis
@@ -156,7 +178,7 @@ module rounded_triangle_plate(x1,y1,x2,y2,x3,y3,r,h) {
     // x3 = X position of third corner (centre of radius)
     // y3 = Y position of third corner (centre of radius)
     // r  = radius of rounded corners
-    // h  = heighjt (thickness) of plate
+    // h  = height (thickness) of plate
     d = r*2 ;
     triangle_plate(x1,y1,x2,y2,x3,y3,h) ;
     oval_xy(x1,y1,x2,y2,d,h) ;
@@ -164,6 +186,25 @@ module rounded_triangle_plate(x1,y1,x2,y2,x3,y3,r,h) {
     oval_xy(x3,y3,x1,y1,d,h) ;
 }
 // rounded_triangle_plate(-20,-20, -10,+10, 10,5, 3,5) ;
+
+
+module rounded_rectangle_plate(x1,y1,x2,y2,r,h) {
+    // Rectangular plate on X-Y plane with rounded corners
+    //
+    // x1 = X position of first corner (centre of radius)
+    // y1 = Y position of first corner (centre of radius)
+    // x2 = X position of opposite corner (centre of radius)
+    // y2 = Y position of opposite corner (centre of radius)
+    // r  = radius of rounded corners
+    // h  = height (thickness) of plate
+    d = r*2 ;
+    rectangle_plate(x1,y1,x2,y2,h) ;
+    oval_xy(x1,y1,x1,y2,d,h) ;
+    oval_xy(x1,y2,x2,y2,d,h) ;
+    oval_xy(x2,y2,x2,y1,d,h) ;
+    oval_xy(x2,y1,x1,y1,d,h) ;
+}
+// rounded_rectangle_plate(-10,-10, 10,15, 3,5) ;
 
 module torus(tr, rr) {
     // Torus centred on origin.

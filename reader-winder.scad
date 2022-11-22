@@ -222,6 +222,57 @@ module spool_and_winder_side_support(side) {
 
 
 ////////////////////////////////////////////////////////////////////////////////
+// Stepper motor bracket
+////////////////////////////////////////////////////////////////////////////////
+
+stepper_body_dia    = 29.5 ;
+stepper_body_height = 31.5 ;    // Includes wire entry cover
+stepper_wire_height = 2 ;       // Height of wire entry cover (beyond body radius)
+stepper_wire_width  = 19 ;      // Width of wire entry cover
+stepper_hole_dia    = m4 ;
+stepper_hole_pitch  = 35 ;
+
+module stepper_bracket(bd, hd, hp) {
+    fw = 3 ;        // Width of surrounding frame
+    od = bd + fw*2 ;
+    r  = 1 ;
+    x1 = -stepper_wire_width/2+r ;
+    x2 = -x1 ;
+    y1 = -stepper_body_dia/2-stepper_wire_height+r ;
+    y2 = 0 ;
+    difference() {
+        union() {
+            // body ring
+            cylinder(d=od, h=winder_side_t) ;
+            // wire cover extension
+            rounded_rectangle_plate(x1,y1, x2,y2, r+fw, winder_side_t) ;
+            // mounting lugs
+            oval_xy(
+                -stepper_hole_pitch/2,0,
+                stepper_hole_pitch/2,0, 
+                d=stepper_hole_dia*2, h=winder_side_t
+            ) ;
+        }
+        // Cutaway:
+        hc = winder_side_t + 2*delta ;
+        translate([0,0,-delta]) {
+            //   body
+            cylinder(d=bd, h=hc) ;
+            //   wire entry cover (rounded rect r=1)
+            rounded_rectangle_plate(x1,y1, x2,y2, r, hc) ;
+            //   L mounting hole
+            translate([-stepper_hole_pitch/2,0,0])
+                cylinder(d=hd, h=hc) ;
+            //   R mounting hole
+            translate([+stepper_hole_pitch/2,0,0])
+                cylinder(d=hd, h=hc) ;
+        }
+    }
+}
+stepper_bracket(stepper_body_dia, stepper_hole_dia, stepper_hole_pitch) ;
+
+
+////////////////////////////////////////////////////////////////////////////////
 // Tape spool
 ////////////////////////////////////////////////////////////////////////////////
 
