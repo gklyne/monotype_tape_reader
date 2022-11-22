@@ -232,14 +232,17 @@ stepper_wire_width  = 19 ;      // Width of wire entry cover
 stepper_hole_dia    = m4 ;
 stepper_hole_pitch  = 35 ;
 
-module stepper_bracket(bd, hd, hp) {
-    fw = 3 ;        // Width of surrounding frame
-    od = bd + fw*2 ;
-    r  = 1 ;
-    x1 = -stepper_wire_width/2+r ;
-    x2 = -x1 ;
-    y1 = -stepper_body_dia/2-stepper_wire_height+r ;
-    y2 = 0 ;
+module stepper_bracket(bd, hd, hp, side=+1) {
+    fw   = 3 ;        // Width of surrounding frame
+    sd   = 8 ;
+    hubd = sd*1.6 ;
+    hubr = hubd/2 ;
+    od   = bd + fw*2 ;
+    r    = 1 ;
+    x1   = -stepper_wire_width/2+r ;
+    x2   = -x1 ;
+    y1   = -stepper_body_dia/2-stepper_wire_height+r ;
+    y2   = 0 ;
     difference() {
         union() {
             // body ring
@@ -252,24 +255,71 @@ module stepper_bracket(bd, hd, hp) {
                 stepper_hole_pitch/2,0, 
                 d=stepper_hole_dia*2, h=winder_side_t
             ) ;
+            // Winder bracket mounting arm:
+            ////rounded_triangle_plate(0,od/2-hr, od-hr,od/2-hr, stepper_hole_pitch/2,0, hr, winder_side_t) ;
+            // brace_xy(x1, y1, x2, y2, w, d1, d2, h)
+            brace_xy((od-hubr)*side,od/2-hubr, 0,(od/2-hubr)*-0.5, sd, hubd, sd, winder_side_t) ;
         }
         // Cutaway:
         hc = winder_side_t + 2*delta ;
         translate([0,0,-delta]) {
             //   body
             cylinder(d=bd, h=hc) ;
-            //   wire entry cover (rounded rect r=1)
-            rounded_rectangle_plate(x1,y1, x2,y2, r, hc) ;
             //   L mounting hole
             translate([-stepper_hole_pitch/2,0,0])
                 cylinder(d=hd, h=hc) ;
             //   R mounting hole
             translate([+stepper_hole_pitch/2,0,0])
                 cylinder(d=hd, h=hc) ;
+            //   wire entry cover (rounded rect r=1)
+            rounded_rectangle_plate(x1,y1, x2,y2, r, hc) ;
+            //   wire entry
+            translate([0,0,winder_side_t-1.8])
+                rectangle_plate(-3,y1-r-fw-1,+3,0,hc) ;
+            // Winder bracket mounting hole
+            //@@@@translate([od-hr,od/2-hr,0])
+            //@@@@    cylinder(d=sd, h=hc) ;
         }
     }
 }
 stepper_bracket(stepper_body_dia, stepper_hole_dia, stepper_hole_pitch) ;
+
+
+
+module stepper_shaft(sd, af, sl) {
+    intersection() {
+        cylinder(d=sd, h=sl, center=false, $fn=12) ;
+        translate([-sd/2,-af/2,0])
+            cube(size=[sd, af, sl], center=false) ;
+    }
+}
+// stepper_shaft(5, 3, 25) ;
+
+
+module stepper_pulley(pd, pt, hd, ht, sd, af) {
+    difference() {
+        union() {
+            // pulley
+            pulley(pd, pt) ;
+            // hub
+            cylinder(d=hd, h=pt+ht, center=false, $fn=48) ;
+        }
+    translate([0,0,-delta]) {
+        // shaft hole
+        stepper_shaft(sd, af, pt+ht+2*delta) ;
+        }
+    }
+
+}
+
+pulley_dia       = 20 ;
+pulley_width     = 6 ;
+pulley_hub_dia   = 10 ; 
+pulley_hub_width = 6 ; 
+pulley_shaft_dia = 5 ;
+pulley_shaft_af  = 3 ;
+
+stepper_pulley(pulley_dia, pulley_width, pulley_hub_dia, pulley_hub_width, pulley_shaft_dia, pulley_shaft_af) ;
 
 
 ////////////////////////////////////////////////////////////////////////////////
