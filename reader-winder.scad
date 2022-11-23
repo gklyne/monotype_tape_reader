@@ -282,7 +282,7 @@ module stepper_bracket(bd, hd, hp, side=+1) {
         }
     }
 }
-stepper_bracket(stepper_body_dia, stepper_hole_dia, stepper_hole_pitch) ;
+// stepper_bracket(stepper_body_dia, stepper_hole_dia, stepper_hole_pitch) ;
 
 
 
@@ -315,9 +315,9 @@ module stepper_pulley(pd, pt, hd, ht, sd, af) {
 pulley_dia       = 20 ;
 pulley_width     = 6 ;
 pulley_hub_dia   = 10 ; 
-pulley_hub_width = 6 ; 
-pulley_shaft_dia = 5 ;
-pulley_shaft_af  = 3 ;
+pulley_hub_width = 2 ; 
+pulley_shaft_dia = 5.5 ;
+pulley_shaft_af  = 3.2 ;
 
 stepper_pulley(pulley_dia, pulley_width, pulley_hub_dia, pulley_hub_width, pulley_shaft_dia, pulley_shaft_af) ;
 
