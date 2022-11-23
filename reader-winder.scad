@@ -316,8 +316,8 @@ pulley_dia       = 20 ;
 pulley_width     = 6 ;
 pulley_hub_dia   = 10 ; 
 pulley_hub_width = 2 ; 
-pulley_shaft_dia = 5.5 ;
-pulley_shaft_af  = 3.2 ;
+pulley_shaft_dia = 5.3 ;
+pulley_shaft_af  = 3.1 ;
 
 stepper_pulley(pulley_dia, pulley_width, pulley_hub_dia, pulley_hub_width, pulley_shaft_dia, pulley_shaft_af) ;
 
