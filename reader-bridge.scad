@@ -126,6 +126,103 @@ module tape_reader_bridge_dovetailed() {
     }
 }
 
+
+module curved_edge(l,t,dir) {
+    //  Curved edge for platform:
+    //  lying on X-Y plane, non-radiused edge along X-axis, centred around Y axis, 
+    //  extending along Y axis in direction indicated by 'dir'.
+    //
+    //  l = overall length of edge
+    //  t = thickness and width of edge, also radius of curve
+    //  dir = +1 to extend towards +Y direction, -1 for extend towards -Y
+    //
+    rotate([0,-90,0]) {
+        difference() {
+            cylinder(r=t, h=l, center=true) ;
+            translate([0,-t*0.5*dir,0])
+                cube(size=[(t+delta)*2,t+delta,l+2*delta], center=true) ;
+            translate([-t*0.5,0,0])
+                cube(size=[t+delta,(t+delta)*2,l+2*delta], center=true) ;
+
+        }
+    }
+}
+// curved_end(40, 10, +1) ;
+
+decoder_platform_w = 40 ;
+decoder_platform_t = read_side_apex_h ;
+decoder_scale_groove_w = 5 ;
+decoder_scale_groove_d = 3;
+decoder_clearance = 0.5 ;
+
+decoder_scale_t1   = 4 ;
+decoder_scale_t2   = 1 ;
+decoder_scale_w    = decoder_platform_w*0.5 ;
+
+module tape_decoder_platform_dovetailed() {
+    module bridge_dovetail_cutout() {
+        translate([-read_total_l/2+read_side_t,0,0])
+            dovetail_tongue_cutout(
+                read_side_t, read_w-3, read_w-2, decoder_platform_w*2, decoder_platform_t
+        ) ;
+    }
+    difference() {
+        union() {
+            translate([0,0,+decoder_platform_t/2])
+                cube(size=[read_total_l, decoder_platform_w, decoder_platform_t], center=true) ;
+            translate([0,decoder_platform_w/2-delta,0])
+                curved_edge(read_total_l, decoder_platform_t, +1) ;
+            translate([0,-(decoder_platform_w/2-delta),0])
+                curved_edge(read_total_l, decoder_platform_t, -1) ;
+        }
+        translate([0,-decoder_platform_w*0.4,decoder_platform_t])
+            cube(
+                size=[read_total_l+delta,decoder_scale_groove_w,decoder_scale_groove_d*2],
+                center=true
+                ) ;
+        translate([0,+decoder_platform_w*0.4,decoder_platform_t])
+            cube(
+                size=[read_total_l+delta,decoder_scale_groove_w,decoder_scale_groove_d*2],
+                center=true
+                ) ;
+        bridge_dovetail_cutout() ;
+        mirror(v=[1, 0, 0]) bridge_dovetail_cutout() ;
+    }
+}
+
+translate([0,80,0]) tape_decoder_platform_dovetailed() ;
+
+module tape_decoder_scale() {
+    difference() {
+        union() {
+            // Scale body
+            translate([0,decoder_scale_w*0.5,+decoder_scale_t1/2])
+                cube(size=[read_total_l-read_side_t*2, decoder_scale_w, decoder_scale_t1], center=true) ;
+            // Guide lugs
+            lug_w = decoder_scale_groove_w - decoder_clearance ;
+            lug_d = decoder_scale_groove_d - decoder_clearance ;
+            translate([0,lug_w*0.5,-lug_d*0.5+delta])
+                cube(size=[read_total_l-read_side_t*2, lug_w, lug_d], center=true) ;
+        }
+        // Cutaway width of tape
+        translate([0,decoder_scale_groove_w*0.5,-decoder_scale_groove_d*0.5])
+            cube(size=[mt_overall_width, decoder_scale_groove_w+2*delta, decoder_scale_groove_d+delta], center=true) ;
+        // Cutaway bevel
+        lb = decoder_scale_w - decoder_scale_groove_w ;
+        tb = decoder_scale_t1 - decoder_scale_t2 ;
+        translate([0,decoder_scale_groove_w,decoder_scale_t1])
+            rotate([-atan2(tb,lb),0,0])
+                translate([0,decoder_scale_w*0.5-decoder_scale_groove_w,+decoder_scale_t1/2])
+                    cube(size=[read_total_l, decoder_scale_w*1.1, decoder_scale_t1], center=true) ;
+    }
+}
+
+// Rotate onto back for printing...
+rotate([90,0,0]) tape_decoder_scale() ;
+
+
+
+
 ////////////////////////////////////////////////////////////////////////////////
 // Sprocketed tape guide
 ////////////////////////////////////////////////////////////////////////////////
@@ -223,7 +320,7 @@ module sprocket_tape_guide() {
     }
 }
 
-sprocket_tape_guide() ;
+// sprocket_tape_guide() ;
 
 ////////////////////////////////////////////////////////////////////////////////
 // Roller tape guide

@@ -315,7 +315,7 @@ module stepper_pulley(pd, pt, hd, ht, sd, af) {
 pulley_dia       = 20 ;
 pulley_width     = 6 ;
 pulley_hub_dia   = 10 ; 
-pulley_hub_width = 2 ; 
+pulley_hub_width = 3 ; 
 pulley_shaft_dia = 5.3 ;
 pulley_shaft_af  = 3.1 ;
 
