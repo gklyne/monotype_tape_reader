@@ -39,6 +39,7 @@ module crank_handle(
 }
 
 module drive_pulley(shaft_d, drive_pulley_d) {
+    // Spoked pulley
     intersection() {
         difference() {
             union() {
@@ -307,12 +308,13 @@ module stepper_pulley(pd, pt, hd, ht, sd, af) {
     translate([0,0,-delta]) {
         // shaft hole
         stepper_shaft(sd, af, pt+ht+2*delta) ;
+        // Spoke cutouts (not for small pulley)
+        spoked_wheel_cutouts(hr=hd/2+2, sr=pd/2-4, fr=2, wt=pt+2*delta, ns=6, sw=3) ;
         }
     }
-
 }
 
-pulley_dia       = 20 ;
+pulley_dia       = 40 ;   // Small: 20; spool: drive_pulley_d (==60)
 pulley_width     = 6 ;
 pulley_hub_dia   = 10 ; 
 pulley_hub_width = 3 ; 
