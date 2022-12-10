@@ -1,8 +1,9 @@
 // Default dimensions
 
-m4 = 4.25 ;             // Close clearance hole for M4 screw
-m5 = 5.25 ;             // Close clearance hole for M5 screw
-m8 = 8.25 ;             // Close clearance hole for M8 screw
+m_clearance = 0.25 ;    // Clearance for close-clearance holes
+m4 = 4+m_clearance ;    // Close clearance hole for M4 screw
+m5 = 5+m_clearance ;    // Close clearance hole for M5 screw
+m8 = 8+m_clearance ;    // Close clearance hole for M8 screw
 
 // Monotype system parameters
 
