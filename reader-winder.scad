@@ -300,7 +300,8 @@ module stepper_bracket_sleeve() {
     difference() {
         union() {
             cylinder(d=shaft_d-m_clearance, h=sleeve_h) ;
-            cylinder(d=bracket_hubd, h=washer_t) ;
+            cylinder(d=bracket_hubd, h=washer_t-1) ;
+                // ^^ -1 allows sleeve flange and bracket to clamp on spool holder
         }
         translate([0,0,-delta]) {
             cylinder(d=bracket_sd, h=sleeve_h+2*delta) ;
@@ -309,7 +310,7 @@ module stepper_bracket_sleeve() {
 }
 
 
-stepper_bracket(stepper_body_dia, stepper_hole_dia, stepper_hole_pitch) ;
+// stepper_bracket(stepper_body_dia, stepper_hole_dia, stepper_hole_pitch) ;
 
 stepper_bracket_sleeve() ;
 
