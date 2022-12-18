@@ -71,9 +71,28 @@ module cross_brace_y(ly, px, t, w) {
     }
 }
 
-module mount_holes(lx, ly, t, hp, hd, px=0, py=0) {
-    // Mounting holes on X-axis for mounting plate.
-    // Defined separately so they can be applied toa merged shape.
+module mount_hole_nut_holder(x, y, tp, hd, tn, af) {
+    // Cutaway for mounting hole and nut holder, situated on X-Y plane
+    //
+    // x  = X-centre of mounting hole
+    // y  = Y-centre of mounting hole
+    // tp = thickness of mounting plate
+    // tn = thickness of nut holder
+    // hd = hole diameter
+    // af = nut size across faces
+    //
+    translate([x, y, -delta])
+        cylinder(d=hd, h=tp+tn+2*delta) ;
+    translate([x, y, tp])
+        nut_recess(af, tn+delta) ;
+}
+
+// mount_hole_nut_holder(200, 0, base_t, mount_hole_d, mount_nut_t, mount_nut_af) ;
+
+module mount_holes(lx, ly, t, hp, hd, nt, af, px=0, py=0) {
+    // Mounting holes on X-axis for mounting plate, including cutaway for nut.
+    //
+    // Defined separately so they can be applied to a merged shape.
     //
     // Holes are centred within the Y-extent of the plate not including an outer shall,
     // which is presumed to be the same thickness as the plate itself.
@@ -82,7 +101,9 @@ module mount_holes(lx, ly, t, hp, hd, px=0, py=0) {
     // ly = overall Y extent of plate
     // t  = thickness of plate
     // hp = hole pitch (between centres)
-    // hd = hole diameter
+    // hd = mounting hole diameter
+    // nt = mounting nut thickness
+    // af = mounting nut size across faces
     // px = position of plate corner - sign determines which corner
     // px = position of plate corner - sign determines which corner
     //
@@ -92,24 +113,29 @@ module mount_holes(lx, ly, t, hp, hd, px=0, py=0) {
     ty = ( py < 0 ? (py+(ly+t)/2)
          : py > 0 ? (py-(ly+t)/2)
          : 0 ) ;
-    translate([tx,ty,t/2]) {
-        union() {
-            translate([-hp/2,0,0]) cylinder(t+delta*2, d=hd, center=true) ;
-            translate([ hp/2,0,0]) cylinder(t+delta*2, d=hd, center=true) ;
-        }
-    }
+
+    // translate([tx,ty,t/2]) {
+    //     union() {
+    //         translate([-hp/2,0,0]) cylinder(t+delta*2, d=hd, center=true) ;
+    //         translate([ hp/2,0,0]) cylinder(t+delta*2, d=hd, center=true) ;
+    //     }
+    // }
+    mount_hole_nut_holder(tx-hp/2, ty, t, hd, nt, af) ;
+    mount_hole_nut_holder(tx+hp/2, ty, t, hd, nt, af) ;
 }
 
-module mount_plate(lx, ly,  t, hp, hd, px=0, py=0) {
+module mount_plate(lx, ly,  t, hp, hd, nt, af, px=0, py=0) {
     // Mounting plate on X-Y plane, on frame corner/edge, with 2 mounting holes on X-axis.
     // (use 'translate' to position on baseplate)
     // (use 'rotate' to change orientaton)
     //
     // lx = overall X extent of plate
     // ly = overall Y extent of plate
-    // t  = thickness of plate
-    // hp = hole pitch (between centres)
-    // hd = hole diameter
+    // t  = thickness of baseplate (nut thickness is added)
+    // hp = mounting hole pitch (between centres)
+    // hd = mounting hole diameter
+    // nt = mounting nut thickness
+    // af = mounting nut size across faces
     // px = position of plate corner - sign determines which corner
     // px = position of plate corner - sign determines which corner
     //
@@ -120,10 +146,10 @@ module mount_plate(lx, ly,  t, hp, hd, px=0, py=0) {
          : py > 0 ? (py-ly/2)
          : 0 ) ;
     difference() {
-        translate([tx,ty,t/2]) {
-            cube(size=[lx, ly, t], center=true) ; // plate
+        translate([tx,ty,(t+nt)/2]) {
+            cube(size=[lx, ly, t+nt], center=true) ; // plate
         }
-        mount_holes(lx, ly,  t, hp, hd, px, py) ;
+        mount_holes(lx, ly,  t, hp, hd, nt, af, px, py) ;
     }
 }
 
@@ -203,7 +229,6 @@ module baseplate_clamp(l, w, h, l1, h1, h2, d) {
 // diagonal_brace(100, 60, 4, 6, false) ;
 // cross_brace_y(60, 0, 4, 6) ;
 
-
 // mount_plate(20, 16, 4, 12, 4, px=+44, py=+28) ;
 // mount_plate(20, 16, 4, 12, 4, 0,      py=+28) ;
 // mount_plate(20, 16, 4, 12, 4, px=-44, py=+28) ;
@@ -240,7 +265,7 @@ module baseplate_clamp(l, w, h, l1, h1, h2, d) {
 // brace_w  = 8 ;
 // mount_l  = winder_side_w ;
 // mount_w  = winder_base_t ;
-// hole_d   = m4 ;
+// mount_hole_d   = m4 ;
 // 
 // foot_lx  = 30 ;
 // foot_ly  = 20 ;
@@ -255,11 +280,13 @@ module rod_support_mounting_plate() {
         union() {
             rect_shell(rod_support_base_w, rod_support_shell_w, base_t, border_w, shell_h) ;
             mount_plate(rod_support_base_w, rod_support_base_t, base_t, 
-                        rod_support_base_w/2, hold_fix_d, px=0, py=-rod_support_shell_w/2) ;
+                        rod_support_base_w/2, hold_fix_d, hold_nut_t, hold_nut_af,
+                        px=0, py=-rod_support_shell_w/2) ;
             side_support_foot_x(foot_lx, foot_h, base_t, 0, -rod_support_shell_w/2) ;
         } ;
-        mount_holes(rod_support_base_w, rod_support_base_t, base_t, 
-                    rod_support_base_w/2, hold_fix_d, px=0, py=-rod_support_shell_w/2) ;
+        // mount_holes(rod_support_base_w, rod_support_base_t, base_t, 
+        //             rod_support_base_w/2, hold_fix_d, hold_nut_t, hold_nut_af,
+        //             px=0, py=-rod_support_shell_w/2) ;
     }
 }
 
@@ -273,13 +300,24 @@ module main_reader_baseplate() {
             diagonal_brace(base_l, base_w, base_t, brace_w, flip=true) ;
 
             // Various mounting plates
-            mount_plate(mount_l, mount_w, base_t, winder_side_w/2, hole_d, px=+plate_px, py=+plate_py ) ;
-            mount_plate(mount_l, mount_w, base_t, winder_side_w/2, hole_d, px=+plate_px, py=-plate_py) ;
-            mount_plate(mount_l, mount_w, base_t, winder_side_w/2, hole_d, px=-plate_px, py=+plate_py ) ;
-            mount_plate(mount_l, mount_w, base_t, winder_side_w/2, hole_d, px=-plate_px, py=-plate_py) ;
-            mount_plate(mount_l, mount_w, base_t, read_side_base_w/2, hole_d, 0, py=+plate_py) ;
-            mount_plate(mount_l, mount_w, base_t, read_side_base_w/2, hole_d, 0, py=-plate_py) ;
-
+            mount_plate(mount_l, mount_w, base_t, 
+                        winder_side_w/2, mount_hole_d, mount_nut_t, mount_nut_af, 
+                        px=+plate_px, py=+plate_py ) ;
+            mount_plate(mount_l, mount_w, base_t, 
+                        winder_side_w/2, mount_hole_d, mount_nut_t, mount_nut_af,  
+                        px=+plate_px, py=-plate_py) ;
+            mount_plate(mount_l, mount_w, base_t, 
+                        winder_side_w/2, mount_hole_d, mount_nut_t, mount_nut_af, 
+                        px=-plate_px, py=+plate_py ) ;
+            mount_plate(mount_l, mount_w, base_t, 
+                        winder_side_w/2, mount_hole_d, mount_nut_t, mount_nut_af, 
+                        px=-plate_px, py=-plate_py) ;
+            mount_plate(mount_l, mount_w, base_t, 
+                        read_side_base_w/2, mount_hole_d, mount_nut_t, mount_nut_af, 
+                        px=0, py=+plate_py) ;
+            mount_plate(mount_l, mount_w, base_t, 
+                        read_side_base_w/2, mount_hole_d, mount_nut_t, mount_nut_af, 
+                        px=0, py=-plate_py) ;
             // Additional braces for mounting plates
             // rect_shell(lx, ly, t, w, h)
             rect_shell(mount_l+(border_w*2), base_w, base_t, border_w, shell_h) ;
@@ -292,12 +330,25 @@ module main_reader_baseplate() {
             side_support_foot_x(foot_lx, foot_h, base_t, 0, +base_w/2) ;
             side_support_foot_x(foot_lx, foot_h, base_t, 0, -base_w/2) ;
         } ;
-        mount_holes(mount_l, mount_w, base_t, winder_side_w/2, hole_d, px=+plate_px, py=+plate_py ) ;
-        mount_holes(mount_l, mount_w, base_t, winder_side_w/2, hole_d, px=+plate_px, py=-plate_py) ;
-        mount_holes(mount_l, mount_w, base_t, winder_side_w/2, hole_d, px=-plate_px, py=+plate_py ) ;
-        mount_holes(mount_l, mount_w, base_t, winder_side_w/2, hole_d, px=-plate_px, py=-plate_py) ;
-        mount_holes(mount_l, mount_w, base_t, read_side_base_w/2, hole_d, 0, py=+plate_py) ;
-        mount_holes(mount_l, mount_w, base_t, read_side_base_w/2, hole_d, 0, py=-plate_py) ;
+        // Cutaways for mount holes
+        mount_holes(mount_l, mount_w, base_t, 
+                    winder_side_w/2, mount_hole_d, mount_nut_t, mount_nut_af, 
+                    px=+plate_px, py=+plate_py ) ;
+        mount_holes(mount_l, mount_w, base_t, 
+                    winder_side_w/2, mount_hole_d, mount_nut_t, mount_nut_af, 
+                    px=+plate_px, py=-plate_py) ;
+        mount_holes(mount_l, mount_w, base_t, 
+                    winder_side_w/2, mount_hole_d, mount_nut_t, mount_nut_af, 
+                    px=-plate_px, py=+plate_py ) ;
+        mount_holes(mount_l, mount_w, base_t, 
+                    winder_side_w/2, mount_hole_d, mount_nut_t, mount_nut_af, 
+                    px=-plate_px, py=-plate_py) ;
+        mount_holes(mount_l, mount_w, base_t, 
+                    read_side_base_w/2, mount_hole_d, mount_nut_t, mount_nut_af, 
+                    px=0, py=+plate_py) ;
+        mount_holes(mount_l, mount_w, base_t, 
+                    read_side_base_w/2, mount_hole_d, mount_nut_t, mount_nut_af, 
+                    px=0, py=-plate_py) ;
     }
 }
 
@@ -334,7 +385,7 @@ module reader_half_baseplate_cutaway() {
     cutaway_h = foot_h + 2*delta ;
     notch_h   = border_w/4 ;
     notch_o   = (base_w/2) - border_w ;
-    translate([0, 0, cutaway_h/2])
+    translate([0, 0, cutaway_h/2-delta])
         linear_extrude(height=cutaway_h, center=true) 
             polygon([ [0,-cutaway_w/2]
                     , [0,(-notch_h*2)-notch_o], [-notch_h,(-notch_h)-notch_o], [+notch_h,(+notch_h)-notch_o], [0,(+notch_h*2)-notch_o]

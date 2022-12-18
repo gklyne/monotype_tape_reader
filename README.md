@@ -51,21 +51,34 @@ Mechanical parts for reading paper tape created by Monotype keyboard.
 
 ### 2022-10-02: revisions to Mk2.5
 
-[ ] Clip wider flange
+[x] Clip wider flange
 
-[ ] Storage clip more clearance, no break.  This to allow it to slide off.
+[x] Storage clip more clearance, no break.  This to allow it to slide off.
 
-[ ] Stiffer baseplate (8 -> 12mm edge height?)
+[-] Stiffer baseplate (8 -> 12mm edge height?) (doesn't seem necessary?)
 
-[ ] Additional mount and foot for winder/stepper (front edge)
+[x] Additional mount and foot for winder/stepper (front edge)
 
-[ ] Winder separate from reader bridge (drive belt stresses structure)
+[x] Winder separate from reader bridge (drive belt stresses structure)
 
-[ ] Captive nut holders in baseplate
+[x] Captive nut holders in baseplate (shortened overall length by 100cm)
 
-[ ] Shorten the tape path?
-
-[ ] Make the baseplate wider (doesn't seem necessary?)
-
+[-] Make the baseplate wider (doesn't seem necessary?)
 
 [x] Sprocket pins larger (why are they so small?)
+
+
+### 2022-12-10: using stepper motor to driver spool
+
+[ ] Code options for stop, start, speed?
+
+[ ] Stiffen up stepper motor bracket and spool support
+
+[ ] Single piece side support and stepper bracket
+
+[ ] Larger stepper pulley for drive
+
+[ ] MAYBE: recess in pulley hub to sit closer to motor
+
+[ ] MAYBE: ...
+

@@ -95,8 +95,10 @@ hold_base_w = 20 ;      // Width of base piece
 hold_rail_p = 40 ;      // Distance between rail holes
 hold_rail_d = m4 ;      // Diameter of rail holes
 
-hold_fix_p = 25 ;       // Distance between fixing holes
-hold_fix_d = m4 ;       // Diameter of fixing holes
+hold_fix_p  = 25 ;      // Distance between fixing holes
+hold_fix_d  = m4 ;      // Diameter of fixing holes
+hold_nut_t  = 3 ;     // Thickness of holder fixing nut
+hold_nut_af = 7 ;       // Size across faces of holder fixing nut
 hold_fix_o_x = 12 ;     // X-offset from vertical rod to holder fixing holes
 hold_fix_o_y = 0 ;      // Y-offset from vertical rod to centre between fixing holes
 
@@ -127,7 +129,7 @@ rod_support_shell_w = 24 ;
 
 // Baseplate dimensions
 
-base_l   = 400 ; // was 240 ;
+base_l   = 300 ; // was 240, 400 ;
 base_w   = 130 ;
 base_t   = 4 ;
 border_w = 8 ;
@@ -135,7 +137,10 @@ shell_h  = 8 ;
 brace_w  = 8 ;
 mount_l  = winder_side_w ;
 mount_w  = winder_base_t ;
-hole_d   = m4 ;
+
+mount_hole_d = m4 ;
+mount_nut_t  = 3 ;
+mount_nut_af = 7 ;
 
 foot_lx  = 36 ;     // At top surface of baseplate: tapers away to foot
 foot_ly  = 26 ;
