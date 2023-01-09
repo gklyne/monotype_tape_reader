@@ -4,7 +4,7 @@ import sys
 import tty, termios
 import time
 import select
-# import RPi.GPIO as GPIO
+import RPi.GPIO as GPIO
 
 def get_stdin_char():
     # See: 
@@ -42,10 +42,7 @@ def next_step(stepseqnum, stepdir):
         stepseqnum = steplen+stepdir
     return (stepseqnum, stepseq[stepseqnum])
 
-def stepper_off():
-    return [ 0, 0, 0, 0 ]
-
-def set_stepper_drive(motornum, stepdata):
+def stepper_pins(motornum):
     #
     # motornum is stepper motor number 0-3 (assumes pistep2 interface)
     # See: https://thepihut.com/products/pistep2-quad-stepper-motor-controller-for-raspberry-pi
@@ -61,26 +58,43 @@ def set_stepper_drive(motornum, stepdata):
                   [20, 26, 16, 19],
                 ]
     steppins  = motorpins[motornum]
+    return steppins
+
+def stepper_init(motornum):
+    # Use BCM GPIO references instead of physical pin numbers
+    GPIO.setmode(GPIO.BCM)
+    steppins  = stepper_pins(motornum)
+    for pin in steppins:
+        GPIO.setup(pin,GPIO.OUT)
+        GPIO.output(pin, False)
+    return
+
+def stepper_off():
+    return [ 0, 0, 0, 0 ]
+
+def set_stepper_drive(motornum, stepdata):
+    steppins  = stepper_pins(motornum)
     for pin in range(len(steppins)):
         iopin = steppins[pin]
         if stepdata[pin] != 0:
             # print( f"Enable GPIO {iopin}" )
-            #@@GPIO.output(iopin, True)
+            GPIO.output(iopin, True)
             pass
         else:
             # print( f"Disable GPIO {iopin}" )
-            #@@GPIO.output(iopin, False)
+            GPIO.output(iopin, False)
             pass
     return
 
 def main_loop():
     waittime  = 0.0025  # 2.5ms wait between steps
     waitstep  = 0.0005  # 0.5ms wait increment
-    waittime  = 1       # @@for offline testing@@
-    waitstep  = 0.1     # @@for offline testing@@
+    #waittime  = 0.1     # @@for offline testing@@
+    #waitstep  = 0.01    # @@for offline testing@@
     running   = False   # Start with motor stopped
     stepnum   = 0       # Step sequence number
     stepdir   = 1       # +1 forward, -1 backward (or +2, -2?)
+    debugging = False   # Debug display enabled
 
     print("Control options:")
     print("  r         Run/resume motion")
@@ -89,7 +103,11 @@ def main_loop():
     print("  b         Move backwards")
     print("  > or .    Go faster")
     print("  < or ,    Go slower")
+    print("  d         Debug display on")
+    print("  x         Debug display off")
     print("  q         Stop movement and exit")
+
+    stepper_init(0)
 
     while True:
         # Test for keypress
@@ -112,12 +130,20 @@ def main_loop():
                 stepdir = +1            # Direction forwards
             elif c == "b":
                 stepdir = -1            # Direction backwards
+            elif c == "d":
+                debugging = True
+            elif c == "x":
+                debugging = False
+            elif c == " ":
+                pass
             else:
                 print(f"Unrecognized '{c}'\n")
+            print(f"stepnum {stepnum}, stepdir {stepdir}, waittime {waittime:6.4f}")
         # Next step
         if running:
             stepnum, stepdata = next_step(stepnum, stepdir)
-            print(f"stepnum {stepnum}, stepdata {stepdata}, stepdir {stepdir}, waittime {waittime:6.4f}")
+            if debugging:
+                print(f"stepnum {stepnum}, stepdata {stepdata}, stepdir {stepdir}, waittime {waittime:6.4f}")
             # drive stepper motor
             set_stepper_drive(0, stepdata)
         # Wait before moving on
