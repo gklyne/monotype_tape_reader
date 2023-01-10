@@ -28,7 +28,7 @@ module triangle_plate(x1,y1,x2,y2,x3,y3,h) {
 }
 // triangle_plate(-10,-10,-10,+10,10,5,5) ;
 
-module rectangle_plate(x1,y1,x2,y2,h) {
+module rectangle_plate(x1,y1,x2,y2,h, scale=1) {
     // Rectangular plate on X-Y plane
     //
     // x1 = X position of first apex
@@ -36,7 +36,9 @@ module rectangle_plate(x1,y1,x2,y2,h) {
     // x2 = X position of opposite apex
     // y2 = Y position of opposite apex
     // h  = height (thickness) of plate
-    linear_extrude(height=h, center=false) {
+    // scale = reduces X-Y coordinates towards top of plate (see linear_extrude)
+    //
+    linear_extrude(height=h, center=false, scale=scale) {
         polygon(
             points=[
                 [x1,y1],
@@ -49,6 +51,7 @@ module rectangle_plate(x1,y1,x2,y2,h) {
     }
 }
 // rectangle_plate(-10,-10,10,15,5) ;
+// rectangle_plate(10,15,20,30,5, scale=0.5) ;
 
 module lozenge(l,bevel_l,w,h) {
     // Lozenge object along Z axis: one point on origin, other on X-axis
@@ -906,6 +909,81 @@ module dovetail_tongue_cutout(l, ws, we, wp, t) {
     }
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// Apply bevel to child object(s)
+////////////////////////////////////////////////////////////////////////////////
+
+module bevel_x_cutaway(x1, x2, y, z, bw, ba) {
+    // Cutaway for X-aligned bevel.
+    //
+    // x1   = minimum x of bevel extent
+    // x2   = maximum x of bevel extent
+    // y    = y coordinate of corner to be bevelled
+    // z    = z coordinate of corner to be bevelled
+    // bw   = width of bevel (distance from original corner to new corners)
+    // ba   = angle of bevel (e.g. 45, 135, 225, 315)
+    //
+    translate([x1,y,z])
+        rotate([-ba,0,0])
+            translate([0,-bw,-bw/sqrt(2)])
+                cube(size=[x2-x1,bw*2,bw]) ;
+}
+
+// translate([-10,30,5])
+//     # cube(size=[60,20,20]) ;
+// bevel_x_cutaway(-10,50,30+20,5+20,5,45) ;
+// bevel_x_cutaway(-10,50,30+20,5,5,135) ;
+// bevel_x_cutaway(-10,50,30,5,5,225) ;
+// bevel_x_cutaway(-10,50,30,5+20,5,315) ;
+
+module bevel_x(x1, x2, y, z, bw, ba) {
+    // Apply X-aligned bevel to object(s).
+    //
+    // x1   = minimum x of bevel extent
+    // x2   = maximum x of bevel extent
+    // y    = y coordinate of corner to be bevelled
+    // z    = z coordinate of corner to be bevelled
+    // bw   = width of bevel (distance from original corner to new corners)
+    // ba   = angle of bevel (e.g. 45, 135, 225, 315)
+    //
+    difference() {
+        children() ;
+        bevel_x_cutaway(x1-delta, x2+delta, y, z, bw, ba) ;
+    }
+}
+
+// bevel_x(-10,50,30+20,5+20,5,45)
+//     bevel_x(-10,50,30+20,5,5,135)
+//         bevel_x(-10,50,30,5,5,225)
+//             bevel_x(-10,50,30,5+20,5,315)
+//                 translate([-10,30,5])
+//                     cube(size=[60,20,20]) ;
+
+
+module bevel_y(y1, y2, x, z, bw, ba) {
+    // Apply Y-aligned bevel to object(s).
+    //
+    // x1   = minimum x of bevel extent
+    // x2   = maximum x of bevel extent
+    // y    = y coordinate of corner to be bevelled
+    // z    = z coordinate of corner to be bevelled
+    // bw   = width of bevel (distance from original corner to new corners)
+    // ba   = angle of bevel (e.g. 45, 135, 225, 315)
+    //
+    difference() {
+        children() ;
+        rotate([0,0,-90])
+            bevel_x_cutaway(-y2-delta, -y1+delta, x, z, bw, ba) ;
+    }
+}
+
+// bevel_y(-10,50, 50+20,5+20,5,45)
+//     bevel_y(-10,50, 50+20,5,5,135)
+//         bevel_y(-10,50,50,5,5,225)
+//             bevel_y(-10,50,50,5+20,5,315)
+//                 // Cube:  50,-10,5  to  70,50,25
+//                 translate([50,-10,5])
+//                     cube(size=[20,50+10,20]) ;
 
 ////////////////////////////////////////////////////////////////////////////////
 // Helical extrusion of solid object

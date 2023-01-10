@@ -70,11 +70,11 @@ Mechanical parts for reading paper tape created by Monotype keyboard.
 
 ### 2022-12-10: using stepper motor to driver spool
 
-[ ] Code options for stop, start, speed?
+[x] Code options for stop, start, speed?
 
-[ ] Stiffen up stepper motor bracket and spool support
+[x] Stiffen up stepper motor bracket and spool support
 
-[ ] Single piece side support and stepper bracket
+[x] Single piece side support and stepper bracket
 
 [ ] Larger stepper pulley for drive
 
