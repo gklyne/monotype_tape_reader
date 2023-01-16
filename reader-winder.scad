@@ -348,7 +348,7 @@ module spool_and_motor_side_support(dir) {
 
 }
 
-spool_and_motor_side_support(-1) ;
+// spool_and_motor_side_support(-1) ;
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -381,14 +381,14 @@ module stepper_pulley(pd, pt, hd, ht, sd, af) {
     }
 }
 
-pulley_dia       = 40 ;   // Small: 20; spool: drive_pulley_d (==60)
-pulley_width     = 6 ;
+pulley_dia       = 50 ;   // Small: 20; spool: drive_pulley_d (==60)
+pulley_width     = 8 ;
 pulley_hub_dia   = 10 ; 
-pulley_hub_width = 3 ; 
+pulley_hub_width = 4 ; 
 pulley_shaft_dia = 5.3 ;
 pulley_shaft_af  = 3.1 ;
 
-// stepper_pulley(pulley_dia, pulley_width, pulley_hub_dia, pulley_hub_width, pulley_shaft_dia, pulley_shaft_af) ;
+stepper_pulley(pulley_dia, pulley_width, pulley_hub_dia, pulley_hub_width, pulley_shaft_dia, pulley_shaft_af) ;
 
 ////////////////////////////////////////////////////////////////////////////////
 // Tape spool

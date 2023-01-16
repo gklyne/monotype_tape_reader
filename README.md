@@ -78,6 +78,8 @@ Mechanical parts for reading paper tape created by Monotype keyboard.
 
 [ ] Larger stepper pulley for drive
 
+[ ] Sprocket guides wrap further around sprockets
+
 [ ] MAYBE: recess in pulley hub to sit closer to motor
 
 [ ] MAYBE: ...
