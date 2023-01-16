@@ -190,7 +190,7 @@ module tape_decoder_platform_dovetailed() {
     }
 }
 
-translate([0,80,0]) tape_decoder_platform_dovetailed() ;
+// translate([0,80,0]) tape_decoder_platform_dovetailed() ;
 
 module tape_decoder_scale() {
     difference() {
@@ -218,7 +218,7 @@ module tape_decoder_scale() {
 }
 
 // Rotate onto back for printing...
-rotate([90,0,0]) tape_decoder_scale() ;
+// rotate([90,0,0]) tape_decoder_scale() ;
 
 
 
@@ -377,7 +377,7 @@ guide_roller_rim_r      = guide_roller_outer_d/2 - 0.8 ;
 guide_roller_width      = mt_overall_width + 2.5 ;
 guide_roller_off        = guide_sprocket_off ;
 
-guide_roller_centre_x   = guide_sprocket_ht_off*1.6 ;
+guide_roller_centre_x   = guide_sprocket_ht_off*1 ;  // e.g. 1.6 for droop, 0.6 for lift
 guide_roller_centre_y   = guide_sprocket_sep/2 + guide_sprocket_dia*0.5 + guide_roller_outer_d*0.6 ;
 
 module roller_tape_guide() {
@@ -518,8 +518,12 @@ module read_side_support_dovetailed() {
     }
 }
 
-// read_side_support() ;
-// read_side_support_dovetailed() ;
+translate([-42,-40,0])
+    read_side_support_dovetailed() ;
+translate([+42,+40,0])
+    rotate([0,0,180])
+        read_side_support_dovetailed() ;
+
 
 ////////////////////////////////////////////////////////////////////////////////
 // Assemblies...

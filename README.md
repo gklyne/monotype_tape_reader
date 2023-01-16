@@ -76,7 +76,7 @@ Mechanical parts for reading paper tape created by Monotype keyboard.
 
 [x] Single piece side support and stepper bracket
 
-[ ] Larger stepper pulley for drive
+[x] Larger stepper pulley for drive
 
 [ ] Sprocket guides wrap further around sprockets
 
