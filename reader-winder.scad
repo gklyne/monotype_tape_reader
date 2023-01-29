@@ -184,7 +184,7 @@ module spool_and_winder_side_support(side) {
     upper_arm_x = winder_apex_d/2 ;
     upper_arm_y = 0 ;
     winder_x    = winder_apex_d/2 ;
-    winder_y    = -outer_d*0.7*side ;
+    winder_y    = -outer_d*0.6*side ;
     cutout_r    = winder_apex_d*0.4 ;
     difference() {
         union () {
@@ -233,12 +233,13 @@ stepper_wire_width  = 19 ;      // Width of wire entry cover
 stepper_hole_dia    = m4 ;
 stepper_hole_pitch  = 35 ;
 
-bracket_sd          = m4 ;
-bracket_fw          = 3 ;
-bracket_hubd        = bracket_sd*2.6 ;
-bracket_od          = stepper_body_dia + bracket_fw*2 ;
-bracket_mount_x     = (bracket_od-bracket_hubd/2) ;
-bracket_mount_y     = bracket_od/2-bracket_hubd/2 ;
+bracket_sd          = m8 ;                                  // Bracket shaft hole diameter
+bracket_fw          = 4 ;                                   // Width of frame around motor
+bracket_ft          = winder_side_t+5 ;                     // Thickness of frame and brace
+bracket_hubd        = bracket_sd*1.5 ;                      // Shaft-suppoort= hub diameter
+bracket_od          = stepper_body_dia + bracket_fw*2 ;     // Holder outside diamater
+bracket_mount_x     = (bracket_od*0.6) ;                    // X-offset of shaft from motor centre
+bracket_mount_y     = bracket_od/2-bracket_hubd/2 ;         // Y-offset of shaft from motor centre
 
 module stepper_bracket(bd, fw, ft, hd, hp, side=+1) {
     // Stepper motor bracket on X-Y plane, motor axis centred on origin
@@ -250,8 +251,6 @@ module stepper_bracket(bd, fw, ft, hd, hp, side=+1) {
     // hp   = mounting hole pitch
     // side = +/-1 for mounting arm to left or right
     //
-    // fw   = bracket_fw ;       // Width of surrounding frame
-    // ft   = winder_side_t+2 ;  // Thickness of mounting frame
     sd   = bracket_sd ;       // Bracket end shaft diameter
     hubd = bracket_hubd ;     // Bracket end hub diameter
     hubr = hubd/2 ;
@@ -278,7 +277,7 @@ module stepper_bracket(bd, fw, ft, hd, hp, side=+1) {
             brace_xy(
                 bracket_mount_x*side, bracket_mount_y,  // x1, y1
                 0, (od/2-hubr)*-0.5,                    // x2, y2
-                sd*2, hubd, sd, winder_side_t           // w, d1, d2, h
+                hubd, hubd, sd, winder_side_t           // w, d1, d2, h
                 ) ;
         }
         // Cutaway:
@@ -293,16 +292,17 @@ module stepper_bracket(bd, fw, ft, hd, hp, side=+1) {
             translate([+stepper_hole_pitch/2,0,0])
                 cylinder(d=hd, h=hc) ;
             //   countersink for mounting screw
-            translate([bracket_mount_x*side, bracket_mount_y, winder_side_t+delta])
-                countersinkZ(od=sd*2, oh=winder_side_t+delta*2, sd=sd, sh=winder_side_t) ;
+            // translate([bracket_mount_x*side, bracket_mount_y, winder_side_t+delta])
+            //     countersinkZ(od=sd*2, oh=winder_side_t+delta*2, sd=sd, sh=winder_side_t) ;
             //   wire entry cover (rounded rect r=1)
             rounded_rectangle_plate(x1,y1, x2,y2, r, hc) ;
             //   wire entry
-            weh = 2 ;     // Wire entry height
-            translate([-3,y1-r-fw-delta,-delta])
-                bevel_y(-delta,fw+delta, 6,weh, weh-0.25, 38)
+            weh = 2.8 ;     // Wire entry height
+            wew = 8 ;       // Wire entry width
+            translate([-wew/2,y1-r-fw-delta,-delta])
+                bevel_y(-delta,fw+delta, wew,weh, weh-0.25, 38)
                     bevel_y(-delta,fw+delta, 0,weh, weh-0.25, -38)
-                        cube(size=[6,fw+2*delta,weh]) ;
+                        cube(size=[wew,fw+2*delta,weh]) ;
         }
     }
 }
@@ -322,19 +322,19 @@ module stepper_bracket_sleeve() {
     }
 }
 
-// stepper_bracket(stepper_body_dia, bracket_fw, winder_side_t+2, stepper_hole_dia, stepper_hole_pitch) ;
+// stepper_bracket(stepper_body_dia, bracket_fw, bracket_ft, stepper_hole_dia, stepper_hole_pitch) ;
 // stepper_bracket_sleeve() ;
 
 // Combined spool and stepper motor bracket
-// NOTE: this has the cutout for stepper motor wires on the wrong side
-//       One-part print is probably not great for this.
+//
+// dir  +1/-1 to select orientation
 //
 module spool_and_motor_side_support(dir) {
     winder_x    = winder_apex_d/2 ;
-    winder_y    = -outer_d*0.7 ;
+    winder_y    = -outer_d*0.6 ;
     // Stepper bracket, translating attachment point to origin
     translate([-bracket_mount_x*dir,-bracket_mount_y,0])
-        stepper_bracket(stepper_body_dia, bracket_fw, winder_side_t+2, stepper_hole_dia, stepper_hole_pitch, dir) ;
+        stepper_bracket(stepper_body_dia, bracket_fw, bracket_ft, stepper_hole_dia, stepper_hole_pitch, dir) ;
     // Spool support, translating winder crank axis to origin
     rotate([0,0,-90])
         translate([-winder_x, -winder_y*dir, 0]) 
@@ -343,12 +343,12 @@ module spool_and_motor_side_support(dir) {
     brace_xy(
         -(winder_y+winder_side_w/2-winder_side_t/2)*dir, -winder_side_h+winder_x+winder_side_t*0.5, 
         -(bracket_mount_x-(stepper_body_dia+bracket_fw)*0.5)*dir, -bracket_mount_y-stepper_hole_dia, 
-        bracket_fw, bracket_fw, 1, winder_side_t+2
+        bracket_fw, bracket_fw, 1, bracket_ft
         ) ;
 
 }
 
-// spool_and_motor_side_support(-1) ;
+spool_and_motor_side_support(-1) ;
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -388,7 +388,7 @@ pulley_hub_width = 3 ;
 pulley_shaft_dia = 5.2 ;
 pulley_shaft_af  = 3.0 ;
 
-stepper_pulley(pulley_dia, pulley_width, pulley_hub_dia, pulley_hub_width, pulley_shaft_dia, pulley_shaft_af) ;
+// stepper_pulley(pulley_dia, pulley_width, pulley_hub_dia, pulley_hub_width, pulley_shaft_dia, pulley_shaft_af) ;
 
 ////////////////////////////////////////////////////////////////////////////////
 // Tape spool
