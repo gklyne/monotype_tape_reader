@@ -190,6 +190,7 @@ module tape_decoder_platform_dovetailed() {
     }
 }
 
+////--tape_decoder_platform_dovetailed
 // translate([0,80,0]) tape_decoder_platform_dovetailed() ;
 
 module tape_decoder_scale() {
@@ -217,10 +218,9 @@ module tape_decoder_scale() {
     }
 }
 
+////--tape_decoder_scale
 // Rotate onto back for printing...
 // rotate([90,0,0]) tape_decoder_scale() ;
-
-
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -251,10 +251,10 @@ module sprocket_guide_3_spoked(sd, hr, rr, or_max, fr, sw, pd, gsw, gow) {
             wheel(or+delta, gow) ;
             sprocket_pins(or, ht1, np, pd) ;
             sprocket_pins(or, ht2, np, pd) ;
-            rr1 = or + 1 ;      // Rim end ..
+            rr1 = or + 2 ;      // Rim end ..
             rw1 = 0.2 ;
             rr2 = or + 0.25 ;    // Rim bevel ..
-            rw2 = 0.6 ;
+            rw2 = 1.5 ;
             // Bottom rim...
             cylinder(r=rr1, h=rw1, $fn=24) ;
             translate([0,0,rw1-delta])
@@ -284,7 +284,7 @@ guide_sprocket_dia      = 22 ;
 guide_sprocket_shaft_d  = m4 ;
 guide_sprocket_hub_r    = m4 ;
 guide_sprocket_rim_r    = guide_sprocket_dia/2 - 1.5 ;
-guide_sprocket_width    = mt_overall_width + 2.5 ;
+guide_sprocket_width    = mt_overall_width + 4 ;  // Each rim 1.7 + 0.6 tape clearance
 guide_sprocket_off      = 1 ;       // Offset from side (standoff hub thickness)
 
 // Positioning...
@@ -320,7 +320,8 @@ module sprocket_tape_guide() {
     }
 }
 
-// sprocket_tape_guide() ;
+////--sprocket_tape_guide
+//sprocket_tape_guide() ;
 
 ////////////////////////////////////////////////////////////////////////////////
 // Roller tape guide
@@ -345,10 +346,14 @@ module roller_guide_3_spoked(sd, hr, rr, or, fr, sw, gow) {
     difference() {
         union() {
             wheel(or+delta, gow) ;
-            rr1 = or + 1 ;          // Rim end ..
+            rr1 = or + 2 ;       // Rim end ..
             rw1 = 0.2 ;
-            rr2 = or + 0.25 ;       // Rim bevel ..
-            rw2 = 0.6 ;
+            rr2 = or + 0.25 ;    // Rim bevel ..
+            rw2 = 1.5 ;
+            // rr1 = or + 1 ;          // Rim end ..
+            // rw1 = 0.2 ;
+            // rr2 = or + 0.25 ;       // Rim bevel ..
+            // rw2 = 0.6 ;
             // Bottom rim...
             cylinder(r=rr1, h=rw1, $fn=24) ;
             translate([0,0,rw1-delta])
@@ -408,9 +413,11 @@ module roller_tape_guide() {
     }
 }
 
-// Generate part 
-// roller_tape_guide() ;
-// difference() {roller_tape_guide() ; cube(size=[20,20,160]) ;}
+////--roller_tape_guide
+roller_tape_guide() ;
+
+// To see inside...
+// difference() { roller_tape_guide() ; cube(size=[20,20,160]) ; }
 
 ////////////////////////////////////////////////////////////////////////////////
 // Tape reader bridge supports
@@ -518,11 +525,12 @@ module read_side_support_dovetailed() {
     }
 }
 
-translate([-42,-40,0])
-    read_side_support_dovetailed() ;
-translate([+42,+40,0])
-    rotate([0,0,180])
-        read_side_support_dovetailed() ;
+////--read_side_support_dovetailed
+// translate([-42,-40,0])
+//     read_side_support_dovetailed() ;
+// translate([+42,+40,0])
+//     rotate([0,0,180])
+//         read_side_support_dovetailed() ;
 
 
 ////////////////////////////////////////////////////////////////////////////////
