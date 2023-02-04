@@ -4,6 +4,13 @@ include <reader-defs.scad> ;
 
 use <reader-common.scad> ;
 
+// Guide roller parameters (shape of rims each end)
+
+guide_rim_1_extra_radius = 3 ;      // Rim bevel outer 
+guide_rim_2_extra_radius = 0.25 ;   // Rim bevel inner
+guide_rim_1_width        = 0.2 ;    // Rim end thickness
+guide_rim_2_width        = 2 ;    // Rim bevel thickness 
+guide_rim_overall_width  = mt_overall_width + 5 ;  // Each rim 2.2 + 0.6 tape clearance
 
 ////////////////////////////////////////////////////////////////////////////////
 // Utilities for tape guide objects
@@ -251,10 +258,16 @@ module sprocket_guide_3_spoked(sd, hr, rr, or_max, fr, sw, pd, gsw, gow) {
             wheel(or+delta, gow) ;
             sprocket_pins(or, ht1, np, pd) ;
             sprocket_pins(or, ht2, np, pd) ;
-            rr1 = or + 2 ;      // Rim end ..
-            rw1 = 0.2 ;
-            rr2 = or + 0.25 ;    // Rim bevel ..
-            rw2 = 1.5 ;
+            rr1 = or + guide_rim_1_extra_radius ;   // Rim outer ..
+            rw1 = guide_rim_1_width ;
+            rr2 = or + guide_rim_2_extra_radius ;   // Rim inner (bevel) ..
+            rw2 = guide_rim_2_width ;
+            //@@@@
+            // rr1 = or + 2 ;      // Rim end ..
+            // rw1 = 0.2 ;
+            // rr2 = or + 0.25 ;    // Rim bevel ..
+            // rw2 = 1.5 ;
+            //@@@@
             // Bottom rim...
             cylinder(r=rr1, h=rw1, $fn=24) ;
             translate([0,0,rw1-delta])
@@ -284,7 +297,7 @@ guide_sprocket_dia      = 22 ;
 guide_sprocket_shaft_d  = m4 ;
 guide_sprocket_hub_r    = m4 ;
 guide_sprocket_rim_r    = guide_sprocket_dia/2 - 1.5 ;
-guide_sprocket_width    = mt_overall_width + 4 ;  // Each rim 1.7 + 0.6 tape clearance
+guide_sprocket_width    = guide_rim_overall_width ;
 guide_sprocket_off      = 1 ;       // Offset from side (standoff hub thickness)
 
 // Positioning...
@@ -331,6 +344,20 @@ module sprocket_tape_guide() {
 // Implemented as roller to reduce friction.
 //
 
+//@@TODO - remove this
+// guide_rim_1_extra_radius = 2 ;      // Rim bevel outer 
+// guide_rim_2_extra_radius = 0.25 ;   // Rim bevel inner
+// guide_rim_1_width        = 0.2 ;    // Rim end thickness
+// guide_rim_2_width        = 1.5 ;    // Rim bevel thickness 
+// guide_rim_overall_width  = guide_rim_overall_width ;
+//
+// rr1 = or + 1 ;          // Rim end ..
+// rw1 = 0.2 ;
+// rr2 = or + 0.25 ;       // Rim bevel ..
+// rw2 = 0.6 ;
+//@@
+
+
 module roller_guide_3_spoked(sd, hr, rr, or, fr, sw, gow) {
     // 3-spoked roller tape guide, end on X-Y plane, centred on origin.
     //
@@ -346,14 +373,10 @@ module roller_guide_3_spoked(sd, hr, rr, or, fr, sw, gow) {
     difference() {
         union() {
             wheel(or+delta, gow) ;
-            rr1 = or + 2 ;       // Rim end ..
-            rw1 = 0.2 ;
-            rr2 = or + 0.25 ;    // Rim bevel ..
-            rw2 = 1.5 ;
-            // rr1 = or + 1 ;          // Rim end ..
-            // rw1 = 0.2 ;
-            // rr2 = or + 0.25 ;       // Rim bevel ..
-            // rw2 = 0.6 ;
+            rr1 = or + guide_rim_1_extra_radius ;   // Rim outer ..
+            rw1 = guide_rim_1_width ;
+            rr2 = or + guide_rim_2_extra_radius ;   // Rim inner (bevel) ..
+            rw2 = guide_rim_2_width ;
             // Bottom rim...
             cylinder(r=rr1, h=rw1, $fn=24) ;
             translate([0,0,rw1-delta])
@@ -379,8 +402,7 @@ guide_roller_outer_d    = 14 ;
 guide_roller_shaft_d    = guide_sprocket_shaft_d ;
 guide_roller_hub_r      = guide_roller_shaft_d ;
 guide_roller_rim_r      = guide_roller_outer_d/2 - 0.8 ;
-guide_roller_width      = mt_overall_width + 2.5 ;
-guide_roller_off        = guide_sprocket_off ;
+guide_roller_width      = guide_rim_overall_width ;
 
 guide_roller_centre_x   = guide_sprocket_ht_off*1 ;  // e.g. 1.6 for droop, 0.6 for lift
 guide_roller_centre_y   = guide_sprocket_sep/2 + guide_sprocket_dia*0.5 + guide_roller_outer_d*0.6 ;

@@ -80,7 +80,18 @@ Mechanical parts for reading paper tape created by Monotype keyboard.
 
 [x] Sprocket guides wrap further around sprockets
 
-[ ] MAYBE: recess in pulley hub to sit closer to motor
+
+### 2023-02-03: tweak design
+
+[x] smaller stepper motor pulley (50mm -> 35mm) - should be less liable to stalling motor
+
+[x] wider flanges on tape guide rollers, reduced tape width clearance - hopefully reducing tendency of tape to ride up on rollers.
+
+
+
+
+
+
 
 [ ] MAYBE: ...
 
