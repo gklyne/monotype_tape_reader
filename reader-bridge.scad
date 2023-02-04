@@ -404,8 +404,11 @@ guide_roller_hub_r      = guide_roller_shaft_d ;
 guide_roller_rim_r      = guide_roller_outer_d/2 - 0.8 ;
 guide_roller_width      = guide_rim_overall_width ;
 
-guide_roller_centre_x   = guide_sprocket_ht_off*1 ;  // e.g. 1.6 for droop, 0.6 for lift
-guide_roller_centre_y   = guide_sprocket_sep/2 + guide_sprocket_dia*0.5 + guide_roller_outer_d*0.6 ;
+guide_roller_centre_x   = guide_sprocket_ht_off*0.7 ;  // e.g. 1.6 for droop, 1 for level, 0.6 for lift
+guide_roller_centre_y   = 
+    guide_sprocket_sep/2 + 
+    guide_sprocket_dia*0.5 + guide_roller_outer_d*0.5 + 
+    guide_rim_1_extra_radius*2 + 1 ;
 
 module roller_tape_guide() {
     or = guide_roller_outer_d/2 ;
@@ -436,7 +439,7 @@ module roller_tape_guide() {
 }
 
 ////--roller_tape_guide
-roller_tape_guide() ;
+//roller_tape_guide() ;
 
 // To see inside...
 // difference() { roller_tape_guide() ; cube(size=[20,20,160]) ; }
@@ -548,11 +551,11 @@ module read_side_support_dovetailed() {
 }
 
 ////--read_side_support_dovetailed
-// translate([-42,-40,0])
-//     read_side_support_dovetailed() ;
-// translate([+42,+40,0])
-//     rotate([0,0,180])
-//         read_side_support_dovetailed() ;
+translate([-42,-42,0])
+    read_side_support_dovetailed() ;
+translate([+42,+42,0])
+    rotate([0,0,180])
+        read_side_support_dovetailed() ;
 
 
 ////////////////////////////////////////////////////////////////////////////////
