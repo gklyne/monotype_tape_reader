@@ -4,6 +4,10 @@ include <reader-defs.scad> ;
 
 use <reader-common.scad> ;
 
+////////////////////////////////////////////////////////////////////////////////
+// Definitions
+////////////////////////////////////////////////////////////////////////////////
+
 // Guide roller parameters (shape of rims each end)
 
 guide_rim_1_extra_radius = 3 ;      // Rim bevel outer 
@@ -262,12 +266,6 @@ module sprocket_guide_3_spoked(sd, hr, rr, or_max, fr, sw, pd, gsw, gow) {
             rw1 = guide_rim_1_width ;
             rr2 = or + guide_rim_2_extra_radius ;   // Rim inner (bevel) ..
             rw2 = guide_rim_2_width ;
-            //@@@@
-            // rr1 = or + 2 ;      // Rim end ..
-            // rw1 = 0.2 ;
-            // rr2 = or + 0.25 ;    // Rim bevel ..
-            // rw2 = 1.5 ;
-            //@@@@
             // Bottom rim...
             cylinder(r=rr1, h=rw1, $fn=24) ;
             translate([0,0,rw1-delta])
@@ -285,10 +283,6 @@ module sprocket_guide_3_spoked(sd, hr, rr, or_max, fr, sw, pd, gsw, gow) {
             spoked_wheel_cutouts(hr, rr, fr, gow+2*delta, 3, sw) ;
     }
 } ;
-
-
-// Generate part 
-//
 
 guide_sprocket_fillet_r = 1.5 ;  
 guide_sprocket_spoke_w  = 2 ;
@@ -343,20 +337,6 @@ module sprocket_tape_guide() {
 // The purpose of this guide is to keep the tape wrapped around the sprocket guide.
 // Implemented as roller to reduce friction.
 //
-
-//@@TODO - remove this
-// guide_rim_1_extra_radius = 2 ;      // Rim bevel outer 
-// guide_rim_2_extra_radius = 0.25 ;   // Rim bevel inner
-// guide_rim_1_width        = 0.2 ;    // Rim end thickness
-// guide_rim_2_width        = 1.5 ;    // Rim bevel thickness 
-// guide_rim_overall_width  = guide_rim_overall_width ;
-//
-// rr1 = or + 1 ;          // Rim end ..
-// rw1 = 0.2 ;
-// rr2 = or + 0.25 ;       // Rim bevel ..
-// rw2 = 0.6 ;
-//@@
-
 
 module roller_guide_3_spoked(sd, hr, rr, or, fr, sw, gow) {
     // 3-spoked roller tape guide, end on X-Y plane, centred on origin.
