@@ -354,7 +354,7 @@ module extended_nut_recess_with_ejection_hole(af, t, l) {
 
 // Return height of nut recess given across-flats size of nut
 //
-function nylock_recess_height(af) = af*0.4 ;
+function nylock_recess_height(af) = af*0.38 ;
 
 module extended_nylock_recess(af, t, l) {
     // Extended nylock cutout on X-Y plane, with nut centred on the origin, extends along X-axis
@@ -366,6 +366,8 @@ module extended_nylock_recess(af, t, l) {
     // l  = length of cutout
     //
     od = af * 2 / sqrt(3) ; // Diameter (across corners)
+    sl = af - 0.5 ;         // Width of nut support ledge
+    co = af*0.28 ;          // Offset of cutout (leaving ridge to retain nut) 
     translate([0,0,-delta]) {
         cylinder(d=od, h=t+delta*2, $fn=6) ;
         translate([0,-af/2,0])
@@ -373,19 +375,19 @@ module extended_nylock_recess(af, t, l) {
     }
     // Cone above for nylock dome and printing overhang
     translate([0,0,t]) {
-        cylinder(d1=af-0.4, d2=2, h=nylock_recess_height(af), $fn=12) ;
-        translate([af*0.28,0,0])
-            trapezoidal_prism(w1=af-0.4, w2=2, h=nylock_recess_height(af), l=l-af*0.28) ;
+        cylinder(d1=sl, d2=2, h=nylock_recess_height(af), $fn=12) ;
+        translate([co,0,0])
+            trapezoidal_prism(w1=sl, w2=2, h=nylock_recess_height(af), l=l-co) ;
     }
     // Cone below for nylock dome
     translate([0,0,-nylock_recess_height(af)]) {
-        cylinder(d1=2, d2=af-0.4, h=nylock_recess_height(af), $fn=12) ;
-        translate([af*0.28,0,0])
-            trapezoidal_prism(w1=2, w2=af-0.4, h=nylock_recess_height(af), l=l-af*0.28) ;
+        cylinder(d1=2, d2=sl, h=nylock_recess_height(af), $fn=12) ;
+        translate([co,0,0])
+            trapezoidal_prism(w1=2, w2=sl, h=nylock_recess_height(af), l=l-co) ;
     }
 }
 ////-extended_nylock_recess(af, t, l) instance
-//extended_nylock_recess(7, 4.5, 20) ;
+//extended_nylock_recess(7, 4.4, 20) ;
 
 module extended_nylock_recess_with_ejection_hole(af, t, l) {
     // Extended nut cutout on X-Y plane, with nut centred on the origin, extends along X-axis
@@ -412,7 +414,7 @@ difference() {
     translate([0,0,-6])
         cylinder(d=4,  h=20, $fn=16) ;
     // Using dimensions for M4 nylock nut
-    extended_nylock_recess_with_ejection_hole(7, 4.5, 20) ;
+    extended_nylock_recess_with_ejection_hole(7, 4.4, 20) ;
 }
 
 
