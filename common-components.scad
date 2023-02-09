@@ -26,6 +26,7 @@ module triangle_plate(x1,y1,x2,y2,x3,y3,h) {
             ) ;
     }
 }
+////-triangle_plate(x1,y1,x2,y2,x3,y3,h) instance
 // triangle_plate(-10,-10,-10,+10,10,5,5) ;
 
 module rectangle_plate(x1,y1,x2,y2,h, scale=1) {
@@ -50,6 +51,7 @@ module rectangle_plate(x1,y1,x2,y2,h, scale=1) {
             ) ;
     }
 }
+////-rectangle_plate(x1,y1,x2,y2,h, scale=1) instance
 // rectangle_plate(-10,-10,10,15,5) ;
 // rectangle_plate(10,15,20,30,5, scale=0.5) ;
 
@@ -110,6 +112,7 @@ module oval_xy(x1, y1, x2, y2, d, h) {
     translate([x2,y2,0])
         cylinder(d=d, h=h, $fn=16) ;
 }
+////-oval_xy(x1, y1, x2, y2, d, h) instance
 // oval_xy(-20,30,-60,-60,10,5) ;
 
 
@@ -154,6 +157,7 @@ module brace_xy(x1, y1, x2, y2, w, d1, d2, h) {
         translate([x2,y2,0]) shaft_hole(d2, h) ;
     }
 }
+////-brace_xy(x1, y1, x2, y2, w, d1, d2, h) instance
 // brace_xy(-20,30,-60,-60,8,12,8,5) ;
 
 
@@ -188,6 +192,7 @@ module rounded_triangle_plate(x1,y1,x2,y2,x3,y3,r,h) {
     oval_xy(x2,y2,x3,y3,d,h) ;
     oval_xy(x3,y3,x1,y1,d,h) ;
 }
+////-rounded_triangle_plate(x1,y1,x2,y2,x3,y3,r,h) instance
 // rounded_triangle_plate(-20,-20, -10,+10, 10,5, 3,5) ;
 
 
@@ -207,6 +212,7 @@ module rounded_rectangle_plate(x1,y1,x2,y2,r,h) {
     oval_xy(x2,y2,x2,y1,d,h) ;
     oval_xy(x2,y1,x1,y1,d,h) ;
 }
+////-rounded_rectangle_plate(x1,y1,x2,y2,r,h) instance
 // rounded_rectangle_plate(-10,-10, 10,15, 3,5) ;
 
 module torus(tr, rr) {
@@ -220,6 +226,7 @@ module torus(tr, rr) {
             circle(r=rr, $fn=32) ;
     }
 }
+////-torus(tr, rr) instance
 // torus(20, 3);
 
 // Triangular prism on X-Y plane, centred and aligned on X-axis, one end at origin
@@ -277,8 +284,8 @@ module circular_platform(r,h) {
         }
     }
 }
-// Instance of circular_platform(r,h)
-// (With cutaway to reveal angle of support.)
+////-circular_platform(r,h) instance
+// Instance of circular_platform (With cutaway to reveal angle of support.)
 // difference() { circular_platform(10,8) ; translate([0,0,-10]) cube(size=[20,20,20]) ; }
 
 // Return height of nut recess given across-flats size of nut
@@ -323,7 +330,7 @@ module extended_nut_recess(af, t, l) {
             trapezoidal_prism(w1=af-0.4, w2=2, h=nut_recess_height(af), l=l-af*0.28) ;
     }
 }
-// extended_nut_recess(af, t, l) instance
+////-extended_nut_recess(af, t, l) instance
 // extended_nut_recess(7, 3.1, 20) ;
 
 
@@ -341,8 +348,73 @@ module extended_nut_recess_with_ejection_hole(af, t, l) {
         rotate([0,90,0])
             cylinder(d=t,h=l*2, $fn=6, center=true) ;
 }
-// extended_nut_recess_with_ejection_hole(af, t, l) instance
+////-extended_nut_recess_with_ejection_hole(af, t, l) instance
 // extended_nut_recess_with_ejection_hole(7, 3.1, 20) ;
+
+
+// Return height of nut recess given across-flats size of nut
+//
+function nylock_recess_height(af) = af*0.4 ;
+
+module extended_nylock_recess(af, t, l) {
+    // Extended nylock cutout on X-Y plane, with nut centred on the origin, extends along X-axis
+    //
+    // To allow insertion of the nut either way, the conical ends extend both up and down
+    //
+    // af = size of nut across faces (across flats, = spanner size)
+    // t  = thickness of nut
+    // l  = length of cutout
+    //
+    od = af * 2 / sqrt(3) ; // Diameter (across corners)
+    translate([0,0,-delta]) {
+        cylinder(d=od, h=t+delta*2, $fn=6) ;
+        translate([0,-af/2,0])
+            cube(size=[l,af,t+delta*2]) ;
+    }
+    // Cone above for nylock dome and printing overhang
+    translate([0,0,t]) {
+        cylinder(d1=af-0.4, d2=2, h=nylock_recess_height(af), $fn=12) ;
+        translate([af*0.28,0,0])
+            trapezoidal_prism(w1=af-0.4, w2=2, h=nylock_recess_height(af), l=l-af*0.28) ;
+    }
+    // Cone below for nylock dome
+    translate([0,0,-nylock_recess_height(af)]) {
+        cylinder(d1=2, d2=af-0.4, h=nylock_recess_height(af), $fn=12) ;
+        translate([af*0.28,0,0])
+            trapezoidal_prism(w1=2, w2=af-0.4, h=nylock_recess_height(af), l=l-af*0.28) ;
+    }
+}
+////-extended_nylock_recess(af, t, l) instance
+//extended_nylock_recess(7, 4, 20) ;
+
+module extended_nylock_recess_with_ejection_hole(af, t, l) {
+    // Extended nut cutout on X-Y plane, with nut centred on the origin, extends along X-axis
+    // and ejection hole extending on -X axis
+    //
+    // af = size of nut across faces (across flats, = spanner size)
+    // t  = thickness of nut
+    // l  = length of cutout (and ejection hole)
+    //
+    extended_nylock_recess(af, t, l) ;
+    // Nut ejection hole
+    translate([0,0,t/2])
+        rotate([0,90,0])
+            cylinder(d=t,h=l*2, $fn=6, center=true) ;
+}
+////-extended_nylock_recess_with_ejection_hole(af, t, l) instance
+// extended_nylock_recess_with_ejection_hole(7, 4, 20) ;
+
+////-Test nylock cutout in small cylinder
+////-test-extended_nylock_recess_with_ejection_hole
+difference() {
+    translate([0,0,-6])
+        cylinder(d=10, h=16, $fn=16) ;
+    translate([0,0,-7])
+        cylinder(d=5,  h=18, $fn=16) ;
+    // Using dimensions for M4 nylock nut
+    extended_nylock_recess_with_ejection_hole(7, 4, 20) ;
+}
+
 
 // Cutout for vertical screw hole with downward-facing countersink at top, 
 // centred on origin.
@@ -397,7 +469,6 @@ module wheel(r,t) {
     // t  = thickness
     cylinder(r=r, h=t, center=false, $fn=48) ;
 }
-// wheel(40, 5) ;
 
 module pulley(d,t) {
     // Pulley outside diameter d, thickness t, on X-Y plane and centred on Z axis
@@ -405,7 +476,6 @@ module pulley(d,t) {
     translate([0,0,t/2])
         cylinder(d1=d-t*0.85, d2=d, h=t/2+delta) ;    
 }
-
 
 module pulley_round_belt(pd, pw, bd) {
     // Pulley with channel for round belt, lying on X-Y plane, centred at origin.
@@ -420,6 +490,7 @@ module pulley_round_belt(pd, pw, bd) {
             torus(pd/2, bd/2) ;
     }
 }
+////-pulley_round_belt(pd, pw, bd) instance
 // pulley_round_belt(30, 5, 3) ;
 
 
@@ -435,7 +506,7 @@ module ring(r1, r2, t) {
             cylinder(r=r1, h=t+2*delta, center=false, $fn=48) ;
     }
 }
-
+////-ring(r1, r2, t) instance
 // ring(20, 40, 5) ;
 
 
@@ -474,6 +545,7 @@ module segment(a, sr, t) {
         segment_cutout(0, a, sr, t) ;
     }
 }
+////-segment(a, sr, t) instance
 // segment(60, 20, 5) ;
 
 
@@ -493,6 +565,7 @@ module ring_segment(a1, a2, r1, r2, t) {
         segment_cutout(a1, a2, r2, t) ;
     }
 }
+////-ring_segment(a1, a2, r1, r2, t) instance
 // ring_segment(60, 120, 30, 40, 5) ;
 
 
@@ -534,6 +607,7 @@ module segment_rounded(a, sr, t, fr) {
             cylinder(r=fr, h=t, center=false, $fn=16) ;
     }
 }
+////-segment_rounded(a, sr, t, fr) triple instance
 // for (a=[0,120,240]) rotate([0,0,a]) segment_rounded(110, 20, 5, 2) ;
 
 
@@ -553,6 +627,7 @@ module hub_segment(a, hr, sr, t) {
             cylinder(r=hr, h=t+2*delta, center=false, $fn=24) ;
     }
 }
+////-hub_segment(a, hr, sr, t) instance
 // hub_segment(60, 8, 20, 5) ;
 
 
@@ -597,6 +672,7 @@ module hub_segment_rounded(a, hr, sr, t, fr) {
             cylinder(r=fr, h=t, center=false, $fn=16) ;
     }
 }
+////-hub_segment_rounded(a, hr, sr, t, fr) instances
 // hub_segment_rounded(110, 8, 20, 5, 2) ;
 // for (a=[0,120,240]) rotate([0,0,a]) hub_segment_rounded(100, 8, 20, 5, 2) ;
 
@@ -656,6 +732,7 @@ module spoked_wheel_cutout(hr, sr, fr, wt, ns, sw) {
                 cube(size=[2*sr, sr, wt+2*delta], center=false) ;
     }
 }  
+////-spoked_wheel_cutout(hr, sr, fr, wt, ns, sw) instance
 // spoked_wheel_cutout(15, 30, 2, 5, 6, 4) ;
 
 module spoked_wheel_cutouts(hr, sr, fr, wt, ns, sw) {
@@ -714,6 +791,7 @@ module spoked_wheel_cutouts(hr, sr, fr, wt, ns, sw) {
                             cube(size=[2*sr, sr, wt+2*delta], center=false) ;
                 }
 }
+////-spoked_wheel_cutouts(hr, sr, fr, wt, ns, sw) instance
 // spoked_wheel_cutouts(hr=15, sr=30, fr=2, wt=5, ns=6, sw=4) ;
 
 module spoked_wheel(hr, sr, or, fr, wt, ns, sw) {
@@ -736,6 +814,7 @@ module spoked_wheel(hr, sr, or, fr, wt, ns, sw) {
             spoked_wheel_cutouts(hr, sr, fr, wt+2*delta, ns, sw) ;
     }
 }
+////-spoked_wheel(hr, sr, or, fr, wt, ns, sw) instance
 // spoked_wheel(hr=8, sr=16, or=20, fr=2, wt=5, ns=5, sw=4) ;
 
 
@@ -1045,7 +1124,7 @@ module tapered_cube(l, w1, w2, h) {
                 ) ;
         }
 }
-// Test tapered_cube
+////-tapered_cube(l, w1, w2, h) instance
 // tapered_cube(20,12,10,4) ;
 
 
@@ -1062,9 +1141,8 @@ module tapered_oval(l, r1, r2, h) {
     translate([+l/2,0,0]) cylinder(r1=r1, r2=r2, h=h, $fn=16) ;
     tapered_cube(l, r1*2, r2*2, h) ;
 }
-// Test tapered_oval
+////-tapered_oval(l, r1, r2, h) instance
 // tapered_oval(20,6,5,4) ;
-
 
 // Test helix_extrude
 // helix_extrude(h=20, r=20, a=720, ns=36) cylinder(r1=4, r2=3, h=2) ;
