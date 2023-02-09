@@ -385,7 +385,7 @@ module extended_nylock_recess(af, t, l) {
     }
 }
 ////-extended_nylock_recess(af, t, l) instance
-//extended_nylock_recess(7, 4, 20) ;
+//extended_nylock_recess(7, 4.5, 20) ;
 
 module extended_nylock_recess_with_ejection_hole(af, t, l) {
     // Extended nut cutout on X-Y plane, with nut centred on the origin, extends along X-axis
@@ -407,12 +407,12 @@ module extended_nylock_recess_with_ejection_hole(af, t, l) {
 ////-Test nylock cutout in small cylinder
 ////-test-extended_nylock_recess_with_ejection_hole
 difference() {
+    translate([0,0,-5])
+        cylinder(d=15, h=18, $fn=16) ;
     translate([0,0,-6])
-        cylinder(d=10, h=16, $fn=16) ;
-    translate([0,0,-7])
-        cylinder(d=5,  h=18, $fn=16) ;
+        cylinder(d=4,  h=20, $fn=16) ;
     // Using dimensions for M4 nylock nut
-    extended_nylock_recess_with_ejection_hole(7, 4, 20) ;
+    extended_nylock_recess_with_ejection_hole(7, 4.5, 20) ;
 }
 
 
