@@ -414,7 +414,7 @@ difference() {
     translate([0,0,-6])
         cylinder(d=4,  h=20, $fn=16) ;
     // Using dimensions for M4 nylock nut
-    extended_nylock_recess_with_ejection_hole(7, 4.4, 20) ;
+    extended_nylock_recess_with_ejection_hole(7, 4.2, 20) ;
 }
 
 
