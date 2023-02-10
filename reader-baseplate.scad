@@ -228,13 +228,6 @@ module baseplate_clamp(l, w, h, l1, h1, h2, d) {
 // diagonal_brace(100, 60, 4, 6, true) ;
 // diagonal_brace(100, 60, 4, 6, false) ;
 // cross_brace_y(60, 0, 4, 6) ;
-
-// mount_plate(20, 16, 4, 12, 4, px=+44, py=+28) ;
-// mount_plate(20, 16, 4, 12, 4, 0,      py=+28) ;
-// mount_plate(20, 16, 4, 12, 4, px=-44, py=+28) ;
-// mount_plate(20, 16, 4, 12, 4, px=+44, py=-28) ;
-// mount_plate(20, 16, 4, 12, 4, px=0,   py=-28) ;
-// mount_plate(20, 16, 4, 12, 4, px=-44, py=-28) ;
  
 // lx = 30 ;
 // ly = 20 ;
@@ -422,8 +415,8 @@ module reader_half_baseplate_2() {
 // translate( [-10,0,0] )
 //     reader_half_baseplate_1() ;
 
-translate( [+10,0,0] )
-    reader_half_baseplate_2() ;
+// translate( [+10,0,0] )
+//     reader_half_baseplate_2() ;
 
 // for (offset = [0,border_w*4])
 //     translate([0,offset,0])

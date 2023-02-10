@@ -361,12 +361,12 @@ module sprocket_tape_guide() {
             translate([0,0,guide_sprocket_width-12+3.5])
                 circular_platform(r=guide_sprocket_rim_r+delta, h=10) ;
         }
-        // M4 nylock nut cutouts:  7 AF x 4.2 thick
+        // M4 nylock nut cutouts
         translate([0,0,10]) {
-            extended_nylock_recess_with_ejection_hole(7, 4.2, guide_sprocket_dia) ;
+            extended_nylock_recess_with_ejection_hole(m4_nut_af, m4_nylock_t, guide_sprocket_dia) ;
         }
         translate([0,0,guide_sprocket_width-10-4.2]) {
-            extended_nylock_recess_with_ejection_hole(7, 4.2, guide_sprocket_dia) ;
+            extended_nylock_recess_with_ejection_hole(m4_nut_af, m4_nylock_t, guide_sprocket_dia) ;
         }
         shaft_hole(guide_sprocket_shaft_d, guide_sprocket_width) ;
     }

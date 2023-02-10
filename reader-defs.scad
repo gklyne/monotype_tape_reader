@@ -5,6 +5,10 @@ m4 = 4+m_clearance ;    // Close clearance hole for M4 screw
 m5 = 5+m_clearance ;    // Close clearance hole for M5 screw
 m8 = 8+m_clearance ;    // Close clearance hole for M8 screw
 
+m4_nut_af   = 7 ;       // M4 nut a/f size
+m4_nut_t    = 3.1 ;     // M4 nut thickness (for recess)
+m4_nylock_t = 4.3 ;     // M4 nylock thickness (for recess)
+
 // Monotype system parameters
 
 // 159/50 = 3.18
@@ -95,10 +99,10 @@ hold_base_w = 20 ;      // Width of base piece
 hold_rail_p = 40 ;      // Distance between rail holes
 hold_rail_d = m4 ;      // Diameter of rail holes
 
-hold_fix_p  = 25 ;      // Distance between fixing holes
-hold_fix_d  = m4 ;      // Diameter of fixing holes
-hold_nut_t  = 3 ;     // Thickness of holder fixing nut
-hold_nut_af = 7 ;       // Size across faces of holder fixing nut
+hold_fix_p   = 25 ;     // Distance between fixing holes
+hold_fix_d   = m4 ;     // Diameter of fixing holes
+hold_nut_t   = 3.1 ;    // Thickness of holder fixing nut
+hold_nut_af  = 7 ;      // Size across faces of holder fixing nut
 hold_fix_o_x = 12 ;     // X-offset from vertical rod to holder fixing holes
 hold_fix_o_y = 0 ;      // Y-offset from vertical rod to centre between fixing holes
 

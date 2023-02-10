@@ -331,7 +331,7 @@ module extended_nut_recess(af, t, l) {
     }
 }
 ////-extended_nut_recess(af, t, l) instance
-// extended_nut_recess(7, 3.1, 20) ;
+// extended_nut_recess(m4_nut_af, m4_nut_t, 20) ;
 
 
 module extended_nut_recess_with_ejection_hole(af, t, l) {
@@ -349,7 +349,7 @@ module extended_nut_recess_with_ejection_hole(af, t, l) {
             cylinder(d=t,h=l*2, $fn=6, center=true) ;
 }
 ////-extended_nut_recess_with_ejection_hole(af, t, l) instance
-// extended_nut_recess_with_ejection_hole(7, 3.1, 20) ;
+// extended_nut_recess_with_ejection_hole(m4_nut_af, m4_nut_t, 20) ;
 
 
 // Return height of nut recess given across-flats size of nut
@@ -387,7 +387,7 @@ module extended_nylock_recess(af, t, l) {
     }
 }
 ////-extended_nylock_recess(af, t, l) instance
-//extended_nylock_recess(7, 4.4, 20) ;
+//extended_nylock_recess(m4_nut_af, m4_nylock_t, 20) ;
 
 module extended_nylock_recess_with_ejection_hole(af, t, l) {
     // Extended nut cutout on X-Y plane, with nut centred on the origin, extends along X-axis
@@ -404,7 +404,7 @@ module extended_nylock_recess_with_ejection_hole(af, t, l) {
             cylinder(d=t,h=l*2, $fn=6, center=true) ;
 }
 ////-extended_nylock_recess_with_ejection_hole(af, t, l) instance
-// extended_nylock_recess_with_ejection_hole(7, 4, 20) ;
+// extended_nylock_recess_with_ejection_hole(m4_nut_af, m4_nylock_t, 20) ;
 
 ////-Test nylock cutout in small cylinder
 ////-test-extended_nylock_recess_with_ejection_hole
@@ -414,7 +414,7 @@ difference() {
     translate([0,0,-6])
         cylinder(d=4,  h=20, $fn=16) ;
     // Using dimensions for M4 nylock nut
-    extended_nylock_recess_with_ejection_hole(7, 4.2, 20) ;
+    extended_nylock_recess_with_ejection_hole(m4_nut_af, m4_nylock_t, 20) ;
 }
 
 
@@ -818,53 +818,6 @@ module spoked_wheel(hr, sr, or, fr, wt, ns, sw) {
 }
 ////-spoked_wheel(hr, sr, or, fr, wt, ns, sw) instance
 // spoked_wheel(hr=8, sr=16, or=20, fr=2, wt=5, ns=5, sw=4) ;
-
-
-////////////////////////////////////////////////////////////////////////////////
-// Sprocket pins
-////////////////////////////////////////////////////////////////////////////////
-
-function sprocket_or_np_from_pitch(or_max, p) =
-    // Calculates outside diameter and number of sprocket pins
-    //
-    // Always returns an even number of pins, adjusting the supplied radius accordingly.
-    //
-    // or_max = maximum outside radius - the actual value is slightly smaller than this
-    // p      = sprocket hole pitch
-    //
-    let (
-        sc_max = PI * or_max,           // Minimum outside semi-circumference
-        np     = floor(sc_max / p),     // Number of sprocket pins on semi-circumference
-        sc     = np * p,                // Actual semi-circumference for number of pins at given pitch
-        // @@QUERY: reduce to allow for thickness of paper (0.08mm)?
-        or     = sc / PI                // Actual outside radius for number of pins at given pitch
-    ) [or, np*2] ;
-
-module sprocket_pins(or, ht, np, pd) {
-    // Ring of sprocket teeth (for adding to wheel)
-    // Positioned for wheel on X-Y plane with axis through origin
-    //
-    // NOTE: `or` and `np` should be chosen for even spacing of pins around the wheel:
-    //       see `sprocket_or_np_from_pitch` above for adjustment calculation.
-    //
-    // or  = outside radius of wheel (where sprocket pins are positioned)
-    // ht  = height of pins above X-Y plane
-    // np  = number of sprocket pins around diameter
-    // pd  = diameter of each sprocket pin
-    //
-    // Array pins around wheel
-    ap = 360 / np ;     // Angle at centre between pins
-    for (i=[0:np-1])
-        rotate([0,0,i*ap])
-            // Translate pin to sit on rim of wheel
-            translate([or, 0, ht])
-                // Rotate pin to X-axis
-                rotate([0,90,0])
-                    // Conical pin
-                    cylinder(d1=pd, d2=pd*0.1, h=pd*0.75, center=false, $fn=8) ;
-    
-}
-
 
 
 ////////////////////////////////////////////////////////////////////////////////
