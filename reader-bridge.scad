@@ -235,6 +235,51 @@ module tape_decoder_scale() {
 
 
 ////////////////////////////////////////////////////////////////////////////////
+// Sprocket pins
+////////////////////////////////////////////////////////////////////////////////
+
+function sprocket_or_np_from_pitch(or_max, p) =
+    // Calculates outside diameter and number of sprocket pins
+    //
+    // Always returns an even number of pins, adjusting the supplied radius accordingly.
+    //
+    // or_max = maximum outside radius - the actual value is slightly smaller than this
+    // p      = sprocket hole pitch
+    //
+    let (
+        sc_max = PI * or_max,           // Minimum outside semi-circumference
+        np     = floor(sc_max / p),     // Number of sprocket pins on semi-circumference
+        sc     = np * p,                // Actual semi-circumference for number of pins at given pitch
+        // @@QUERY: reduce to allow for thickness of paper (0.08mm)?
+        or     = sc / PI                // Actual outside radius for number of pins at given pitch
+    ) [or, np*2] ;
+
+module sprocket_pins(or, ht, np, pd) {
+    // Ring of sprocket teeth (for adding to wheel)
+    // Positioned for wheel on X-Y plane with axis through origin
+    //
+    // NOTE: `or` and `np` should be chosen for even spacing of pins around the wheel:
+    //       see `sprocket_or_np_from_pitch` above for adjustment calculation.
+    //
+    // or  = outside radius of wheel (where sprocket pins are positioned)
+    // ht  = height of pins above X-Y plane
+    // np  = number of sprocket pins around diameter
+    // pd  = diameter of each sprocket pin
+    //
+    // Array pins around wheel
+    ap = 360 / np ;     // Angle at centre between pins
+    for (i=[0:np-1])
+        rotate([0,0,i*ap])
+            // Translate pin to sit on rim of wheel
+            translate([or, 0, ht])
+                // Rotate pin to X-axis
+                rotate([0,90,0])
+                    // Conical pin
+                    cylinder(d1=pd, d2=pd*0.1, h=pd*0.85, center=false, $fn=8) ;
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
 // Sprocketed tape guide
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -278,7 +323,7 @@ module sprocket_guide_3_spoked(sd, hr, rr, or_max, fr, sw, pd, gsw, gow) {
         }
         shaft_hole(sd, gow) ;
         translate([0,0,gow/2])
-            shaft_middle_cutout(rr-fr, gow*0.45) ;
+            shaft_middle_cutout(rr-fr, gow*0.5) ;
         translate([0,0,-delta])
             spoked_wheel_cutouts(hr, rr, fr, gow+2*delta, 3, sw) ;
     }
@@ -316,19 +361,23 @@ module sprocket_tape_guide() {
             translate([0,0,guide_sprocket_width-12+3.5])
                 circular_platform(r=guide_sprocket_rim_r+delta, h=10) ;
         }
-        // M4 nut cutouts:  7 AF x 3.1 thick
-        translate([0,0,12]) {
-            extended_nut_recess_with_ejection_hole(7, 3.1, guide_sprocket_dia) ;
+        // M4 nylock nut cutouts:  7 AF x 4.2 thick
+        translate([0,0,10]) {
+            extended_nylock_recess_with_ejection_hole(7, 4.2, guide_sprocket_dia) ;
         }
-        translate([0,0,guide_sprocket_width-12]) {
-            extended_nut_recess_with_ejection_hole(7, 3.1, guide_sprocket_dia) ;
+        translate([0,0,guide_sprocket_width-10-4.2]) {
+            extended_nylock_recess_with_ejection_hole(7, 4.2, guide_sprocket_dia) ;
         }
         shaft_hole(guide_sprocket_shaft_d, guide_sprocket_width) ;
     }
 }
 
 ////--sprocket_tape_guide
-//sprocket_tape_guide() ;
+sprocket_tape_guide() ;
+
+// To see inside...
+// difference() { sprocket_tape_guide() ; cube(size=[20,20,160]) ; }
+
 
 ////////////////////////////////////////////////////////////////////////////////
 // Roller tape guide
@@ -530,12 +579,12 @@ module read_side_support_dovetailed() {
     }
 }
 
-////--read_side_support_dovetailed
-translate([-42,-42,0])
-    read_side_support_dovetailed() ;
-translate([+42,+42,0])
-    rotate([0,0,180])
-        read_side_support_dovetailed() ;
+////--read_side_support_dovetailed()
+// translate([-42,-42,0])
+//     read_side_support_dovetailed() ;
+// translate([+42,+42,0])
+//     rotate([0,0,180])
+//         read_side_support_dovetailed() ;
 
 
 ////////////////////////////////////////////////////////////////////////////////

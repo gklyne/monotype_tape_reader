@@ -60,14 +60,18 @@ module drive_pulley(shaft_d, drive_pulley_d) {
     }
 }
 
-// Crank and drive pulley instances
-//
+////-crank_handle(
+////        crank_l, 
+////        shaft_d, crank_hub_d, handle_hub_d, handle_d, 
+////        crank_hub_t, crank_arm_t, handle_hub_t)
 // crank_handle(
 //     crank_l=crank_l, 
 //     shaft_d=shaft_d, crank_hub_d=crank_hub_d, 
 //     handle_hub_d=handle_hub_d, handle_d=handle_d, 
 //     crank_hub_t=crank_hub_t, crank_arm_t=crank_arm_t, handle_hub_t=crank_end_t
 //     ) ;
+
+////-drive_pulley(shaft_d, drive_pulley_d)
 // translate([0,spacing,0])
 //     drive_pulley(shaft_d=shaft_d, drive_pulley_d=drive_pulley_d) ;
 // translate([spacing,spacing,0])
@@ -166,8 +170,7 @@ module spool_side_support_slotted(r=145) {
 }
 
 
-// spool_side_support instances
-//
+////-spool_side_support_slotted(r=145)
 // translate([spacing*0.5,-spacing*0.5,0]) spool_side_support_slotted(r=140) ;
 // translate([spacing*1.5,-spacing*0.5,0]) spool_side_support_slotted(r=-140) ;
 // translate([spacing*0.5,+spacing*0.5,0]) spool_side_support_slotted(r=140) ;
@@ -216,8 +219,7 @@ module spool_and_winder_side_support(side) {
     }
 }
 
-// spool_and_winder_side_support instances
-//
+////-spool_and_winder_side_support(side)
 // translate([spacing*0.5,-spacing*0.75,0]) spool_and_winder_side_support(-1) ;
 // translate([spacing*0.5,+spacing*0.75,0]) spool_and_winder_side_support(+1) ;
 
@@ -332,6 +334,7 @@ module stepper_bracket_sleeve() {
     }
 }
 
+////-stepper_bracket(bd, fw, ft, hd, hp, af, side=+1)
 // stepper_bracket(stepper_body_dia, bracket_fw, bracket_ft, 
 //    stepper_hole_dia, stepper_hole_pitch, stepper_nut_af) ;
 // stepper_bracket_sleeve() ;
@@ -363,6 +366,7 @@ module spool_and_motor_side_support(dir) {
 
 }
 
+////-spool_and_motor_side_support(dir)
 // spool_and_motor_side_support(-1) ;
 
 
@@ -403,7 +407,8 @@ pulley_hub_width = 2.6 ;
 pulley_shaft_dia = 5.2 ;
 pulley_shaft_af  = 3.0 ;
 
-stepper_pulley(pulley_dia, pulley_width, pulley_hub_dia, pulley_hub_width, pulley_shaft_dia, pulley_shaft_af) ;
+////-stepper_pulley(pd, pt, hd, ht, sd, af)
+// stepper_pulley(pulley_dia, pulley_width, pulley_hub_dia, pulley_hub_width, pulley_shaft_dia, pulley_shaft_af) ;
 
 ////////////////////////////////////////////////////////////////////////////////
 // Tape spool
@@ -500,6 +505,7 @@ module spool_middle_hub(w_hub) {
 
 }
 
+////-spool_middle_hub(w_hub)
 // spool_middle_hub(w_hub=spool_w_end) ;
 
 
@@ -562,6 +568,8 @@ module spool_clip_open(core_d, outer_d, flange_d, len, end) {
     }
 }
 
+////-spool_clip_closed(core_d, outer_d, flange_d, len, end)
+////-spool_clip_open(core_d, outer_d, flange_d, len, end)
 // spool_clip_closed(core_d+0.8, core_d+3.8, bevel_d-2, spool_w_all-clearance, spool_w_end) ;
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -584,6 +592,7 @@ module spool_parts() {
 }
 
 
+////-spool_parts()
 // spool_parts() ;
 
 // ## spool_clips
