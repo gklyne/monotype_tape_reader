@@ -365,7 +365,7 @@ module sprocket_tape_guide() {
         translate([0,0,10]) {
             extended_nylock_recess_with_ejection_hole(m4_nut_af, m4_nylock_t, guide_sprocket_dia) ;
         }
-        translate([0,0,guide_sprocket_width-10-4.2]) {
+        translate([0,0,guide_sprocket_width-10-m4_nylock_t]) {
             extended_nylock_recess_with_ejection_hole(m4_nut_af, m4_nylock_t, guide_sprocket_dia) ;
         }
         shaft_hole(guide_sprocket_shaft_d, guide_sprocket_width) ;
@@ -373,7 +373,7 @@ module sprocket_tape_guide() {
 }
 
 ////--sprocket_tape_guide
-sprocket_tape_guide() ;
+//sprocket_tape_guide() ;
 
 // To see inside...
 // difference() { sprocket_tape_guide() ; cube(size=[20,20,160]) ; }
@@ -454,24 +454,33 @@ module roller_tape_guide() {
             translate([0,0,guide_roller_width-12+3.5])
                 circular_platform(r=guide_roller_rim_r+clearance*4, h=6) ;
         }
+        ////@@
         // M4 nut cutouts:  7 AF x 3.1 thick
-        translate([0,0,12]) {
-            // shaft_nut_cutout(7, 3.1, 8, 4, or) ;
-            extended_nut_recess_with_ejection_hole(7, 3.1, guide_roller_outer_d+1) ;
+        // translate([0,0,12]) {
+        //     // shaft_nut_cutout(7, 3.1, 8, 4, or) ;
+        //     extended_nut_recess_with_ejection_hole(7, 3.1, guide_roller_outer_d+1) ;
+        // }
+        // translate([0,0,guide_roller_width-12]) {
+        //     // shaft_nut_cutout(7, 3.1, 8, 4, or) ;
+        //     extended_nut_recess_with_ejection_hole(7, 3.1, guide_roller_outer_d+1) ;
+        // }
+        ////@@
+        // M4 nylock nut cutouts
+        translate([0,0,10]) {
+            extended_nylock_recess_with_ejection_hole(m4_nut_af, m4_nylock_t, guide_sprocket_dia) ;
         }
-        translate([0,0,guide_roller_width-12]) {
-            // shaft_nut_cutout(7, 3.1, 8, 4, or) ;
-            extended_nut_recess_with_ejection_hole(7, 3.1, guide_roller_outer_d+1) ;
+        translate([0,0,guide_sprocket_width-10-m4_nylock_t]) {
+            extended_nylock_recess_with_ejection_hole(m4_nut_af, m4_nylock_t, guide_sprocket_dia) ;
         }
         shaft_hole(guide_sprocket_shaft_d, guide_roller_width) ;
     }
 }
 
 ////--roller_tape_guide
-//roller_tape_guide() ;
+roller_tape_guide() ;
 
 // To see inside...
-// difference() { roller_tape_guide() ; cube(size=[20,20,160]) ; }
+//difference() { roller_tape_guide() ; cube(size=[20,20,160]) ; }
 
 ////////////////////////////////////////////////////////////////////////////////
 // Tape reader bridge supports

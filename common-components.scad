@@ -366,7 +366,7 @@ module extended_nylock_recess(af, t, l) {
     // l  = length of cutout
     //
     od = af * 2 / sqrt(3) ; // Diameter (across corners)
-    sl = af - 0.5 ;         // Width of nut support ledge
+    sl = af - 0.6 ;         // Width of nut support ledge
     co = af*0.28 ;          // Offset of cutout (leaving ridge to retain nut) 
     translate([0,0,-delta]) {
         cylinder(d=od, h=t+delta*2, $fn=6) ;

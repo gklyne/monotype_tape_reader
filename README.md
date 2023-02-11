@@ -87,9 +87,9 @@ Mechanical parts for reading paper tape created by Monotype keyboard.
 
 [x] wider flanges on tape guide rollers, reduced tape width clearance - hopefully reducing tendency of tape to ride up on rollers.
 
+[x] adjust to use nylock nuts for axle supports, to prevent the axles from tightening on the supports while processing a tape.
 
-
-
+[x] increase height of guide sprocket pins, to try and reduce tendency for the tape to ride off the pins
 
 
 
