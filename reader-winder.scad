@@ -513,7 +513,7 @@ module spool_middle_hub(w_hub) {
 // Tape spool clip
 ////////////////////////////////////////////////////////////////////////////////
 
-module spool_clip_closed(core_d, outer_d, flange_d, len, end) {
+module spool_clip_closed_old(core_d, outer_d, flange_d, len, end) {
     // The spool clip is also intended to slide off the winder core
     //
     // core_d  = inner diameter of clip
@@ -526,7 +526,7 @@ module spool_clip_closed(core_d, outer_d, flange_d, len, end) {
             difference() {
                 union() {
                     cylinder(d=outer_d, h=len) ;
-                    // Flance to protect tape, and for better print adhesion...
+                    // Flange to protect tape, and for better print adhesion...
                     cylinder(d1=flange_d, d2=flange_d-4, h=0.65) ;
                 }
                 translate([0,0,-delta])
@@ -553,6 +553,98 @@ module spool_clip_closed(core_d, outer_d, flange_d, len, end) {
     }
 }
 
+
+module tape_clip_cutout_shape(l, w, w1, w2, h) {
+    // Cutout in spool clip to retain tape
+    // Shape standing in X-Y plane with lower end at origin, 
+    // length extending +Y, width extending +X
+    //
+    // l   = overall length of clip
+    // w   = overall width of clip
+    // w1  = width of clip gap
+    // w2  = width of retaining bar
+    // h   = height of extrusion
+    //
+    linear_extrude(height=h)
+        {
+        w3 = w - (w1+w2) ;
+        w4 = w2*2 ;
+        polygon(
+            points=[
+                [0,w1+w4], [0,l-(w1+w4)], 
+                [w3,l-(w1+w4+w3)],
+                [w3,(w1+w4+w3)] 
+                ],
+            paths=[[0,1,2,3,0]]
+            ) ;
+        polygon(
+            points=[
+                [0,0], [0,w1], 
+                [w-w1,w], [w-w1,l-w],
+                [0,l-w1], [0,l],
+                [w,l-w], [w,w]
+                ],
+            paths=[[0,1,2,3,4,5,6,7,0]]
+            ) ;
+        }
+}
+
+////-tape_clip_cutout_shape(l, w, w1, w2, h)
+// tape_clip_cutout_shape(80, 20, 5, 5, 30) ;
+
+module tape_clip_cutout_pair(core_d, len, end) {
+    // Pair of tape clip cutouts to be positioned each side of a spool rib,
+    // where the spool rib is assumed to be on the +X axis
+    wo  = core_d*0.3 ;  // Overall width of single cutout
+    w1  = 3 ;           // width of clip gap
+    w2  = 3 ;           // width of retaining bar
+    rotate([0,90,0]) 
+    {
+        translate([-2*end,3,0])
+            rotate([0,0,90])
+                tape_clip_cutout_shape(len-4*end, wo, w1, 2, core_d) ;
+        translate([-len+2*end,-3,0])
+            rotate([0,0,-90])
+                tape_clip_cutout_shape(len-4*end, wo, w1, w2, core_d) ;
+    }
+}
+
+////-tape_clip_cutout_pair(core_d, len, end)
+// tape_clip_cutout_pair(core_d+0.8, spool_w_all-clearance, spool_w_end) ;
+
+module spool_clip_closed(core_d, outer_d, flange_d, len, end) {
+    // The spool clip is also intended to slide off the winder core
+    //
+    // core_d  = inner diameter of clip
+    // outer_d = outer diameter of clip
+    // len     = overall length of clip (width of spool)
+    // end     = width of spool ends with no cutout for anti-rotation ribs
+    //
+    difference() {
+        union () {
+            difference() {
+                union() {
+                    cylinder(d=outer_d, h=len) ;
+                    // Flange to protect tape, and for better print adhesion...
+                    cylinder(d1=flange_d, d2=flange_d-4, h=0.65) ;
+                }
+                translate([0,0,-delta])
+                    cylinder(d=core_d, h=len+2*delta) ;   // Core
+            }
+            // Anti-rotation ribs
+            for (ar=[60,180,300])
+                rotate([0,0,ar])
+                    translate([core_d/2,0,end])
+                        cylinder(d=2.2, h=len-2*end, $fn=10) ;
+        }
+        //@@@@ tape clip cutouts
+        for (ar=[60,180,300])
+            rotate([0,0,ar])
+                tape_clip_cutout_pair(core_d, len, end) ;
+
+    }
+}
+
 module spool_clip_open(core_d, outer_d, flange_d, len, end) {
     // The spool clip is also intended to slide off the winder core
     //
@@ -570,7 +662,7 @@ module spool_clip_open(core_d, outer_d, flange_d, len, end) {
 
 ////-spool_clip_closed(core_d, outer_d, flange_d, len, end)
 ////-spool_clip_open(core_d, outer_d, flange_d, len, end)
-// spool_clip_closed(core_d+0.8, core_d+3.8, bevel_d-2, spool_w_all-clearance, spool_w_end) ;
+spool_clip_closed(core_d+0.8, core_d+3.8, bevel_d-2, spool_w_all-clearance, spool_w_end) ;
 
 ////////////////////////////////////////////////////////////////////////////////
 // Tape spool full set of parts

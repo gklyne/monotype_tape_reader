@@ -367,7 +367,7 @@ module extended_nylock_recess(af, t, l) {
     //
     od = af * 2 / sqrt(3) ; // Diameter (across corners)
     sl = af - 0.6 ;         // Width of nut support ledge
-    co = af*0.28 ;          // Offset of cutout (leaving ridge to retain nut) 
+    co = af*0.26 ;          // Offset of cutout (leaving ridge to retain nut) 
     translate([0,0,-delta]) {
         cylinder(d=od, h=t+delta*2, $fn=6) ;
         translate([0,-af/2,0])
@@ -408,14 +408,14 @@ module extended_nylock_recess_with_ejection_hole(af, t, l) {
 
 ////-Test nylock cutout in small cylinder
 ////-test-extended_nylock_recess_with_ejection_hole
-difference() {
-    translate([0,0,-5])
-        cylinder(d=15, h=18, $fn=16) ;
-    translate([0,0,-6])
-        cylinder(d=4,  h=20, $fn=16) ;
-    // Using dimensions for M4 nylock nut
-    extended_nylock_recess_with_ejection_hole(m4_nut_af, m4_nylock_t, 20) ;
-}
+// difference() {
+//     translate([0,0,-5])
+//         cylinder(d=15, h=18, $fn=16) ;
+//     translate([0,0,-6])
+//         cylinder(d=4,  h=20, $fn=16) ;
+//     // Using dimensions for M4 nylock nut
+//     extended_nylock_recess_with_ejection_hole(m4_nut_af, m4_nylock_t, 20) ;
+// }
 
 
 // Cutout for vertical screw hole with downward-facing countersink at top, 

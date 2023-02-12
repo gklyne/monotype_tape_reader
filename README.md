@@ -91,6 +91,8 @@ Mechanical parts for reading paper tape created by Monotype keyboard.
 
 [x] increase height of guide sprocket pins, to try and reduce tendency for the tape to ride off the pins
 
+[x] redesign spool clip
+
 
 
 [ ] MAYBE: ...
