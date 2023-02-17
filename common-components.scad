@@ -486,14 +486,16 @@ module pulley_round_belt(pd, pw, bd) {
     // pw = width of pulley
     // bd = diameter of drive belt
     //
+    a  = 70 ;               // Overhang angle at edge of pulley
+    td = pd + bd*cos(a) ;   // Torus diameter (to centre of rim)
     difference() {
         cylinder(d=pd, h=pw, center=false, $fn=48) ;
         translate([0,0,pw/2])
-            torus(pd/2, bd/2) ;
+            torus(td/2, bd/2) ;
     }
 }
 ////-pulley_round_belt(pd, pw, bd) instance
-// pulley_round_belt(30, 5, 3) ;
+// pulley_round_belt(30, 5, 4) ;
 
 
 module ring(r1, r2, t) {

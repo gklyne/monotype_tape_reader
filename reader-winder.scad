@@ -18,11 +18,18 @@ module crank_handle(
         union() {
             cylinder(d=crank_hub_d, h=crank_hub_t) ;
             translate([0,0,crank_hub_t-delta])
-                pulley(crank_hub_d, drive_pulley_t) ;
+                // pulley(crank_hub_d, drive_pulley_t) ;
+                pulley_round_belt(crank_hub_d, drive_pulley_t, drive_pulley_t-1) ;
             translate([crank_l/2,0,crank_arm_t/2]) 
                 cube(size=[crank_l,handle_hub_d,crank_arm_t], center=true) ;
             translate([crank_l,0,0]) 
                 cylinder(d=handle_hub_d, h=handle_hub_t) ;
+            // Balancing arm
+            balance_l = crank_l*1.1 ;
+            translate([-balance_l/2,0,crank_arm_t/2]) 
+                cube(size=[balance_l,handle_hub_d,crank_arm_t], center=true) ;
+            translate([-balance_l,0,0]) 
+                cylinder(d=handle_hub_d, h=crank_hub_t) ;
         } ;
         union() {
             shaft_hole(d=shaft_d, l=crank_hub_t*2) ;
@@ -34,18 +41,27 @@ module crank_handle(
                 translate([0,0,handle_hub_t+delta])
                     countersinkZ(od=handle_d*2, oh=handle_hub_t+2*delta, sd=handle_d, sh=handle_hub_t) ;
             }
+            // Balancing arm
+            // translate([-crank_l,0,0]) {
+            //     translate([0,0,crank_hub_t-handle_nut_t+delta])
+            //         nut_recess(af=handle_nut_af, t=handle_nut_t) ;
+            //     translate([0,0,-delta])
+            //         rotate([180,0,0])
+            //             countersinkZ(od=handle_d*2, oh=crank_hub_t, sd=handle_d, sh=crank_hub_t) ;
+            // }
         } ;
     }
 }
 
 module drive_pulley(shaft_d, drive_pulley_d) {
-    // Spoked pulley
+    extra_pulley_t = drive_pulley_t*0.0 ;  // Extra pulley thickness for hub recess, etc.
     intersection() {
         difference() {
             union() {
-                cylinder(d=drive_pulley_d, h=drive_pulley_t*0.5) ;
-                translate([0,0,drive_pulley_t*0.5-delta])
-                    pulley(drive_pulley_d, drive_pulley_t) ;
+                cylinder(d=drive_pulley_d, h=extra_pulley_t) ;
+                translate([0,0,extra_pulley_t-delta])
+                    // pulley(drive_pulley_d, drive_pulley_t) ;
+                    pulley_round_belt(drive_pulley_d, drive_pulley_t, drive_pulley_t-1) ;
             } ;
             union() {
                 shaft_hole(d=shaft_d, l=drive_pulley_t*2) ;
@@ -72,6 +88,7 @@ module drive_pulley(shaft_d, drive_pulley_d) {
 //     ) ;
 
 ////-drive_pulley(shaft_d, drive_pulley_d)
+// drive_pulley(shaft_d=shaft_d, drive_pulley_d=drive_pulley_d) ;
 // translate([0,spacing,0])
 //     drive_pulley(shaft_d=shaft_d, drive_pulley_d=drive_pulley_d) ;
 // translate([spacing,spacing,0])
@@ -387,7 +404,8 @@ module stepper_pulley(pd, pt, hd, ht, sd, af) {
     difference() {
         union() {
             // pulley
-            pulley(pd, pt) ;
+            // pulley(pd, pt) ;
+            pulley_round_belt(pd, pt, pt-1) ;
             // hub
             cylinder(d=hd, h=pt+ht, center=false, $fn=48) ;
         }
@@ -408,7 +426,7 @@ pulley_shaft_dia = 5.2 ;
 pulley_shaft_af  = 3.0 ;
 
 ////-stepper_pulley(pd, pt, hd, ht, sd, af)
-// stepper_pulley(pulley_dia, pulley_width, pulley_hub_dia, pulley_hub_width, pulley_shaft_dia, pulley_shaft_af) ;
+//stepper_pulley(pulley_dia, pulley_width, pulley_hub_dia, pulley_hub_width, pulley_shaft_dia, pulley_shaft_af) ;
 
 ////////////////////////////////////////////////////////////////////////////////
 // Tape spool
@@ -489,9 +507,32 @@ module spool_middle(w_middle) {
     }
 } ;
 
+module spool_shim(w_shim) {
+    dl = 6 ;
+    hl = 2 ;
+    rm = core_d/2-3 ;      // Radius of hole in shim
+    ds = segment_corner_adjustment(rm, atan2(dl,rm)) ;
+    difference() {
+        cylinder(d=core_d, h=w_shim) ;
+        translate([0,0,-delta]) {
+            cylinder(r=rm, h=w_shim+2*delta) ;
+            for (a=[0,120,240]) {
+                rotate([0,0,a]) {
+                    translate([rm-ds,0,0])
+                        rotate([0,90,0])
+                            cylinder(d1=dl, d2=radius_lug_top(dl, hl), h=hl+ds) ;
+                }
+            }
+        }
+    }
+}
+
+////-spool_shim(w_shim)
+//spool_shim(0.2) ;
+
 
 module spool_middle_hub(w_hub) {
-    // A push-in hub for the spool moddile piece to support the spool when
+    // A push-in hub for the spool middle piece to support the spool when
     // one end has been removed.
     r_inner = core_d/2-3 ;
     difference() {
@@ -734,7 +775,7 @@ module spool_clip_open(core_d, outer_d, flange_d, len, end) {
 
 ////-spool_clip_closed(core_d, outer_d, flange_d, len, end)
 ////-spool_clip_open(core_d, outer_d, flange_d, len, end)
-spool_clip_closed(core_d+0.8, core_d+3.8, bevel_d-2, spool_w_all-clearance, spool_w_end) ;
+// spool_clip_closed(core_d+0.8, core_d+3.8, bevel_d-2, spool_w_all-clearance, spool_w_end) ;
 
 ////////////////////////////////////////////////////////////////////////////////
 // Tape spool full set of parts
