@@ -570,6 +570,7 @@ module tape_clip_cutout_shape(l, w, w1, w2, h) {
         w4 = w2*2 ;         // Height of ends of retaining bar
         l2 = l * 0.5 ;      // Half height of clip
         l3 = l2 - w2*3 ;    // Height of half-tongue cutout
+        //----
         // Single tongue cutout: doesn't print well with tall slender bar:
         // polygon(
         //     points=[
@@ -579,7 +580,7 @@ module tape_clip_cutout_shape(l, w, w1, w2, h) {
         //         ],
         //     paths=[[0,1,2,3,0]]
         //     ) ;
-        //
+        //----
         // Separate trapezoidal cutouts allowing cross braces half way up
         polygon(
             points=[
@@ -597,6 +598,7 @@ module tape_clip_cutout_shape(l, w, w1, w2, h) {
                 ],
             paths=[[0,1,2,3,0]]
             ) ;
+        //----
         // Triangle cutout between braces
         polygon(
             points=[
@@ -607,45 +609,47 @@ module tape_clip_cutout_shape(l, w, w1, w2, h) {
             paths=[[0,1,2,0]]
             ) ;
         // Tape insertion slot
+        //----
         // Curtaway as single shape:
+        polygon(
+            points=[
+                [0,0], [0,w1], 
+                [w-w1,w], [w-w1,l-w],
+                [0,l-w1], [0,l],
+                [w,l-w], [w,w]
+                ],
+            paths=[[0,1,2,3,4,5,6,7,0]]
+            ) ;
+        //----
+        // Define as two halves with removable support to stabilize spool side while printing:
+        //// Bottom half
+        //support_h=0.2 ;  // Height of stabilizing support where it joins other pieces
         //polygon(
         //    points=[
-        //        [0,0], [0,w1], 
-        //        [w-w1,w], [w-w1,l-w],
-        //        [0,l-w1], [0,l],
-        //        [w,l-w], [w,w]
+        //        [0,0], 
+        //        [0,w1], 
+        //        [w-w1,w], 
+        //        [w-w1,    l2-support_h],
+        //        [w-w1*0.5,l2-support_h],
+        //        [w,       l2-support_h],
+        //        [w,w]
         //        ],
-        //    paths=[[0,1,2,3,4,5,6,7,0]]
+        //    paths=[[0,1,2,3,4,5,6,0]]
         //    ) ;
-        //
-        // Define as two halves with removable support to stabilize spool side while printing:
-        // Bottom half
-        support_h=0.2 ;  // Height of stabilizing support where it joins other pieces
-        polygon(
-            points=[
-                [0,0], 
-                [0,w1], 
-                [w-w1,w], 
-                [w-w1,    l2-support_h],
-                [w-w1*0.5,l2-support_h],
-                [w,       l2-support_h],
-                [w,w]
-                ],
-            paths=[[0,1,2,3,4,5,6,0]]
-            ) ;
-        // Top half
-        polygon(
-            points=[
-                [0,l], 
-                [0,l-w1], 
-                [w-w1,l-(w-w1)], 
-                [w-w1,    l2+support_h],
-                [w-w1*0.5,l2+support_h+w1*0.5],
-                [w,       l2+support_h],
-                [w,l-(w-w1)]
-                ],
-            paths=[[0,1,2,3,4,5,6,0]]
-            ) ;
+        //// Top half
+        //polygon(
+        //    points=[
+        //        [0,l], 
+        //        [0,l-w1], 
+        //        [w-w1,l-(w-w1)], 
+        //        [w-w1,    l2+support_h],
+        //        [w-w1*0.5,l2+support_h+w1*0.5],
+        //        [w,       l2+support_h],
+        //        [w,l-(w-w1)]
+        //        ],
+        //    paths=[[0,1,2,3,4,5,6,0]]
+        //    ) ;
+        //----
     }
 }
 
@@ -664,7 +668,7 @@ module tape_clip_cutout_pair(core_d, len, end) {
     w1  = 2 ;           // width of clip gap
     w2  = 3 ;           // width of retaining bar
     w3  = 3 ;           // offset of tape clip from spool rib
-    // Rotate to extriude in +X direction from Z-axis
+    // Rotate to extrude in +X direction from Z-axis
     rotate([0,0,90]) {
         // Rotate to Y-Z plane
         rotate([90,0,0]) {

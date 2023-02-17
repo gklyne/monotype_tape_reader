@@ -94,6 +94,18 @@ Mechanical parts for reading paper tape created by Monotype keyboard.
 [x] redesign spool clip
 
 
+## 2023-02-16: reasonably successful recording (?)
+
+[ ] Try spool clip without support bridges
+
+[ ] Drive belt channel should be wider, U-profile.
+
+[ ] Balance feeder spool (handle makes it unbalanced)
+
+[ ] Shim for spool end, for more positive "click"
+
+
+
 
 [ ] MAYBE: ...
 
