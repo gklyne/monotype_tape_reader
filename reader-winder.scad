@@ -652,44 +652,45 @@ module tape_clip_cutout_shape(l, w, w1, w2, h) {
         // Tape insertion slot
         //----
         // Curtaway as single shape:
-        polygon(
-            points=[
-                [0,0], [0,w1], 
-                [w-w1,w], [w-w1,l-w],
-                [0,l-w1], [0,l],
-                [w,l-w], [w,w]
-                ],
-            paths=[[0,1,2,3,4,5,6,7,0]]
-            ) ;
+        // (NOTE: doesn't print cleanly)
+        // polygon(
+        //     points=[
+        //         [0,0], [0,w1], 
+        //         [w-w1,w], [w-w1,l-w],
+        //         [0,l-w1], [0,l],
+        //         [w,l-w], [w,w]
+        //         ],
+        //     paths=[[0,1,2,3,4,5,6,7,0]]
+        //     ) ;
         //----
         // Define as two halves with removable support to stabilize spool side while printing:
-        //// Bottom half
-        //support_h=0.2 ;  // Height of stabilizing support where it joins other pieces
-        //polygon(
-        //    points=[
-        //        [0,0], 
-        //        [0,w1], 
-        //        [w-w1,w], 
-        //        [w-w1,    l2-support_h],
-        //        [w-w1*0.5,l2-support_h],
-        //        [w,       l2-support_h],
-        //        [w,w]
-        //        ],
-        //    paths=[[0,1,2,3,4,5,6,0]]
-        //    ) ;
-        //// Top half
-        //polygon(
-        //    points=[
-        //        [0,l], 
-        //        [0,l-w1], 
-        //        [w-w1,l-(w-w1)], 
-        //        [w-w1,    l2+support_h],
-        //        [w-w1*0.5,l2+support_h+w1*0.5],
-        //        [w,       l2+support_h],
-        //        [w,l-(w-w1)]
-        //        ],
-        //    paths=[[0,1,2,3,4,5,6,0]]
-        //    ) ;
+        // Bottom half
+        support_h=0.2 ;  // Height of stabilizing support where it joins other pieces
+        polygon(
+            points=[
+                [0,0], 
+                [0,w1], 
+                [w-w1,w], 
+                [w-w1,    l2-support_h],
+                [w-w1*0.5,l2-support_h],
+                [w,       l2-support_h],
+                [w,w]
+                ],
+            paths=[[0,1,2,3,4,5,6,0]]
+            ) ;
+        // Top half
+        polygon(
+            points=[
+                [0,l], 
+                [0,l-w1], 
+                [w-w1,l-(w-w1)], 
+                [w-w1,    l2+support_h],
+                [w-w1*0.5,l2+support_h+w1*0.5],
+                [w,       l2+support_h],
+                [w,l-(w-w1)]
+                ],
+            paths=[[0,1,2,3,4,5,6,0]]
+            ) ;
         //----
     }
 }
@@ -775,7 +776,7 @@ module spool_clip_open(core_d, outer_d, flange_d, len, end) {
 
 ////-spool_clip_closed(core_d, outer_d, flange_d, len, end)
 ////-spool_clip_open(core_d, outer_d, flange_d, len, end)
-// spool_clip_closed(core_d+0.8, core_d+3.8, bevel_d-2, spool_w_all-clearance, spool_w_end) ;
+spool_clip_closed(core_d+0.8, core_d+3.8, bevel_d-2, spool_w_all-clearance, spool_w_end) ;
 
 ////////////////////////////////////////////////////////////////////////////////
 // Tape spool full set of parts
