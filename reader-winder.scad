@@ -25,7 +25,7 @@ module crank_handle(
             translate([crank_l,0,0]) 
                 cylinder(d=handle_hub_d, h=handle_hub_t) ;
             // Balancing arm
-            balance_l = crank_l*1.1 ;
+            balance_l = crank_l ;
             translate([-balance_l/2,0,crank_arm_t/2]) 
                 cube(size=[balance_l,handle_hub_d,crank_arm_t], center=true) ;
             translate([-balance_l,0,0]) 
@@ -42,13 +42,13 @@ module crank_handle(
                     countersinkZ(od=handle_d*2, oh=handle_hub_t+2*delta, sd=handle_d, sh=handle_hub_t) ;
             }
             // Balancing arm
-            // translate([-crank_l,0,0]) {
-            //     translate([0,0,crank_hub_t-handle_nut_t+delta])
-            //         nut_recess(af=handle_nut_af, t=handle_nut_t) ;
-            //     translate([0,0,-delta])
-            //         rotate([180,0,0])
-            //             countersinkZ(od=handle_d*2, oh=crank_hub_t, sd=handle_d, sh=crank_hub_t) ;
-            // }
+            translate([-crank_l,0,0]) {
+                translate([0,0,crank_hub_t-handle_nut_t+delta])
+                    nut_recess(af=handle_nut_af, t=handle_nut_t) ;
+                translate([0,0,-delta])
+                    rotate([180,0,0])
+                        countersinkZ(od=handle_d*2, oh=crank_hub_t, sd=handle_d, sh=crank_hub_t) ;
+            }
         } ;
     }
 }
@@ -413,20 +413,20 @@ module stepper_pulley(pd, pt, hd, ht, sd, af) {
         // shaft hole
         stepper_shaft(sd, af, pt+ht+2*delta) ;
         // Spoke cutouts (not for small pulley)
-        spoked_wheel_cutouts(hr=hd/2+2, sr=(pd-pt)/2-1, fr=2, wt=pt+2*delta, ns=6, sw=3) ;
+        spoked_wheel_cutouts(hr=hd/2+1, sr=(pd-pt)/2, fr=2, wt=pt+2*delta, ns=6, sw=3) ;
         }
     }
 }
 
 pulley_dia       = 35 ;   // Small: 20; large: 50; spool: drive_pulley_d (==60)
-pulley_width     = 8 ;
-pulley_hub_dia   = 10 ; 
-pulley_hub_width = 2.6 ; 
+pulley_width     = 10 ;
+pulley_hub_dia   = 8 ; 
+pulley_hub_width = 2.1 ; 
 pulley_shaft_dia = 5.2 ;
 pulley_shaft_af  = 3.0 ;
 
 ////-stepper_pulley(pd, pt, hd, ht, sd, af)
-//stepper_pulley(pulley_dia, pulley_width, pulley_hub_dia, pulley_hub_width, pulley_shaft_dia, pulley_shaft_af) ;
+stepper_pulley(pulley_dia, pulley_width, pulley_hub_dia, pulley_hub_width, pulley_shaft_dia, pulley_shaft_af) ;
 
 ////////////////////////////////////////////////////////////////////////////////
 // Tape spool
@@ -776,7 +776,7 @@ module spool_clip_open(core_d, outer_d, flange_d, len, end) {
 
 ////-spool_clip_closed(core_d, outer_d, flange_d, len, end)
 ////-spool_clip_open(core_d, outer_d, flange_d, len, end)
-spool_clip_closed(core_d+0.8, core_d+3.8, bevel_d-2, spool_w_all-clearance, spool_w_end) ;
+// spool_clip_closed(core_d+0.8, core_d+3.8, bevel_d-2, spool_w_all-clearance, spool_w_end) ;
 
 ////////////////////////////////////////////////////////////////////////////////
 // Tape spool full set of parts
