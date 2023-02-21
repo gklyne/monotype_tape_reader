@@ -87,14 +87,15 @@ read_groove_d = 2.5 ;   // EL wire groove depth
 // Parts for holding phone camera
 
 hold_side_l = 80 ;      // Length is side of holder
-hold_side_h = 10 ;      // Height of side above base
-hold_side_t1 = 7 ;      // Thickness of side at base
-hold_side_t2 = 8 ;      // Thickness of side at top
+hold_side_h = 12 ;      // Height of side above base
+hold_side_t1 = 8 ;      // Thickness of side at base
+hold_side_t2 = 10 ;      // Thickness of side at top
 
 hold_base_l1 = 60 ;     // Length of base near side
 hold_base_l2 = 50 ;     // Length of base towards centre
 hold_base_t = 8 ;       // Thickness of base (to accommodate hole)
 hold_base_w = 20 ;      // Width of base piece
+hold_base_offset = 4 ;  // Thickness of standoff for clamp nut clearance
 
 hold_rail_p = 40 ;      // Distance between rail holes
 hold_rail_d = m4 ;      // Diameter of rail holes

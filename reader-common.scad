@@ -3,7 +3,7 @@ include <common-components.scad> ;
 
 // Parts for holding phone camera
 
-module phone_holder_rod_fixing_arm() {
+module old_phone_holder_rod_fixing_arm() {
     module phone_holder_rod_fixing_shape() {
         // Centre hub on origin, extend X axis, lying on Z=0 plane
         union() {
@@ -28,7 +28,7 @@ module phone_holder_rod_fixing_arm() {
     } ;
 }
 
-module phone_holder_rod_fixing_plate() {
+module old_phone_holder_rod_fixing_plate() {
     // NOTE: all holes are centred rod diameter from edges
     hole_x = hold_fix_rod_d + hold_fix_o_x ;
     hole_y = hold_fix_plate_w/2 + hold_fix_o_y ;
@@ -61,7 +61,7 @@ module phone_holder_rod_fixing_plate() {
     }
 }
 
-module phone_holder_rod_anti_rotation_plate() {
+module old_phone_holder_rod_anti_rotation_plate() {
     // NOTE: all holes are centred rod diameter from edges
     slot_y  = hold_fix_plate_w/2 + hold_fix_o_y ;
     neck_x  = (hold_slot_o_x1 + hold_slot_o_x2)/2 ;
@@ -95,7 +95,7 @@ module phone_holder_rod_anti_rotation_plate() {
     }
 }
 
-module phone_camera_holder() {
+module old_phone_camera_holder() {
     module phone_holder_base() {
         // Centre baseline on origin, extend X axis, lying on Z=0 plane
         linear_extrude(height=hold_base_t)
@@ -150,7 +150,7 @@ module phone_camera_holder() {
 
 // Bracket to hold phone camera support rod
     
- module phone_holder_rod_support() {
+ module old_phone_holder_rod_support() {
     // Side in X-Y plane, shaft centre at origin, extends along +X axis
     module side_profile() {
         linear_extrude(height=winder_side_t) {
@@ -208,6 +208,7 @@ module phone_camera_holder() {
     } ;
 }
 
+// Assemblies
 
 module read_bridge_assembly() {
     // Reader bridge and support
