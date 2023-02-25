@@ -65,13 +65,6 @@ read_l = spool_w_all ;  // Reader bridge length (inner)
 read_w = 16 ;           // Width of bridge
 read_extra_w = 5 ;      // Extra length for reader bridge for tie-down
 
-guide_w  = 28 ;         // Width of guide flange on bridge
-guide_tc = 2 ;          // Guide thickness at core
-guide_tr = 1 ;          // Guide thickness at rim
-guide_tb = guide_tc-guide_tr ;  // Guide thickness of bevel
-guide_eld = 4.5 ;       // EL wire threading hole diameter
-tension_bar_d = 4 ;     // Tensioning bar diameter
-
 read_h = 90 ;           // Height of reader bridge above base plate
 read_side_t = sup_t ;   // Reader bridge side support thickness
 read_side_base_t = 16 ; // Reader bridge side support thickness at base 
@@ -83,6 +76,16 @@ read_side_peg_d  = m4 ;
 
 read_groove_w = 2.25 ;  // EL wire goove width
 read_groove_d = 2.5 ;   // EL wire groove depth
+
+guide_w  = 28 ;         // Width of guide flange on bridge
+guide_tc = 2 ;          // Guide thickness at core
+guide_tr = 1 ;          // Guide thickness at rim
+guide_tb = guide_tc-guide_tr ;  // Guide thickness of bevel
+guide_eld = 4.5 ;       // EL wire threading hole diameter
+guide_ist = 3 ;         // EL wire shade inner overhang thickness
+guide_ost = (read_total_l-read_l)/2 ; // EL wire shade outer overhang thickness
+
+
 
 // Parts for holding phone camera
 

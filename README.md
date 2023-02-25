@@ -104,7 +104,65 @@ Mechanical parts for reading paper tape created by Monotype keyboard.
 
 [x] Shim for spool end, for more positive "click"
 
-
+... and much tuning
 
 [ ] MAYBE: ...
+
+
+## To consider
+
+[x] Smaller stepper motor pulley
+
+[x] Reader bridge add shades to reduce detection of outer EL wire
+
+[ ] Use dark colour plastic for reader bridge
+
+[ ] Redesign winder spools to use smaller shaft dia; 
+    e.g. M5 using bolts rather than through-rod.
+    This is to reduce friction when pulling the tape off the spool.
+
+[ ] Design arms to hold tape tensioner(s)
+
+[x] Slow down default tape speed (2.5ms -> 3ms between steps)
+
+[ ] Consider progressive slowing of stepper motor as reading proceeds?
+
+
+Notes: 2023-02-25
+
+Row 24xx, 3068 and others: still seeing markers between columns, but evaluating correctly
+
+Row 3201 sprockets missed altogether?  Traces are there, but not used.
+
+Row 3427 Detected hole out of range: y1   0.9962, d1   1.0432, n60 63, n30 31
+
+Row 3631 sprocket trace missing
+
+Row 3656 sprocket traces missing
+
+Row 3932, and others, multiple double detection of column 5 hole - maybe merge regions/traces more aggressively?
+
+4000 run on
+
+
+Row 4408 et seq, multiple sprocket deviation errors
+
+Row 5085 - looks like genuine misread (missed row) due to lost sprockets or failed row detection?  Also, data is out order, with 3 rows detected in single frame.
+
+Row 5087 - missing row is now detected!  Correctly!  
+Frame number is with data, so order may need to be checked when writing file.
+
+Row 6473 - runup has persistent sprocket deviation exceeded - tracking is not following tape movement - increase MAX DEV
+
+Row 7730 and around - tracking is not following tape movement 
+
+Row 78xx - rows crossed over
+
+Row 802x - rows crossed over
+
+Row 8284 - rows crossed over sprockets missed
+
+Marker threshold setting is rather sensitive?
+
+
 

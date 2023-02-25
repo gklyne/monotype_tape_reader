@@ -93,16 +93,44 @@ module tape_reader_bridge() {
     }
 }
 
+
+module shade_shell(inner_r, outer_r, h) {
+    // Same parameters as ring, but defines sloping sides for printing shade
+    rotate([0,0,180]) {
+        difference() {
+            cylinder(r=outer_r, h=h, center=false, $fn=5) ;
+            translate([0,0,-delta])
+                cylinder(r=inner_r, h=h+2*delta, center=false, $fn=5) ;
+        }
+    }
+    // inner_w = inner_r * sqrt(2) ;
+    // outer_w = outer_r * sqrt(2) ;
+    // translate([0,0,h/2])
+    //     rotate([0,0,45])
+    //         difference() {
+    //             cube(size=[outer_w, outer_w, h], center=true) ;
+    //             cube(size=[inner_w, inner_w, h+2*delta], center=true) ;
+    //         } ;
+}
+
 module tape_reader_bridge_with_guides() {
     module guide_flange() {
+        // Guide flange with shades for exposed EL wire
+        //
+        // guide_tr = Guide thickness at rim
+        // guide_tr = Guide thickness at core
+        // guide_tb = Guide thickness of bevel
         translate([0,0,read_l/2+guide_tb+guide_tr/2])
             cylinder(d=guide_w, h=guide_tr+delta, center=true) ;        // Rim
         translate([0,0,read_l/2+guide_tb/2])
             cylinder(d1=read_w, d2=guide_w, h=guide_tb, center=true) ;  // Bevel
-    }
-    module tension_bar() {
-        translate([-(guide_w-tension_bar_d)/2,0,0])
-            cylinder(d=tension_bar_d, h=read_l+guide_tb*2, center=true, $fn=16) ;
+        difference() {
+            translate([0,0,read_l/2-guide_ist])
+                shade_shell(guide_w/2-1, guide_w/2, guide_ost+guide_ist) ;     // Shade
+            translate([0,0,read_l/2+guide_tb-guide_ist])
+                rotate([0,-8,0])
+                    cube(size=[guide_w*2, guide_w, guide_ist*2], center=true) ;
+        }
     }
     difference() {
         rotate([0,90,0])
@@ -110,8 +138,6 @@ module tape_reader_bridge_with_guides() {
                 cylinder(d=read_w, h=read_total_l, center=true) ;
                 guide_flange() ;
                 mirror(v=[0, 0, 1]) guide_flange() ;
-                // rotate([0,0,82])  tension_bar() ;     // Angle determined by trial/error :(
-                // rotate([0,0,-82]) tension_bar() ;
             }
         translate([0,0,-read_w/2])
             cube(size=[read_total_l+delta, guide_w+delta, read_w+delta], center=true) ;
@@ -127,7 +153,7 @@ module tape_reader_bridge_dovetailed() {
     module bridge_dovetail_cutout() {
         translate([-read_total_l/2+read_side_t,0,0])
             dovetail_tongue_cutout(
-                read_side_t, read_w-3, read_w-2, read_side_apex_w, read_side_apex_h
+                read_side_t, read_w-3, read_w-2, read_w+2, read_side_apex_h
         ) ;
     }
     difference() {
@@ -477,7 +503,7 @@ module roller_tape_guide() {
 }
 
 ////--roller_tape_guide
-roller_tape_guide() ;
+//roller_tape_guide() ;
 
 // To see inside...
 //difference() { roller_tape_guide() ; cube(size=[20,20,160]) ; }
@@ -628,8 +654,11 @@ module layout_reader_bridge_dovetailed() {
 
 // layout_reader_bridge_dovetailed() ;
 
+////-tape_reader_bridge
 // tape_reader_bridge() ;
-// tape_reader_bridge_dovetailed() ;
+////-tape_reader_bridge_dovetailed
+tape_reader_bridge_dovetailed() ;
+////-read_side_support_dovetailed
 // translate([0,spacing,0])
 //     read_side_support_dovetailed() ;
 

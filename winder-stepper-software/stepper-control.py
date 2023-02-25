@@ -87,10 +87,8 @@ def set_stepper_drive(motornum, stepdata):
     return
 
 def main_loop():
-    waittime  = 0.0025  # 2.5ms wait between steps
+    waittime  = 0.0030  # 3.0ms wait between steps
     waitstep  = 0.0005  # 0.5ms wait increment
-    #waittime  = 0.1     # @@for offline testing@@
-    #waitstep  = 0.01    # @@for offline testing@@
     running   = False   # Start with motor stopped
     stepnum   = 0       # Step sequence number
     stepdir   = 1       # +1 forward, -1 backward (or +2, -2?)

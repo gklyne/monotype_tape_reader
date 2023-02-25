@@ -393,7 +393,7 @@ module spool_and_motor_side_support(dir) {
 
 module stepper_shaft(sd, af, sl) {
     intersection() {
-        cylinder(d=sd, h=sl, center=false, $fn=12) ;
+        cylinder(d=sd, h=sl, center=false, $fn=16) ;
         translate([-sd/2,-af/2,0])
             cube(size=[sd, af, sl], center=false) ;
     }
@@ -413,15 +413,15 @@ module stepper_pulley(pd, pt, hd, ht, sd, af) {
         // shaft hole
         stepper_shaft(sd, af, pt+ht+2*delta) ;
         // Spoke cutouts (not for small pulley)
-        spoked_wheel_cutouts(hr=hd/2+1, sr=(pd-pt)/2, fr=2, wt=pt+2*delta, ns=6, sw=3) ;
+        spoked_wheel_cutouts(hr=hd/2+1, sr=(pd-pt)/2, fr=1.5, wt=pt+2*delta, ns=6, sw=3) ;
         }
     }
 }
 
-pulley_dia       = 35 ;   // Small: 20; large: 50; spool: drive_pulley_d (==60)
-pulley_width     = 10 ;
+pulley_dia       = 25 ;   // Small: 20; large: 50; spool: drive_pulley_d (==60)
+pulley_width     = 8 ;
 pulley_hub_dia   = 8 ; 
-pulley_hub_width = 2.1 ; 
+pulley_hub_width = 3.1 ;  // 7.1 - pulley_width/2 ?
 pulley_shaft_dia = 5.2 ;
 pulley_shaft_af  = 3.0 ;
 
