@@ -120,17 +120,22 @@ module tape_reader_bridge_with_guides() {
         // guide_tr = Guide thickness at rim
         // guide_tr = Guide thickness at core
         // guide_tb = Guide thickness of bevel
-        translate([0,0,read_l/2+guide_tb+guide_tr/2])
-            cylinder(d=guide_w, h=guide_tr+delta, center=true) ;        // Rim
-        translate([0,0,read_l/2+guide_tb/2])
-            cylinder(d1=read_w, d2=guide_w, h=guide_tb, center=true) ;  // Bevel
+        guide_offset = spool_w_all/2 ;   // Offset to guide (at base of bevel)
+        translate([0,0,guide_offset+guide_tb])
+            cylinder(d=guide_w, h=guide_tr+delta, center=false) ;        // Rim
+        translate([0,0,guide_offset])
+            cylinder(d1=read_w, d2=guide_w, h=guide_tb, center=false) ;  // Bevel
         difference() {
-            translate([0,0,read_l/2-guide_ist])
+            translate([0,0,guide_offset-guide_ist])
                 shade_shell(guide_w/2-1, guide_w/2, guide_ost+guide_ist) ;     // Shade
-            translate([0,0,read_l/2+guide_tb-guide_ist])
-                rotate([0,-8,0])
+            translate([0,0,guide_offset+guide_tb-guide_ist])
+                rotate([0,-10,0])
                     cube(size=[guide_w*2, guide_w, guide_ist*2], center=true) ;
+            translate([0,0,guide_offset+guide_tb+guide_ost])
+                rotate([0,45,0])
+                    cube(size=[guide_w*2, guide_w, guide_ost*2], center=true) ;
         }
+
     }
     difference() {
         rotate([0,90,0])
@@ -153,7 +158,7 @@ module tape_reader_bridge_dovetailed() {
     module bridge_dovetail_cutout() {
         translate([-read_total_l/2+read_side_t,0,0])
             dovetail_tongue_cutout(
-                read_side_t, read_w-3, read_w-2, read_w+2, read_side_apex_h
+                read_side_t, read_w-3, read_w-2, read_side_apex_w, read_side_apex_h
         ) ;
     }
     difference() {
@@ -623,6 +628,64 @@ module read_side_support_dovetailed() {
 
 
 ////////////////////////////////////////////////////////////////////////////////
+// Tape follower arm (supporting roller_tape_guide or roller_tape_guide)
+////////////////////////////////////////////////////////////////////////////////
+
+tape_follower_arm_l = 40 ;      // Arm length between shaft centres
+tape_follower_arm_w = m4+4 ;
+tape_follower_arm_t = sup_t ;
+tape_follower_hub_t = sup_t*2 ;
+tape_follower_hub_d = m4_nut_af+4 ;
+
+module tape_follower_arm_param(l, w, t, hd, ht, sd, snaf, snt) {
+    // Tape follower arm, holds guide roller loosely in position where its
+    // weight maintains a slight tension in the tape and helps to ensure a
+    // more controlled feed onto the first roller guide.
+    //
+    // Lying on X-Y plane, hub centre at origin, arm extending along X-axis.
+    //
+    // l    = length of arm (between shaft centres)
+    // w    = width of arm
+    // t    = thickness of arm
+    // hd   = diameter of roller shaft hub
+    // ht   = thickness of roller shaft hub
+    // sd   = shaft diameter through hub and end of arm
+    // snaf = shaft nut AF size
+    // snt  = shaft nut thickness
+    //
+    difference() {
+        union() {
+            oval(l, w, t) ;
+            cylinder(d=hd, h=ht, $fn=16) ;
+        }
+        mirror([0,0,1]) {
+            // countersinkZ(od, oh, sd, sh)
+            countersinkZ(sd*2, ht+2*delta+15, sd, ht+delta+5) ;
+        }
+        // cylinder(d=sd, h=ht+2*delta, $fn=16) ;
+        translate([l,0,-delta]) {
+            cylinder(d=sd, h=ht+2*delta, $fn=16) ;
+        }
+        translate([0,0,ht-snt+delta]) {
+            nut_recess(snaf, snt) ;
+        }
+    }
+}
+
+module tape_follower_arm() {
+    tape_follower_arm_param(
+        tape_follower_arm_l, tape_follower_arm_w, tape_follower_arm_t, 
+        tape_follower_hub_d, tape_follower_hub_t, 
+        m4, m4_nut_af, m4_nut_t
+        ) ;    
+}
+
+////-tape_follower_arm_2off
+// translate([0,-10,0]) tape_follower_arm() ;
+// translate([0,+10,0]) tape_follower_arm() ;
+
+
+////////////////////////////////////////////////////////////////////////////////
 // Assemblies...
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -657,7 +720,7 @@ module layout_reader_bridge_dovetailed() {
 ////-tape_reader_bridge
 // tape_reader_bridge() ;
 ////-tape_reader_bridge_dovetailed
-tape_reader_bridge_dovetailed() ;
+// tape_reader_bridge_dovetailed() ;
 ////-read_side_support_dovetailed
 // translate([0,spacing,0])
 //     read_side_support_dovetailed() ;

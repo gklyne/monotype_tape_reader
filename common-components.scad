@@ -440,10 +440,13 @@ module countersinkZ(od, oh, sd, sh)
     {
         intersection()
         {
-            translate([0,0,-sh]) cylinder(r=od/2, h=oh, $fn=12);
+            // Head recess
+            translate([0,0,-sh]) cylinder(d=od, h=oh, $fn=12);
+            // Countersink cone
             translate([0,0,-od/2]) cylinder(r1=0, r2=oh+od/2, h=oh+od/2, $fn=12);
         }
-    translate([0,0,-sh+delta]) cylinder(r=sd/2, h=sh+2*delta, $fn=12);
+    // shaft
+    translate([0,0,-sh]) cylinder(d=sd, h=oh, $fn=12);
     }
 }
 

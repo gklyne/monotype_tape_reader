@@ -104,22 +104,18 @@ Mechanical parts for reading paper tape created by Monotype keyboard.
 
 [x] Shim for spool end, for more positive "click"
 
-... and much tuning
 
-[ ] MAYBE: ...
-
-
-## To consider
+## 2023-02-20:
 
 [x] Smaller stepper motor pulley
 
 [x] Reader bridge add shades to reduce detection of outer EL wire
 
-[ ] Use dark colour plastic for reader bridge
+[x] Use dark colour plastic for reader bridge
 
 [ ] Redesign winder spools to use smaller shaft dia; 
-    e.g. M5 using bolts rather than through-rod.
-    This is to reduce friction when pulling the tape off the spool.
+    e.g. M4 using bolts rather than through-rod.
+    This is to reduce friction when drawing the tape off the spool.
 
 [ ] Design arms to hold tape tensioner(s)
 
@@ -127,10 +123,19 @@ Mechanical parts for reading paper tape created by Monotype keyboard.
 
 [ ] Consider progressive slowing of stepper motor as reading proceeds?
 
+[ ] Check ordering of row data when multiple detected together
+
+[ ] Add video frame number to output data file
+
+
+## To consider
+
+
+## Notes
 
 Notes: 2023-02-25
 
-Row 24xx, 3068 and others: still seeing markers between columns, but evaluating correctly
+Row 238, 2418, 3068 and others: still seeing markers between columns, but evaluating correctly
 
 Row 3201 sprockets missed altogether?  Traces are there, but not used.
 
@@ -145,16 +150,10 @@ Row 3932, and others, multiple double detection of column 5 hole - maybe merge r
 4000 run on
 
 
-Row 4408 et seq, multiple sprocket deviation errors
-
 Row 5085 - looks like genuine misread (missed row) due to lost sprockets or failed row detection?  Also, data is out order, with 3 rows detected in single frame.
 
 Row 5087 - missing row is now detected!  Correctly!  
 Frame number is with data, so order may need to be checked when writing file.
-
-Row 6473 - runup has persistent sprocket deviation exceeded - tracking is not following tape movement - increase MAX DEV
-
-Row 7730 and around - tracking is not following tape movement 
 
 Row 78xx - rows crossed over
 
@@ -163,6 +162,5 @@ Row 802x - rows crossed over
 Row 8284 - rows crossed over sprockets missed
 
 Marker threshold setting is rather sensitive?
-
 
 

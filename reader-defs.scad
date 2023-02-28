@@ -5,9 +5,14 @@ m4 = 4+m_clearance ;    // Close clearance hole for M4 screw
 m5 = 5+m_clearance ;    // Close clearance hole for M5 screw
 m8 = 8+m_clearance ;    // Close clearance hole for M8 screw
 
-m4_nut_af   = 7 ;       // M4 nut a/f size
-m4_nut_t    = 3.1 ;     // M4 nut thickness (for recess)
-m4_nylock_t = 4.3 ;     // M4 nylock thickness (for recess)
+m4_nut_af    = 7 ;      // M4 nut a/f size
+m4_nut_t     = 3.1 ;    // M4 nut thickness (for recess)
+m4_slimnut_t = 2.5 ;    // M4 slim nut thickness (for recess)
+m4_nylock_t  = 4.3 ;    // M4 nylock nut thickness (for recess)
+
+m8_nut_af    = 13 ;     // M8 nut a/f size
+m8_nut_t     = 6.5 ;    // M8 nut thickness (for recess)
+m8_slimnut_t = 4 ;      // M8 slim nut thickness (for recess)
 
 // Monotype system parameters
 
@@ -61,7 +66,6 @@ winder_base_t = 16 ;    // Thickness at base of winder
 
 // Reader bridge
 
-read_l = spool_w_all ;  // Reader bridge length (inner)
 read_w = 16 ;           // Width of bridge
 read_extra_w = 5 ;      // Extra length for reader bridge for tie-down
 
@@ -83,7 +87,7 @@ guide_tr = 1 ;          // Guide thickness at rim
 guide_tb = guide_tc-guide_tr ;  // Guide thickness of bevel
 guide_eld = 4.5 ;       // EL wire threading hole diameter
 guide_ist = 3 ;         // EL wire shade inner overhang thickness
-guide_ost = (read_total_l-read_l)/2 ; // EL wire shade outer overhang thickness
+guide_ost = (read_total_l-spool_w_all)/2 ; // EL wire shade outer overhang thickness
 
 
 

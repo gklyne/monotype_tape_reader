@@ -426,7 +426,7 @@ pulley_shaft_dia = 5.2 ;
 pulley_shaft_af  = 3.0 ;
 
 ////-stepper_pulley(pd, pt, hd, ht, sd, af)
-stepper_pulley(pulley_dia, pulley_width, pulley_hub_dia, pulley_hub_width, pulley_shaft_dia, pulley_shaft_af) ;
+// stepper_pulley(pulley_dia, pulley_width, pulley_hub_dia, pulley_hub_width, pulley_shaft_dia, pulley_shaft_af) ;
 
 ////////////////////////////////////////////////////////////////////////////////
 // Tape spool
@@ -507,6 +507,26 @@ module spool_middle(w_middle) {
     }
 } ;
 
+
+module spool_middle_hub(w_hub) {
+    // A push-in hub for the spool middle piece to support the spool when
+    // one end has been removed.
+    r_inner = core_d/2-3 ;
+    difference() {
+        cylinder(r=r_inner-clearance, h=w_hub) ;
+        shaft_hole(d=shaft_d, l=w_hub) ;
+        translate([0,0,-delta]) {
+            spoked_wheel_cutouts(hr=shaft_d, sr=core_d/2-5, fr=2, 
+                wt=w_hub+2*delta, ns=3, sw=4) ;
+        }
+    }
+
+}
+
+////-spool_middle_hub(w_hub)
+// spool_middle_hub(w_hub=spool_w_end) ;
+
+
 module spool_shim(w_shim) {
     dl = 6 ;
     hl = 2 ;
@@ -531,23 +551,107 @@ module spool_shim(w_shim) {
 //spool_shim(0.2) ;
 
 
-module spool_middle_hub(w_hub) {
-    // A push-in hub for the spool middle piece to support the spool when
-    // one end has been removed.
-    r_inner = core_d/2-3 ;
+////////////////////////////////////////////////////////////////////////////////
+// Tape spool shaft adapters
+////////////////////////////////////////////////////////////////////////////////
+
+
+module m8_m4_nut_insert(sl) {
+    // Insert for M8 nut recess to work with shaft and nut
+    //
+    // sl = Overall length of M8 shaft insert (including nut recess)
+    //
     difference() {
-        cylinder(r=r_inner-clearance, h=w_hub) ;
-        shaft_hole(d=shaft_d, l=w_hub) ;
+        union() {
+            cylinder(d=m8, h=sl, $fn=16) ;
+            nut_recess(m8_nut_af, m8_nut_t) ;
+        }
         translate([0,0,-delta]) {
-            spoked_wheel_cutouts(hr=shaft_d, sr=core_d/2-5, fr=2, 
-                wt=w_hub+2*delta, ns=3, sw=4) ;
+            cylinder(d=m4, h=sl+m8, $fn=16) ;
+            nut_recess(m4_nut_af, m4_nut_t) ;
         }
     }
-
 }
 
-////-spool_middle_hub(w_hub)
-// spool_middle_hub(w_hub=spool_w_end) ;
+////-m8_m4_nut_insert(sl)
+// translate([0,10,0]) m8_m4_nut_insert(10) ;
+
+
+module m8_m4_face_insert(fl,sl) {
+    // Insert for M8 shaft hole for M4 shaft, with support flange
+    //
+    // fl = flange length(thickness)
+    // sl = length of shaft insert (not including flange)
+    //
+    difference() {
+        union() {
+            cylinder(d=m8, h=sl+fl, $fn=16) ;
+            cylinder(d=m8*2, h=fl, $fn=16) ;
+        }
+        translate([0,0,-delta]) {
+            cylinder(d=m4, h=sl+fl+2*delta, $fn=16) ;
+        }
+    }
+}
+
+////-m8_m4_face_insert(sl)
+// translate([0,30,0]) m8_m4_face_insert(2, 1) ;
+
+
+module m8_m4_face_nut_insert(fl,sl) {
+    // Insert for M8 shaft hole for M4 shaft, with support flange
+    //
+    // fl = flange length(thickness)
+    // sl = length of shaft insert (not including flange)
+    //
+    difference() {
+        union() {
+            cylinder(d=m8, h=sl+fl, $fn=16) ;
+            cylinder(d=m8*2, h=fl, $fn=16) ;
+        }
+        translate([0,0,-delta]) {
+            cylinder(d=m4, h=sl+fl+2*delta, $fn=16) ;
+            nut_recess(m4_nut_af, m4_slimnut_t) ;
+        }
+    }
+}
+
+////-m8_m4_face_nut_insert(sl)
+// translate([0,50,0]) m8_m4_face_nut_insert(4, 1) ;
+
+
+module m8_m4_shaft_slot(sl, tl, tw, tt) {
+    // Shaft slot adapter for using an M4 shaft in an M8 slot
+    //
+    // sl = M8 shaft slot thickness
+    // tl = tab length (between end radius centres)
+    // tw = tab width
+    // tt = tab thickness
+    //
+    difference() {
+        union() {
+            // oval(x, d, h)
+            oval(tl, tw, tt) ;
+            cylinder(d=m8, h=sl+tt, $fn=16) ;
+        }
+        translate([0,0,-delta])
+            cylinder(d=m4, h=sl+tt+2*delta, $fn=16) ;        
+        translate([m8*0.25,0,-delta])
+            oval(tl+m8, m4, sl+tt+2*delta) ;
+    }
+}
+
+////-m8_m4_shaft_slot(sl, tl, tw, tt)
+// translate([0,70,0]) m8_m4_shaft_slot(4, 10, m8, 2) ;
+
+////-m8_m4_adapter_set()
+for (px=[-10,10] ) {
+    translate([px,10,0]) m8_m4_nut_insert(10) ;
+    translate([px,30,0]) m8_m4_face_insert(2, 1) ;
+    translate([px,50,0]) m8_m4_face_nut_insert(4, 1) ;
+    translate([px,70,0]) m8_m4_shaft_slot(4, 10, m8, 2) ;
+} ;
+
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -776,7 +880,7 @@ module spool_clip_open(core_d, outer_d, flange_d, len, end) {
 
 ////-spool_clip_closed(core_d, outer_d, flange_d, len, end)
 ////-spool_clip_open(core_d, outer_d, flange_d, len, end)
-// spool_clip_closed(core_d+0.8, core_d+3.8, bevel_d-2, spool_w_all-clearance, spool_w_end) ;
+//spool_clip_closed(core_d+0.8, core_d+3.8, bevel_d-2, spool_w_all-clearance, spool_w_end) ;
 
 ////////////////////////////////////////////////////////////////////////////////
 // Tape spool full set of parts
