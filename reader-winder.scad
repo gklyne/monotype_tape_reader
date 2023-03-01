@@ -628,16 +628,17 @@ module m8_m4_shaft_slot(sl, tl, tw, tt) {
     // tw = tab width
     // tt = tab thickness
     //
+    insert_t = sl+tt+1 ;    // Overall thickness of insert; +1 for small protrusion
     difference() {
         union() {
             // oval(x, d, h)
             oval(tl, tw, tt) ;
-            cylinder(d=m8, h=sl+tt, $fn=16) ;
+            cylinder(d=m8, h=insert_t, $fn=16) ;
         }
         translate([0,0,-delta])
-            cylinder(d=m4, h=sl+tt+2*delta, $fn=16) ;        
+            cylinder(d=m4, h=insert_t+2*delta, $fn=16) ;        
         translate([m8*0.25,0,-delta])
-            oval(tl+m8, m4, sl+tt+2*delta) ;
+            oval(tl+m8, m4, insert_t+2*delta) ;
     }
 }
 
@@ -646,10 +647,10 @@ module m8_m4_shaft_slot(sl, tl, tw, tt) {
 
 ////-m8_m4_adapter_set()
 for (px=[-12,12] ) {
-    translate([px,10,0]) m8_m4_nut_insert(10) ;
+//     translate([px,10,0]) m8_m4_nut_insert(10) ;
 //     translate([px,30,0]) m8_m4_face_insert(2, 1) ;
 //     translate([px,50,0]) m8_m4_face_nut_insert(4, 1) ;
-//    translate([px,70,0]) m8_m4_shaft_slot(4, 10, 12, 2) ;
+    translate([px,70,0]) m8_m4_shaft_slot(4, 10, 12, 2) ;
 } ;
 
 
