@@ -453,13 +453,17 @@ module spool_core(d_core, w_core) {
 
 module spool_end(shaft_d, core_d, bevel_d, outer_d, side_t, side_rim_t, w_spool_end) {
     r_inner = core_d/2-3 ;
+    ////hub_t   = w_spool_end+side_t ;
+    hub_t   = w_spool_end+side_t+spool_w_plug ;
+    hub_r   = shaft_d+1 ;
     difference() {
         union() {
             spool_edge(
                 shaft_d=shaft_d, core_d=core_d, bevel_d=bevel_d, outer_d=outer_d, 
                 side_t=side_t, side_rim_t=side_rim_t
             );
-            cylinder(d=core_d, h=w_spool_end+side_t) ;
+            ////@@@@cylinder(d=core_d, h=hub_t) ;
+            cylinder(r=r_inner-clearance, h=hub_t) ;
             bayonette_plug(
                 lp=w_spool_end+side_t, lm=spool_w_plug, 
                 ri=core_d/2-5, rm=r_inner-clearance, ro=core_d/2, hl=2, dl=6, nl=3
@@ -467,16 +471,26 @@ module spool_end(shaft_d, core_d, bevel_d, outer_d, side_t, side_rim_t, w_spool_
         } ;
         union() {
             translate([0,0,-delta]) {
-                spoked_wheel_cutouts(hr=shaft_d, sr=core_d/2-5, fr=2, 
-                    wt=w_spool_end+side_t+2*delta, ns=3, sw=4) ;
+                // Hub
+                spoked_wheel_cutouts(hr=hub_r, sr=core_d/2-5, fr=2, 
+                    wt=hub_t+2*delta, ns=3, sw=4) ;
+                // Sppol edge
                 spoked_wheel_cutouts(hr=core_d/2, sr=bevel_d/2-1, fr=3, 
                     wt=w_spool_end+side_t+2*delta, ns=6, sw=4) ;
             }
-            shaft_hole(d=shaft_d, l=w_spool_end+side_t) ;
+            shaft_hole(d=shaft_d, l=hub_t) ;
             nut_recess(af=shaft_nut_af, t=shaft_nut_t) ;
+            translate([0,0,hub_t-shaft_nut_t])
+                nut_recess(af=shaft_nut_af, t=shaft_nut_t) ;
         } ;
     }
 } ;
+
+////-spool_end
+//spool_end(
+//    shaft_d=shaft_d, core_d=core_d, bevel_d=bevel_d, outer_d=outer_d, 
+//    side_t=spool_side_t, side_rim_t=spool_side_rim_t, w_spool_end=spool_w_end
+//    ) ;
 
 
 module spool_middle(w_middle) {
@@ -563,8 +577,8 @@ module m8_m4_nut_insert(sl) {
     //
     difference() {
         union() {
-            cylinder(d=m8, h=sl, $fn=16) ;
-            nut_recess(m8_nut_af-2*m_clearance, m8_nut_t) ;
+            cylinder(d=m8-m_clearance, h=sl, $fn=16) ;
+            nut_recess(m8_nut_af-2*m_clearance, m8_slimnut_t) ;
         }
         translate([0,0,-delta]) {
             cylinder(d=m4, h=sl+m8, $fn=16) ;
@@ -628,12 +642,16 @@ module m8_m4_shaft_slot(sl, tl, tw, tt) {
     // tw = tab width
     // tt = tab thickness
     //
-    insert_t = sl+tt+1 ;    // Overall thickness of insert; +1 for small protrusion
+    flare_h  = 0.8 ;                  // Height of protruding retaining flare
+    flare_d  = m8 + 1.5 ;                // Outer diameter of retaining flare
+    insert_t = sl+tt+flare_h+clearance ;      // Overall thickness of insert
     difference() {
         union() {
             // oval(x, d, h)
             oval(tl, tw, tt) ;
             cylinder(d=m8, h=insert_t, $fn=16) ;
+            translate([0,0,insert_t-flare_h]) 
+                cylinder(d1=m8, d2=flare_d, h=flare_h, $fn=16) ;
         }
         translate([0,0,-delta])
             cylinder(d=m4, h=insert_t+2*delta, $fn=16) ;        
@@ -647,10 +665,10 @@ module m8_m4_shaft_slot(sl, tl, tw, tt) {
 
 ////-m8_m4_adapter_set()
 for (px=[-12,12] ) {
-//     translate([px,10,0]) m8_m4_nut_insert(10) ;
+//     translate([px,10,0]) m8_m4_nut_insert(8) ;
 //     translate([px,30,0]) m8_m4_face_insert(2, 1) ;
 //     translate([px,50,0]) m8_m4_face_nut_insert(4, 1) ;
-    translate([px,70,0]) m8_m4_shaft_slot(4, 10, 12, 2) ;
+//     translate([px,70,0]) m8_m4_shaft_slot(4, 10, 12, 2) ;
 } ;
 
 
@@ -892,19 +910,17 @@ module spool_parts() {
         translate([x*(outer_d*1.2),0,0])
             spool_end(
                 shaft_d=shaft_d, core_d=core_d, bevel_d=bevel_d, outer_d=outer_d, 
-                side_t=side_t, side_rim_t=side_rim_t, w_spool_end=spool_w_end
+                side_t=spool_side_t, side_rim_t=spool_side_rim_t, w_spool_end=spool_w_end
                 );
-    translate([0,outer_d,0])
-        spool_middle(spool_w_mid) ;
-    translate([0,0,0])
-        spool_middle_hub(w_hub=spool_w_end) ;
-    // translate([outer_d*1.2,outer_d,0])
-    //     spool_clip(core_d, core_d+4, spool_w_mid) ;
+    // translate([0,outer_d,0])
+    //     spool_middle(spool_w_mid) ;
+    // translate([0,0,0])
+    //     spool_middle_hub(w_hub=spool_w_end) ;
 }
 
 
 ////-spool_parts()
-// spool_parts() ;
+spool_parts() ;
 
 // ## spool_clips
 //

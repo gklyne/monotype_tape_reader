@@ -26,7 +26,14 @@ mt_paper_tickness = 0.08 ;  // Thickness of paper tape
 
 // Winder
 
-shaft_d = m8 ;          // Shaft diameter
+shaft_d      = m4 ;         // Shaft diameter
+shaft_nut_af = m4_nut_af ;  // Nut diameter across faces
+shaft_nut_t  = m4_nut_t ;   // Nut thickness
+
+// shaft_d      = m8 ;        // Shaft diameter
+// shaft_nut_af = 13 ;        // Nut diameter across faces
+// shaft_nut_t  = 4 ;         // Nut thickness
+
 core_d = 40 ;           // Core diameter
 bevel_d = 72 ;          // Bevel inner diameter
 outer_d = 80 ;          // Spool outer diameter
@@ -52,8 +59,6 @@ spool_w_plug = 8 ;      // Width of spool-end plug overlap
 spool_w_mid = spool_w_all - 2*spool_w_end ;
                         // width of spool middle spacer
 
-shaft_nut_af = 13 ;     // Nut diameter across faces
-shaft_nut_t  = 4 ;      // Nut thickness
 
 handle_nut_af = 7 ;     // Nut diameter across faces
 handle_nut_t  = 3 ;     // Nut thickness
