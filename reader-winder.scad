@@ -564,7 +564,7 @@ module m8_m4_nut_insert(sl) {
     difference() {
         union() {
             cylinder(d=m8, h=sl, $fn=16) ;
-            nut_recess(m8_nut_af, m8_nut_t) ;
+            nut_recess(m8_nut_af-2*m_clearance, m8_nut_t) ;
         }
         translate([0,0,-delta]) {
             cylinder(d=m4, h=sl+m8, $fn=16) ;
@@ -646,10 +646,10 @@ module m8_m4_shaft_slot(sl, tl, tw, tt) {
 
 ////-m8_m4_adapter_set()
 for (px=[-12,12] ) {
-//     translate([px,10,0]) m8_m4_nut_insert(10) ;
+    translate([px,10,0]) m8_m4_nut_insert(10) ;
 //     translate([px,30,0]) m8_m4_face_insert(2, 1) ;
 //     translate([px,50,0]) m8_m4_face_nut_insert(4, 1) ;
-    translate([px,70,0]) m8_m4_shaft_slot(4, 10, 12, 2) ;
+//    translate([px,70,0]) m8_m4_shaft_slot(4, 10, 12, 2) ;
 } ;
 
 
