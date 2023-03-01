@@ -642,14 +642,14 @@ module m8_m4_shaft_slot(sl, tl, tw, tt) {
 }
 
 ////-m8_m4_shaft_slot(sl, tl, tw, tt)
-// translate([0,70,0]) m8_m4_shaft_slot(4, 10, m8, 2) ;
+// translate([0,70,0]) m8_m4_shaft_slot(4, 10, 12, 2) ;
 
 ////-m8_m4_adapter_set()
-for (px=[-10,10] ) {
-    translate([px,10,0]) m8_m4_nut_insert(10) ;
-    translate([px,30,0]) m8_m4_face_insert(2, 1) ;
-    translate([px,50,0]) m8_m4_face_nut_insert(4, 1) ;
-    translate([px,70,0]) m8_m4_shaft_slot(4, 10, m8, 2) ;
+for (px=[-12,12] ) {
+//     translate([px,10,0]) m8_m4_nut_insert(10) ;
+//     translate([px,30,0]) m8_m4_face_insert(2, 1) ;
+//     translate([px,50,0]) m8_m4_face_nut_insert(4, 1) ;
+    translate([px,70,0]) m8_m4_shaft_slot(4, 10, 12, 2) ;
 } ;
 
 
