@@ -290,7 +290,7 @@ module circular_platform(r,h) {
 
 // Return height of nut recess given across-flats size of nut
 //
-function nut_recess_height(af) = af*0.35 ;
+function nut_recess_height(af) = af*0.30 ;
 
 // Hex nut recess on centre of X-Y plane
 //

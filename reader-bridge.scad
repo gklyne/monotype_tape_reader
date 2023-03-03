@@ -634,7 +634,7 @@ module read_side_support_dovetailed() {
 tape_follower_arm_l = 40 ;      // Arm length between shaft centres
 tape_follower_arm_w = m4+4 ;
 tape_follower_arm_t = sup_t ;
-tape_follower_hub_t = sup_t*2 ;
+tape_follower_hub_t = sup_t*1.3 ;
 tape_follower_hub_d = m4_nut_af+4 ;
 
 module tape_follower_arm_param(l, w, t, hd, ht, sd, snaf, snt) {
@@ -642,7 +642,7 @@ module tape_follower_arm_param(l, w, t, hd, ht, sd, snaf, snt) {
     // weight maintains a slight tension in the tape and helps to ensure a
     // more controlled feed onto the first roller guide.
     //
-    // Lying on X-Y plane, hub centre at origin, arm extending along X-axis.
+    // Lying on X-Y plane, pivot centre at origin, arm extending along X-axis.
     //
     // l    = length of arm (between shaft centres)
     // w    = width of arm
@@ -653,20 +653,29 @@ module tape_follower_arm_param(l, w, t, hd, ht, sd, snaf, snt) {
     // snaf = shaft nut AF size
     // snt  = shaft nut thickness
     //
+    elbow_l1 = 0.3*l ;
+    elbow_l2 = 0.75*l ;
     difference() {
         union() {
-            oval(l, w, t) ;
-            cylinder(d=hd, h=ht, $fn=16) ;
+            translate([0,0,t-delta])
+                oval(elbow_l1, w, t) ;
+            translate([l-elbow_l2,0,0])
+                oval(elbow_l2, w, t) ;
+            translate([l,0,0])
+               cylinder(d=hd, h=ht, $fn=16) ;
         }
-        mirror([0,0,1]) {
+        // cylinder(d=sd, h=t+2*delta, $fn=16) ;
+        // Shaft hole at pivot end of arm
+        translate([0,0,t-2*delta]) {
+            cylinder(d=sd, h=t+2*delta, $fn=16) ;
+        }
+        // Countersunk hole at far end of arm
+        translate([l,0,ht+delta]) {
             // countersinkZ(od, oh, sd, sh)
-            countersinkZ(sd*2, ht+2*delta+15, sd, ht+delta+5) ;
+            countersinkZ(sd*2, ht+2*delta, sd, ht+2*delta) ;
         }
-        // cylinder(d=sd, h=ht+2*delta, $fn=16) ;
-        translate([l,0,-delta]) {
-            cylinder(d=sd, h=ht+2*delta, $fn=16) ;
-        }
-        translate([0,0,ht-snt+delta]) {
+        // Nut recess at far end of arm
+        translate([l,0,0]) {
             nut_recess(snaf, snt) ;
         }
     }
@@ -676,13 +685,13 @@ module tape_follower_arm() {
     tape_follower_arm_param(
         tape_follower_arm_l, tape_follower_arm_w, tape_follower_arm_t, 
         tape_follower_hub_d, tape_follower_hub_t, 
-        m4, m4_nut_af, m4_nut_t
+        m4, m4_nut_af, m4_slimnut_t
         ) ;    
 }
 
 ////-tape_follower_arm_2off
-// translate([0,-10,0]) tape_follower_arm() ;
-// translate([0,+10,0]) tape_follower_arm() ;
+translate([0,-10,0]) tape_follower_arm() ;
+translate([0,+10,0]) tape_follower_arm() ;
 
 
 ////////////////////////////////////////////////////////////////////////////////
