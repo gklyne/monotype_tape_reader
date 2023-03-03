@@ -10,7 +10,92 @@ include <common-components.scad> ;
 // Winder and drive pulley
 ////////////////////////////////////////////////////////////////////////////////
 
-module crank_handle(
+module crank_handle_pushon(
+        shaft_d, crank_hub_d, crank_hub_t, 
+        drive_nut_af, drive_nut_t, 
+        crank_arm_l, crank_arm_t, 
+        handle_d, handle_hub_d, handle_hub_t
+    ) {
+    // Crank handle pushes on to a nut on the shaft.
+    //
+    // NOTE:    the push-on design is to avoid having the crank handle 
+    //          unbalance the spool while reading the tape.
+    //
+    // shaft_d      = diameter of turned shaft
+    // crank_hub_d  = diameter of crank hub
+    // crank_hub_t  = thickness of crank hub
+    // drive_nut_af = drive nut size AF
+    // drive_nut_t  = drive nut thickness
+    // crank_arm_l  = length of crank
+    // crank_arm_t  = thickness of crank arm
+    // handle_d     = diameter of handle shaft
+    // handle_hub_d = diameter of handle hub 
+    // handle_hub_t = thickness of handle hub
+    //
+    difference() {
+        union() {
+            cylinder(d=crank_hub_d, h=crank_hub_t) ;
+            translate([crank_l/2,0,crank_arm_t/2]) 
+                cube(size=[crank_l,handle_hub_d,crank_arm_t], center=true) ;
+            translate([crank_l,0,0]) 
+                cylinder(d=handle_hub_d, h=handle_hub_t) ;
+        } ;
+        union() {
+            shaft_hole(d=shaft_d, l=crank_hub_t*2) ;
+            translate([0,0,crank_hub_t-drive_nut_t]) {
+                nut_recess(af=drive_nut_af, t=drive_nut_t+delta) ;
+            }
+            translate([crank_l,0,0]) {
+                nut_recess(af=handle_nut_af, t=handle_nut_t) ;
+                translate([0,0,handle_hub_t+delta])
+                    countersinkZ(od=handle_d*2, oh=handle_hub_t+2*delta, sd=handle_d, sh=handle_hub_t) ;
+            }
+        } ;
+    }
+}
+
+////-crank_handle_pushon(
+////        crank_l, 
+////        shaft_d, crank_hub_d, handle_hub_d, handle_d, 
+////        crank_hub_t, crank_arm_t, handle_hub_t)
+crank_handle_pushon(
+    shaft_d=shaft_d, crank_hub_d=16, crank_hub_t=8, 
+    drive_nut_af=m8_nut_af, drive_nut_t=m8_nut_t, 
+    crank_arm_l=crank_l, crank_arm_t=5, 
+    handle_d=handle_d, handle_hub_d=handle_hub_d, handle_hub_t=6
+    ) ;
+
+module crank_handle_pushon_nut(
+        drive_nut_af,
+        drive_nut_t,
+        drive_shaft_d,
+        shaft_nut_af,
+        shaft_nut_t
+    ) {
+    // Drive nut attached to shaft for push-on crank
+    //
+    // drive_nut_af     = drive nut size AF
+    // drive_nut_t      = drive nut thickness
+    // drive_shaft_d    = driven shaft diameter
+    // shaft_nut_af     = shaft nut size AF
+    // shaft_nut_t      = shaft nut thickness
+    //
+    difference() {
+        nut(drive_nut_af-2*m_clearance, drive_nut_t, drive_shaft_d) ;
+        translate([0,0,drive_nut_t-m4_nut_t+delta]) {
+            nut_recess(shaft_nut_af, shaft_nut_t) ;
+        }
+    }
+}
+
+////-crank_handle_pushon_nut(
+////        drive_nut_d, drive_nut_t, drive_shaft_d,
+////        shaft_nut_af, shaft_nut_t)
+translate([-20,0,0])
+    crank_handle_pushon_nut(m8_nut_af, m8_nut_t, m4, m4_nut_af, m4_nut_t) ;
+
+
+module crank_handle_balanced(
         crank_l, 
         shaft_d, crank_hub_d, handle_hub_d, handle_d, 
         crank_hub_t, crank_arm_t, handle_hub_t) {
@@ -76,11 +161,11 @@ module drive_pulley(shaft_d, drive_pulley_d) {
     }
 }
 
-////-crank_handle(
+////-crank_handle_balanced(
 ////        crank_l, 
 ////        shaft_d, crank_hub_d, handle_hub_d, handle_d, 
 ////        crank_hub_t, crank_arm_t, handle_hub_t)
-// crank_handle(
+// crank_handle_balanced(
 //     crank_l=crank_l, 
 //     shaft_d=shaft_d, crank_hub_d=crank_hub_d, 
 //     handle_hub_d=handle_hub_d, handle_d=handle_d, 
@@ -920,7 +1005,7 @@ module spool_parts() {
 
 
 ////-spool_parts()
-spool_parts() ;
+// spool_parts() ;
 
 // ## spool_clips
 //

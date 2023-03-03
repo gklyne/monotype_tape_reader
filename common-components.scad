@@ -288,6 +288,21 @@ module circular_platform(r,h) {
 // Instance of circular_platform (With cutaway to reveal angle of support.)
 // difference() { circular_platform(10,8) ; translate([0,0,-10]) cube(size=[20,20,20]) ; }
 
+module nut(af, t, sd) {
+    // Nut outline shape
+    //
+    // af = size of nut across faces (across flats, = spanner size)
+    // t  = thickness of nut
+    // sd = shaft diameter through nut
+    //
+    od = af * 2 / sqrt(3) ; // Diameter
+    difference() {
+        cylinder(d=od, h=t, $fn=6) ;
+        translate([0,0,-delta])
+            cylinder(d=sd, h=t+delta*2, $fn=12) ;
+    }
+}
+
 // Return height of nut recess given across-flats size of nut
 //
 function nut_recess_height(af) = af*0.30 ;
