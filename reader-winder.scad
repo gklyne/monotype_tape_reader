@@ -183,6 +183,28 @@ module drive_pulley(shaft_d, drive_pulley_d) {
 //     drive_pulley(shaft_d=shaft_d, drive_pulley_d=drive_pulley_d) ;
 
 
+module rewind_pulley(pd, pt, hd, ht, sd, nut_af, nut_t) {
+    difference() {
+        union() {
+            // pulley
+            // pulley(pd, pt) ;
+            pulley_round_belt(pd, pt, pt-1) ;
+            // hub
+            cylinder(d=hd, h=pt+ht, center=false, $fn=48) ;
+        }
+        translate([0,0,-delta]) {
+            // shaft hole
+            cylinder(d=sd, h=pt+ht+2*delta, $fn=12) ;
+            nut_recess(nut_af, nut_t) ;
+            // Spoke cutouts (not for small pulley)
+            spoked_wheel_cutouts(hr=hd/2+1, sr=(pd-pt)/2, fr=1.5, wt=pt+2*delta, ns=6, sw=3) ;
+        }
+    }
+}
+
+////-rewind_pulley(dia, width, hub_dia, hub_width, shaft_dia) ;
+rewind_pulley(28, 8, 8, 0, m4, m4_nut_af, m4_nut_t) ;
+
 ////////////////////////////////////////////////////////////////////////////////
 // Spool supports
 ////////////////////////////////////////////////////////////////////////////////
