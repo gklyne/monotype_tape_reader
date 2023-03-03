@@ -7,7 +7,7 @@ include <reader-defs.scad> ;
 include <common-components.scad> ;
 
 ////////////////////////////////////////////////////////////////////////////////
-// Winder and drive pulley
+// Winder crank and drive pulley
 ////////////////////////////////////////////////////////////////////////////////
 
 module crank_handle_pushon(
@@ -58,12 +58,12 @@ module crank_handle_pushon(
 ////        crank_l, 
 ////        shaft_d, crank_hub_d, handle_hub_d, handle_d, 
 ////        crank_hub_t, crank_arm_t, handle_hub_t)
-crank_handle_pushon(
-    shaft_d=shaft_d, crank_hub_d=18, crank_hub_t=7, 
-    drive_nut_af=m8_nut_af, drive_nut_t=5, 
-    crank_arm_l=crank_l, crank_arm_t=5, 
-    handle_d=handle_d, handle_hub_d=handle_hub_d, handle_hub_t=6
-    ) ;
+// crank_handle_pushon(
+//     shaft_d=shaft_d, crank_hub_d=18, crank_hub_t=7, 
+//     drive_nut_af=m8_nut_af, drive_nut_t=5, 
+//     crank_arm_l=crank_l, crank_arm_t=5, 
+//     handle_d=handle_d, handle_hub_d=handle_hub_d, handle_hub_t=6
+//     ) ;
 
 module crank_handle_pushon_nut(
         drive_nut_af,
@@ -91,10 +91,10 @@ module crank_handle_pushon_nut(
 ////-crank_handle_pushon_nut(
 ////        drive_nut_d, drive_nut_t, drive_shaft_d,
 ////        shaft_nut_af, shaft_nut_t)
-translate([-20,0,0])
-    crank_handle_pushon_nut(m8_nut_af, 5, m4, m4_nut_af, m4_nut_t) ;
-translate([-40,0,0])
-    crank_handle_pushon_nut(m8_nut_af, 5, m4, m4_nut_af, m4_nut_t) ;
+// translate([-20,0,0])
+//     crank_handle_pushon_nut(m8_nut_af, 5, m4, m4_nut_af, m4_nut_t) ;
+// translate([-40,0,0])
+//     crank_handle_pushon_nut(m8_nut_af, 5, m4, m4_nut_af, m4_nut_t) ;
 
 
 module crank_handle_balanced(
@@ -140,6 +140,18 @@ module crank_handle_balanced(
     }
 }
 
+////-crank_handle_balanced(
+////        crank_l, 
+////        shaft_d, crank_hub_d, handle_hub_d, handle_d, 
+////        crank_hub_t, crank_arm_t, handle_hub_t)
+// crank_handle_balanced(
+//     crank_l=crank_l, 
+//     shaft_d=shaft_d, crank_hub_d=crank_hub_d, 
+//     handle_hub_d=handle_hub_d, handle_d=handle_d, 
+//     crank_hub_t=crank_hub_t, crank_arm_t=crank_arm_t, handle_hub_t=crank_end_t
+//     ) ;
+
+
 module drive_pulley(shaft_d, drive_pulley_d) {
     extra_pulley_t = drive_pulley_t*0.0 ;  // Extra pulley thickness for hub recess, etc.
     intersection() {
@@ -162,17 +174,6 @@ module drive_pulley(shaft_d, drive_pulley_d) {
         ) ;
     }
 }
-
-////-crank_handle_balanced(
-////        crank_l, 
-////        shaft_d, crank_hub_d, handle_hub_d, handle_d, 
-////        crank_hub_t, crank_arm_t, handle_hub_t)
-// crank_handle_balanced(
-//     crank_l=crank_l, 
-//     shaft_d=shaft_d, crank_hub_d=crank_hub_d, 
-//     handle_hub_d=handle_hub_d, handle_d=handle_d, 
-//     crank_hub_t=crank_hub_t, crank_arm_t=crank_arm_t, handle_hub_t=crank_end_t
-//     ) ;
 
 ////-drive_pulley(shaft_d, drive_pulley_d)
 // drive_pulley(shaft_d=shaft_d, drive_pulley_d=drive_pulley_d) ;
@@ -757,7 +758,6 @@ for (px=[-12,12] ) {
 //     translate([px,50,0]) m8_m4_face_nut_insert(4, 1) ;
 //     translate([px,70,0]) m8_m4_shaft_slot(4, 10, 12, 2) ;
 } ;
-
 
 
 ////////////////////////////////////////////////////////////////////////////////

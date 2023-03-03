@@ -653,8 +653,8 @@ module tape_follower_arm_param(l, w, t, hd, ht, sd, snaf, snt) {
     // snaf = shaft nut AF size
     // snt  = shaft nut thickness
     //
-    elbow_l1 = 0.3*l ;
-    elbow_l2 = 0.75*l ;
+    elbow_l1 = 0.45*l ;
+    elbow_l2 = 0.65*l ;
     difference() {
         union() {
             translate([0,0,t-delta])
