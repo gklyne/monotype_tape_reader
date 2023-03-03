@@ -203,7 +203,7 @@ module rewind_pulley(pd, pt, hd, ht, sd, nut_af, nut_t) {
 }
 
 ////-rewind_pulley(dia, width, hub_dia, hub_width, shaft_dia) ;
-rewind_pulley(28, 8, 8, 0, m4, m4_nut_af, m4_nut_t) ;
+rewind_pulley(28, 8, 8, 0, m4, m4_nut_af, m4_nut_t*1.5) ;
 
 ////////////////////////////////////////////////////////////////////////////////
 // Spool supports
