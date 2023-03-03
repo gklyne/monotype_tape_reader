@@ -59,8 +59,8 @@ module crank_handle_pushon(
 ////        shaft_d, crank_hub_d, handle_hub_d, handle_d, 
 ////        crank_hub_t, crank_arm_t, handle_hub_t)
 crank_handle_pushon(
-    shaft_d=shaft_d, crank_hub_d=16, crank_hub_t=8, 
-    drive_nut_af=m8_nut_af, drive_nut_t=m8_nut_t, 
+    shaft_d=shaft_d, crank_hub_d=18, crank_hub_t=7, 
+    drive_nut_af=m8_nut_af, drive_nut_t=5, 
     crank_arm_l=crank_l, crank_arm_t=5, 
     handle_d=handle_d, handle_hub_d=handle_hub_d, handle_hub_t=6
     ) ;
@@ -92,7 +92,9 @@ module crank_handle_pushon_nut(
 ////        drive_nut_d, drive_nut_t, drive_shaft_d,
 ////        shaft_nut_af, shaft_nut_t)
 translate([-20,0,0])
-    crank_handle_pushon_nut(m8_nut_af, m8_nut_t, m4, m4_nut_af, m4_nut_t) ;
+    crank_handle_pushon_nut(m8_nut_af, 5, m4, m4_nut_af, m4_nut_t) ;
+translate([-40,0,0])
+    crank_handle_pushon_nut(m8_nut_af, 5, m4, m4_nut_af, m4_nut_t) ;
 
 
 module crank_handle_balanced(
