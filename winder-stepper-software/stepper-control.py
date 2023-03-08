@@ -140,14 +140,15 @@ def main_loop():
                 pass
             else:
                 print(f"Unrecognized '{c}'\n")
-            print(f"stepnum {stepnum}, stepdir {stepdir}, waittime {waittime:6.4f}")
+            print(f"steptotal {steptotal:>8d}, waittime {waittime:6.4f}, slowcount {slowcount:>6d}, stepdir {stepdir}, stepnum {stepnum}")
         # Next step
         if running:
             stepnum, stepdata = next_step(stepnum, stepdir)
-            if debugging:
-                print(f"stepnum {stepnum}, stepdata {stepdata}, stepdir {stepdir}, waittime {waittime:6.4f}")
             # drive stepper motor
             set_stepper_drive(0, stepdata)
+            steptotal += 1
+            if debugging:
+                print(f"steptotal {steptotal:>8d}, waittime {waittime:6.4f}, slowcount {slowcount:>6d}, stepdir {stepdir}, stepnum {stepnum}")
         # Wait before moving on
         # Every "slowrate" seconds, increase stepper wait interval by 0.1ms, to compensate for
         # increased diameter of tape on take-up spool.  Without this, the tape speed increases
@@ -157,7 +158,7 @@ def main_loop():
         if slowcount <= 0:
             waittime += 0.0001                      # Increase wait between steps by 0.1ms
             slowcount = round(slowrate/waittime)    # Reset counter to next slowdown point
-            print(f"steptotal {steptotal:>8d}, slowcount {slowcount:>6d}, waittime {waittime:6.4f}")
+            print(f"steptotal {steptotal:>8d}, waittime {waittime:6.4f}, slowcount {slowcount:>6d}")
 
     print("Exiting")
     set_stepper_drive(0, stepper_off())
