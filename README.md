@@ -135,8 +135,82 @@ Mechanical parts for reading paper tape created by Monotype keyboard.
 
 [ ] Marker threshold setting is rather sensitive
 
+[ ] Running calibration of data scale - maybe it's not truly linear (consistent hole 22 deviation).
+    Consider low order polynomial, correction (quadratic?, cubic?)
+
 
 ## Notes
 
 ### Notes: 2023-03-05
+
+
+
+## Write-up notes
+
+### Pipeline
+
+Iterating the design
+
+Aim to use software as much as possible, while keeping the hardware simple
+
+Design involving iterative updates to both hardware and software
+
+Initially: reader and video analysis
+
+Then switch to 3 elements: hardware, stepper control s/w, video analysis
+
+Basic mechanism and analysis worked fairly easily, but...
+
+Dealing with noisy data, interactions between:
+- better video analysis
+- better hardware
+- better tape motion control
+
+Lots of learning:  more efficient use of openSCAD for evolving mechanical design; OpenCV for video analysis and generation, Raspberry Pi to control stepper motor, simple statistics-based algorithms for dealing with noisy data.
+
+Each attempt to improve the decoding software can show up fundamental problems with the raw data, which are not reliably overcome by better processing (e.g. might confuse a human attempting to decode the data), thus giving rise to new hardware iterations.  Then each new hardware iteration and video recording can throw up new patterns of data noise to be handled by the decoding software, so there's a lot of iteration between hardware and software improvements.
+
+Ambient lighting is a big factor in the quality of video obtained.
+
+
+### Reader hardware
+
+Initially simple hand crank from  spool to spool, drawing tape over EL wire
+
+Tape guide hardware enhancements to reduce tape wear
+
+Hardware enhancements to use less plastic when printing
+
+Using code to describe hardware (CSG, OpenSCAD)
+
+Building a component library (OpenSCAD)
+
+Increase spool size to reduce tape speed variation beginning to end (pre-stepper)
+
+Switched to stepper motor drive for better control of tape speed
+
+Additional hardware (rPI, stepper controller, stepper motor) and software to control stepper
+
+Added speed profile (to control software) as analysis had holes merging towards end of tape
+
+
+### Decoding software
+
+Processing pipeline
+
+Uses OpenCV to read recorded video, and to perform initial threshold detection
+
+Initial processing draws inspiration from motion capture software implemented in 1980s
+
+Pipeline applies conversion from (X,Y) coordinates in video to (Y,frame) coordinates for data decode.
+
+Row detection uses RANSAC-inspired algorithm to identify row-aligned markers.
+
+Also uses OpenCV to create synthesized video of analysis process, with original video and internal data from processing pipeline.
+
+Data visualization has proved very important whole developing algorithm, especially for understanding the impact of noisy data and helping to identify algorithmic improvements.  Also helped to identify where hardware improvements were needed.
+
+Have spent significant thought reflecting on how I, as a human observer, am easily seeing row data where the algorithm if failing.  This has led to changes in the structure of the pipeline; e.g. noticing that the sprocket holes are a very regular pattern, and introducing in-pipeline feedback to use detected sprocket holes to help discard spurious data in the earlier row-detection phase.
+
+
 

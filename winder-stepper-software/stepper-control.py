@@ -87,16 +87,26 @@ def set_stepper_drive(motornum, stepdata):
     return
 
 def main_loop():
-    waittime  = 0.0030  # 3.0ms wait between steps (initial)
-    waitstep  = 0.0005  # 0.5ms wait increment     (k/b change)
-    slowrate  = 60.0    # Interval (s) between increase of stepper wait by 0.1ms
-    slowcount = round(slowrate/waittime) # Steps to next speed reduction
+    # The interval between slowing down the stepper motor styeps by 0.1ms is 
+    # calculated as follows:
+    #
+    # Tape spool diameter at start: 44mm, at end: 69mm (measured)
+    # Total number of steps to read tape: 238K (measured)
+    # Initial speed: 3ms between steps (setting seems to work)
+    # End speed: 44/69*3ms = 4.7ms between steps, for constant tape speed
+    # Number of 0.1ms increments in wait between at steps start and end: 17
+    # Number of steps between increments: 238K/17 = 14K = "slowrate" below
 
-    running   = False   # Start with motor stopped
-    stepnum   = 0       # Step sequence number
-    stepdir   = 1       # +1 forward, -1 backward (or +2, -2?)
-    debugging = False   # Debug display enabled
-    steptotal = 0       # Count total number of steps
+    waittime  = 0.0030      # 3.0ms wait between steps (initial)
+    waitstep  = 0.0005      # 0.5ms wait increment     (k/b change)
+    slowrate  = 14000       # Interval (steps) between increase of stepper wait by 0.1ms
+    slowcount = slowrate    # Steps to next speed reduction
+
+    running   = False       # Start with motor stopped
+    stepnum   = 0           # Step sequence number
+    stepdir   = 1           # +1 forward, -1 backward (or +2, -2?)
+    debugging = False       # Debug display enabled
+    steptotal = 0           # Count total number of steps
 
     print("Control options:")
     print("  r         Run/resume motion")
@@ -150,15 +160,15 @@ def main_loop():
             if debugging:
                 print(f"steptotal {steptotal:>8d}, waittime {waittime:6.4f}, slowcount {slowcount:>6d}, stepdir {stepdir}, stepnum {stepnum}")
         # Wait before moving on
-        # Every "slowrate" seconds, increase stepper wait interval by 0.1ms, to compensate for
+        # Every "slowrate" steps, increase stepper wait interval by 0.1ms, to compensate for
         # increased diameter of tape on take-up spool.  Without this, the tape speed increases
         # and frames may become merged.
         time.sleep(waittime)
         slowcount -= 1
         if slowcount <= 0:
-            waittime += 0.0001                      # Increase wait between steps by 0.1ms
-            slowcount = round(slowrate/waittime)    # Reset counter to next slowdown point
-            print(f"steptotal {steptotal:>8d}, waittime {waittime:6.4f}, slowcount {slowcount:>6d}")
+            waittime += 0.0001                  # Increase wait between steps by 0.1ms
+            slowcount = slowrate                # Reset counter to next slowdown point
+            print(f"steptotal {steptotal:>8d}, waittime {waittime:6.4f}")
 
     print("Exiting")
     set_stepper_drive(0, stepper_off())
