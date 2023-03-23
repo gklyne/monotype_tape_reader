@@ -333,6 +333,8 @@ module extended_nut_recess(af, t, l) {
     // l  = length of cutout
     //
     od = af * 2 / sqrt(3) ; // Diameter (across corners)
+    sl = af-0.6 ;           // Width of nut support ledge
+    co = af*0.26 ;          // Offset of cutout (leaving ridge to retain nut) 
     translate([0,0,-delta]) {
         cylinder(d=od, h=t+delta*2, $fn=6) ;
         translate([0,-af/2,0])
@@ -340,9 +342,9 @@ module extended_nut_recess(af, t, l) {
     }
     // Cone and "roof" above for printing overhang
     translate([0,0,t]) {
-        cylinder(d1=af-0.4, d2=2, h=nut_recess_height(af), $fn=12) ;
-        translate([af*0.28,0,0])
-            trapezoidal_prism(w1=af-0.4, w2=2, h=nut_recess_height(af), l=l-af*0.28) ;
+        cylinder(d1=sl, d2=2, h=nut_recess_height(af), $fn=12) ;
+        translate([co,0,0])
+            trapezoidal_prism(w1=sl, w2=2, h=nut_recess_height(af), l=l-co) ;
     }
 }
 ////-extended_nut_recess(af, t, l) instance

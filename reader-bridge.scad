@@ -628,7 +628,7 @@ module read_side_support_dovetailed() {
 
 
 ////////////////////////////////////////////////////////////////////////////////
-// Tape follower arm (supporting roller_tape_guide or roller_tape_guide)
+// Tape follower arm (supporting tape_follower_roller)
 ////////////////////////////////////////////////////////////////////////////////
 
 tape_follower_arm_l = 40 ;      // Arm length between shaft centres
@@ -690,8 +690,48 @@ module tape_follower_arm() {
 }
 
 ////-tape_follower_arm_2off
-translate([0,-10,0]) tape_follower_arm() ;
-translate([0,+10,0]) tape_follower_arm() ;
+// translate([0,-10,0]) tape_follower_arm() ;
+// translate([0,+10,0]) tape_follower_arm() ;
+
+////////////////////////////////////////////////////////////////////////////////
+// Tape follower roller
+////////////////////////////////////////////////////////////////////////////////
+
+module tape_follower_roller() {
+    od = guide_roller_outer_d+2 ;
+    or = od/2 ;
+    rr = guide_roller_rim_r+1 ;
+    difference() {
+        union() {
+            roller_guide_3_spoked(
+                guide_roller_shaft_d, guide_roller_hub_r,  
+                rr, or,  
+                guide_roller_fillet_r, guide_roller_spoke_w, 
+                guide_roller_width
+                ) ;
+            translate([0,0,12+3.5])
+                circular_platform(r=rr+clearance*4, h=6) ;
+            translate([0,0,guide_roller_width-12+3.5])
+                circular_platform(r=rr+clearance*4, h=6) ;
+        }
+        // Shaft hole with clearance for free rotation
+        shaft_hole(guide_sprocket_shaft_d+1, guide_roller_width) ;
+        // M4 nut cutouts:  7 AF x 3.1 thick
+        // NOTE: Nuts drilled out to act as bearings
+        translate([0,0,12]) {
+            extended_nut_recess_with_ejection_hole(7, 3.1, od+1) ;
+        }
+        translate([0,0,guide_roller_width-12]) {
+            extended_nut_recess_with_ejection_hole(7, 3.1, od+1) ;
+        }
+    }
+}
+
+////--tape_follower_roller
+tape_follower_roller() ;
+
+// To see inside...
+//difference() { tape_follower_roller() ; cube(size=[20,20,160]) ; }
 
 
 ////////////////////////////////////////////////////////////////////////////////
