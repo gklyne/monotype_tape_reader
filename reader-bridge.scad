@@ -693,6 +693,60 @@ module tape_follower_arm() {
 // translate([0,-10,0]) tape_follower_arm() ;
 // translate([0,+10,0]) tape_follower_arm() ;
 
+module tape_follower_short_arm_param(l, w, t, hd, ht, sd, snaf, snt) {
+    // Tape follower arm, holds guide roller loosely in position where its
+    // weight maintains a slight tension in the tape and helps to ensure a
+    // more controlled feed onto the first roller guide.
+    //
+    // Lying on X-Y plane, pivot centre at origin, arm extending along X-axis.
+    //
+    // l    = length of arm (between shaft centres)
+    // w    = width of arm
+    // t    = thickness of arm
+    // hd   = diameter of roller shaft hub
+    // ht   = thickness of roller shaft hub
+    // sd   = shaft diameter through hub and end of arm
+    // snaf = shaft nut AF size
+    // snt  = shaft nut thickness
+    //
+    difference() {
+        union() {
+            translate([0,0,0])
+                oval(l, w, t) ;
+            translate([l,0,0])
+                cylinder(d=hd, h=ht, $fn=16) ;
+        }
+        // cylinder(d=sd, h=t+2*delta, $fn=16) ;
+        // Shaft hole at pivot end of arm
+        translate([0,0,-delta]) {
+            cylinder(d=sd, h=t+2*delta, $fn=16) ;
+        }
+        // Countersunk hole at far end of arm
+        translate([l,0,-delta]) {
+            // countersinkZ(od, oh, sd, sh)
+            mirror([0,0,1])
+                countersinkZ(sd*2, ht+2*delta, sd, ht+2*delta) ;
+        }
+        // Nut recess at far end of arm
+        translate([l,0,ht-snt+delta]) {
+            nut(snaf, snt, 0) ;
+        }
+    }
+}
+
+module tape_follower_short_arm() {
+    tape_follower_short_arm_param(
+        tape_follower_arm_l*0.6, tape_follower_arm_w, tape_follower_arm_t, 
+        tape_follower_hub_d, tape_follower_arm_t*2.4, 
+        m4, m4_nut_af, m4_slimnut_t
+        ) ;    
+}
+
+////-tape_follower_short_arm_2off
+translate([0,-10,0]) tape_follower_short_arm() ;
+translate([0,+10,0]) tape_follower_short_arm() ;
+
+
 ////////////////////////////////////////////////////////////////////////////////
 // Tape follower roller
 ////////////////////////////////////////////////////////////////////////////////
@@ -728,7 +782,7 @@ module tape_follower_roller() {
 }
 
 ////--tape_follower_roller
-tape_follower_roller() ;
+// tape_follower_roller() ;
 
 // To see inside...
 //difference() { tape_follower_roller() ; cube(size=[20,20,160]) ; }
