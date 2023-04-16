@@ -631,11 +631,13 @@ module read_side_support_dovetailed() {
 // Tape follower arm (supporting tape_follower_roller)
 ////////////////////////////////////////////////////////////////////////////////
 
-tape_follower_arm_l = 40 ;      // Arm length between shaft centres
+tape_follower_arm_l = 40 ;          // Arm length between shaft centres
+tape_follower_short_arm_l = 28 ;    // Short arm length between shaft centres
 tape_follower_arm_w = m4+4 ;
 tape_follower_arm_t = sup_t ;
 tape_follower_hub_t = sup_t*1.3 ;
 tape_follower_hub_d = m4_nut_af+4 ;
+tape_follower_pivot_t = sup_t*2.5 ; // Thickness of pivot hub
 
 module tape_follower_arm_param(l, w, t, hd, ht, sd, snaf, snt) {
     // Tape follower arm, holds guide roller loosely in position where its
@@ -653,12 +655,15 @@ module tape_follower_arm_param(l, w, t, hd, ht, sd, snaf, snt) {
     // snaf = shaft nut AF size
     // snt  = shaft nut thickness
     //
+    pt = tape_follower_pivot_t ;        
     elbow_l1 = 0.45*l ;
     elbow_l2 = 0.65*l ;
     difference() {
         union() {
             translate([0,0,t-delta])
                 oval(elbow_l1, w, t) ;
+            translate([0,0,t-2*delta])
+               cylinder(d=w, h=pt, $fn=16) ;
             translate([l-elbow_l2,0,0])
                 oval(elbow_l2, w, t) ;
             translate([l,0,0])
@@ -667,7 +672,7 @@ module tape_follower_arm_param(l, w, t, hd, ht, sd, snaf, snt) {
         // cylinder(d=sd, h=t+2*delta, $fn=16) ;
         // Shaft hole at pivot end of arm
         translate([0,0,t-2*delta]) {
-            cylinder(d=sd, h=t+2*delta, $fn=16) ;
+            cylinder(d=sd, h=pt+2*delta, $fn=16) ;
         }
         // Countersunk hole at far end of arm
         translate([l,0,ht+delta]) {
@@ -690,8 +695,8 @@ module tape_follower_arm() {
 }
 
 ////-tape_follower_arm_2off
-// translate([0,-10,0]) tape_follower_arm() ;
-// translate([0,+10,0]) tape_follower_arm() ;
+translate([0,-10,0]) tape_follower_arm() ;
+translate([0,+10,0]) tape_follower_arm() ;
 
 module tape_follower_short_arm_param(l, w, t, hd, ht, sd, snaf, snt) {
     // Tape follower arm, holds guide roller loosely in position where its
@@ -709,9 +714,11 @@ module tape_follower_short_arm_param(l, w, t, hd, ht, sd, snaf, snt) {
     // snaf = shaft nut AF size
     // snt  = shaft nut thickness
     //
+    pt = tape_follower_pivot_t ;    // Thickness of pivot hub
     difference() {
         union() {
             translate([0,0,0])
+                cylinder(d=w, h=pt, $fn=16) ;
                 oval(l, w, t) ;
             translate([l,0,0])
                 cylinder(d=hd, h=ht, $fn=16) ;
@@ -719,7 +726,7 @@ module tape_follower_short_arm_param(l, w, t, hd, ht, sd, snaf, snt) {
         // cylinder(d=sd, h=t+2*delta, $fn=16) ;
         // Shaft hole at pivot end of arm
         translate([0,0,-delta]) {
-            cylinder(d=sd, h=t+2*delta, $fn=16) ;
+            cylinder(d=sd, h=pt+2*delta, $fn=16) ;
         }
         // Countersunk hole at far end of arm
         translate([l,0,-delta]) {
@@ -736,15 +743,15 @@ module tape_follower_short_arm_param(l, w, t, hd, ht, sd, snaf, snt) {
 
 module tape_follower_short_arm() {
     tape_follower_short_arm_param(
-        tape_follower_arm_l*0.6, tape_follower_arm_w, tape_follower_arm_t, 
-        tape_follower_hub_d, tape_follower_arm_t*2.4, 
+        tape_follower_short_arm_l, tape_follower_arm_w, tape_follower_arm_t, 
+        tape_follower_hub_d, tape_follower_hub_t, 
         m4, m4_nut_af, m4_slimnut_t
         ) ;    
 }
 
 ////-tape_follower_short_arm_2off
-translate([0,-10,0]) tape_follower_short_arm() ;
-translate([0,+10,0]) tape_follower_short_arm() ;
+// translate([0,-10,0]) tape_follower_short_arm() ;
+// translate([0,+10,0]) tape_follower_short_arm() ;
 
 
 ////////////////////////////////////////////////////////////////////////////////
