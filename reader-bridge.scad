@@ -637,7 +637,7 @@ tape_follower_arm_w = m4+4 ;
 tape_follower_arm_t = sup_t ;
 tape_follower_hub_t = sup_t*1.3 ;
 tape_follower_hub_d = m4_nut_af+4 ;
-tape_follower_pivot_t = sup_t*2.5 ; // Thickness of pivot hub
+tape_follower_pivot_t = sup_t*2 ;   // Thickness of pivot hub
 
 module tape_follower_arm_param(l, w, t, hd, ht, sd, snaf, snt) {
     // Tape follower arm, holds guide roller loosely in position where its
@@ -695,8 +695,8 @@ module tape_follower_arm() {
 }
 
 ////-tape_follower_arm_2off
-translate([0,-10,0]) tape_follower_arm() ;
-translate([0,+10,0]) tape_follower_arm() ;
+// translate([0,-10,0]) tape_follower_arm() ;
+// translate([0,+10,0]) tape_follower_arm() ;
 
 module tape_follower_short_arm_param(l, w, t, hd, ht, sd, snaf, snt) {
     // Tape follower arm, holds guide roller loosely in position where its
@@ -750,8 +750,8 @@ module tape_follower_short_arm() {
 }
 
 ////-tape_follower_short_arm_2off
-// translate([0,-10,0]) tape_follower_short_arm() ;
-// translate([0,+10,0]) tape_follower_short_arm() ;
+translate([0,-10,0]) tape_follower_short_arm() ;
+translate([0,+10,0]) tape_follower_short_arm() ;
 
 
 ////////////////////////////////////////////////////////////////////////////////
