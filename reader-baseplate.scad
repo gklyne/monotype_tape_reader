@@ -136,8 +136,8 @@ module mount_plate(lx, ly,  t, hp, hd, nt, af, px=0, py=0) {
     // hd = mounting hole diameter
     // nt = mounting nut thickness
     // af = mounting nut size across faces
-    // px = position of plate corner - sign determines which corner
-    // px = position of plate corner - sign determines which corner
+    // px = position of plate corner - sign determines which corner, zero for centre
+    // py = position of plate corner - sign determines which corner, zero for centre
     //
     tx = ( px < 0 ? (px+lx/2)
          : px > 0 ? (px-lx/2)
@@ -277,11 +277,48 @@ module rod_support_mounting_plate() {
                         px=0, py=-rod_support_shell_w/2) ;
             side_support_foot_x(foot_lx, foot_h, base_t, 0, -rod_support_shell_w/2) ;
         } ;
-        // mount_holes(rod_support_base_w, rod_support_base_t, base_t, 
-        //             rod_support_base_w/2, hold_fix_d, hold_nut_t, hold_nut_af,
-        //             px=0, py=-rod_support_shell_w/2) ;
     }
 }
+
+module rod_support_mounting_plate_extension() {
+    // Extension plate for rod supports, leaving more clearance for 
+    // tape follower arms and rollers
+    //
+    extension_l = rod_support_shell_w ;
+    hole_p      = rod_support_base_w/2 ;
+    difference() {
+        union() {
+            rect_shell(rod_support_base_w, rod_support_shell_w, base_t, border_w, shell_h+base_t) ;
+            mount_plate(rod_support_base_w, rod_support_base_t, base_t, 
+                        hole_p, hold_fix_d, hold_nut_t, hold_nut_af,
+                        px=0, py=-rod_support_shell_w/2) ;
+            translate([0,(extension_l+rod_support_shell_w)*0.5-delta,0]) {
+                difference() {
+                    translate([0,0,base_t/2]) {
+                        cube(size=[rod_support_base_w, extension_l, base_t], center=true) ;
+                    }
+                    //mount_holes(
+                    //    rod_support_base_w, rod_support_base_t, base_t, 
+                    //    rod_support_base_w/2, hold_fix_d,
+                    //    hold_nut_t, hold_nut_af, 
+                    //    px=0, py=-rod_support_shell_w/2
+                    //    ) ;
+                    translate([-hole_p/2, extension_l/2-rod_support_shell_w/2, -delta]) {
+                        cylinder(d=hold_fix_d, h=base_t+2*delta, center=false) ;
+                    }
+                    translate([+hole_p/2, extension_l/2-rod_support_shell_w/2, -delta]) {
+                        cylinder(d=hold_fix_d, h=base_t+2*delta, center=false) ;
+                    }
+                }
+            }
+            side_support_foot_x(foot_lx, foot_h+base_t, base_t, 0, -rod_support_shell_w/2) ;
+        } ;
+    }
+
+}
+////-rod_support_mounting_plate_extension-
+rod_support_mounting_plate_extension() ;
+
 
 module main_reader_baseplate() {
     difference() {
