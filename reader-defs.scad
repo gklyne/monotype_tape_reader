@@ -115,7 +115,7 @@ hold_rail_d = m4 ;      // Diameter of rail holes
 hold_fix_p   = 25 ;     // Distance between fixing holes
 hold_fix_d   = m4 ;     // Diameter of fixing holes
 hold_nut_t   = 3.1 ;    // Thickness of holder fixing nut
-hold_nut_af  = 7 ;      // Size across faces of holder fixing nut
+hold_nut_af  = 6.9 ;    // Size across faces of holder fixing nut recess (tight fit)
 hold_fix_o_x = 12 ;     // X-offset from vertical rod to holder fixing holes
 hold_fix_o_y = 0 ;      // Y-offset from vertical rod to centre between fixing holes
 

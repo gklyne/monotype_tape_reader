@@ -82,7 +82,7 @@ module mount_hole_nut_holder(x, y, tp, hd, tn, af) {
     // af = nut size across faces
     //
     translate([x, y, -delta])
-        cylinder(d=hd, h=tp+tn+2*delta) ;
+        cylinder(d=hd, h=tp+tn+2*delta, $fn=10) ;
     translate([x, y, tp])
         nut_recess(af, tn+delta) ;
 }
@@ -304,10 +304,10 @@ module rod_support_mounting_plate_extension() {
                     //    px=0, py=-rod_support_shell_w/2
                     //    ) ;
                     translate([-hole_p/2, extension_l/2-rod_support_shell_w/2, -delta]) {
-                        cylinder(d=hold_fix_d, h=base_t+2*delta, center=false) ;
+                        cylinder(d=hold_fix_d, h=base_t+2*delta, center=false, $fn=10) ;
                     }
                     translate([+hole_p/2, extension_l/2-rod_support_shell_w/2, -delta]) {
-                        cylinder(d=hold_fix_d, h=base_t+2*delta, center=false) ;
+                        cylinder(d=hold_fix_d, h=base_t+2*delta, center=false, $fn=10) ;
                     }
                 }
             }
@@ -317,7 +317,11 @@ module rod_support_mounting_plate_extension() {
 
 }
 ////-rod_support_mounting_plate_extension-
-rod_support_mounting_plate_extension() ;
+for (xo=[-30,30]) {
+    translate([xo,0,0])
+        rod_support_mounting_plate_extension() ;
+}
+
 
 
 module main_reader_baseplate() {

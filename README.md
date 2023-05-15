@@ -193,6 +193,10 @@ Additional hardware (rPI, stepper controller, stepper motor) and software to con
 
 Added speed profile (to control software) as analysis had holes merging towards end of tape
 
+Add tape follower rollers to help keep tape on guide sprockets, and absorb some slack
+
+Add rod mounting plate extensions to leave for space for tape follower roller arms
+
 
 ### Decoding software
 
