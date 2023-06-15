@@ -18,7 +18,7 @@ Dawn and I held a meeting in early June 2023, during which Dawn surfaced the rol
 <img src="./Decoder-colours.png" 
      alt="Mock-up of video analysis pipeline colours based on references in Clarice's diary" 
      title="Mock-up of video analysis pipeline colours" 
-     style="max-width: 50%;"
+     width="50%"
      >
 
 Subsequently, I refactored the video analysis code to separate out the colour definitions, and used colours from the mock-up when generating the video.  These colours can be seen in the most recent video from processing the diary introduction page (`20230416-IMG_3082-intro-output_3.m4v`).
@@ -64,7 +64,7 @@ But now we have the data, it's natural to ask what it means, particularly in ter
 <img src="./Bulmer-monotype-DJI_20210721_120103_836.jpg" 
      alt="Monotype Bulmer font: keyboard arrangement and caster matrix layout" 
      title="Monotype Bulmer font details" 
-     style="max-width: 60%;"
+     width="60%"
      >
 
 The decoding software has been enhanced to show the Monotype column labels, both in the video and in the output data.  Further, the output data created includes indication of the corresponding character (where possible) that would be printed when using the Monotype Bulmer 469 matrix layout, this being used for typesetting and printing Clarice's diary.  Here is a short excerpt from the data decoded from the diary introduction:
