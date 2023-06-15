@@ -92,7 +92,7 @@ module oval(x, d, h) {
 }
 
 module oval_xy(x1, y1, x2, y2, d, h) {
-    // Oval shape on the X-Y axis, with ends at the indicated positions
+    // Oval shape on the X-Y plane, with ends at the indicated positions
     //
     // x1 = X position of first centre of curvature
     // y1 = Y position of first centre of curvature
@@ -1082,12 +1082,12 @@ module helix_extrude(h, r, a, ns) {
 }
 
 module tapered_cube(l, w1, w2, h) {
-    // Tapered cube (or symmeyric prism with trapezoidal cross-section), centred
+    // Tapered cube (or symmetric prism with trapezoidal cross-section), centred
     // at the origin on the X-Y plane, and extending along the X-axis.
     //
     // l   = length of prism
     // w1  = width of prism at base
-    // w2  = width of prisim at top
+    // w2  = width of prism at top
     // h   = height of prism
     //
     rotate([0,-90,0])

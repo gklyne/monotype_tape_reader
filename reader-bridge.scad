@@ -758,7 +758,7 @@ module tape_follower_short_arm() {
         ) ;    
 }
 
-////-tape_follower_short_arm_2off
+////-tape_follower_short_arm_4off
 translate([0,-30,0]) tape_follower_short_arm() ;
 translate([0,-10,0]) tape_follower_short_arm() ;
 translate([0,+10,0]) tape_follower_short_arm() ;
