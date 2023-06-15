@@ -11,7 +11,15 @@ Observers have commented that the visualization may itself be an(other) artistic
 
 Dawn and I held a meeting in early June 2023, during which Dawn surfaced the role of colour in Clarice's diary.  While there are relatively few explicit references to colour, there are plenty of contextual references with associations to colours that would have been in use:  notably, the Red Cross, colours used in armed forces and medical uniforms.  Where possible, Dawn located archive photos of these items of the web, and took digital colour samples from them.  These were used to create a [mock-up palette of colours](./Decoder-colours.png) corresponding to the different functional elements of the analysis pipeline visualization.
 
+<!--
 ![Mock-up of video analysis pipeline colours based on references in Clarice's diary](./Decoder-colours.png "Mock-up of video analysis pipeline colours")
+-->
+
+<img src="./Decoder-colours.png" 
+     alt="Mock-up of video analysis pipeline colours based on references in Clarice's diary" 
+     title="Mock-up of video analysis pipeline colours" 
+     style="max-width: 50%;"
+     >
 
 Subsequently, I refactored the video analysis code to separate out the colour definitions, and used colours from the mock-up when generating the video.  These colours can be seen in the most recent video from processing the diary introduction page (`20230416-IMG_3082-intro-output_3.m4v`).
 
@@ -49,8 +57,15 @@ Previous iterations of the analysis software have focused on the raw data on the
 
 But now we have the data, it's natural to ask what it means, particularly in terms of its relationship to the printed diary.  The Monotype system assigns a code to each hole position across the width of the tape (which I refer to as columns).  Most of these codes relate to a row- or column position in the type matrix used (see below), and two others are related to spacing and end-of-line information.
 
+<!--
 ![Monotype Bulmer font: keyboard arrangement and caster matrix layout](./Bulmer-monotype-DJI_20210721_120103_836.jpg)
+-->
 
+<img src="./Bulmer-monotype-DJI_20210721_120103_836.jpg" 
+     alt="Monotype Bulmer font: keyboard arrangement and caster matrix layout" 
+     title="Monotype Bulmer font details" 
+     style="max-width: 60%;"
+     >
 
 The decoding software has been enhanced to show the Monotype column labels, both in the video and in the output data.  Further, the output data created includes indication of the corresponding character (where possible) that would be printed when using the Monotype Bulmer 469 matrix layout, this being used for typesetting and printing Clarice's diary.  Here is a short excerpt from the data decoded from the diary introduction:
 
