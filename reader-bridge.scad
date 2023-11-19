@@ -120,20 +120,23 @@ module tape_reader_bridge_with_guides() {
         // guide_tr = Guide thickness at rim
         // guide_tr = Guide thickness at core
         // guide_tb = Guide thickness of bevel
-        guide_offset = spool_w_all/2 ;   // Offset to guide (at base of bevel)
+        guide_offset = spool_w_all/2 ;  // Offset to guide (at base of bevel)
+        shade_t = 1 ;                   // Thickness of shade shell
         translate([0,0,guide_offset+guide_tb])
             cylinder(d=guide_w, h=guide_tr+delta, center=false) ;        // Rim
         translate([0,0,guide_offset])
             cylinder(d1=read_w, d2=guide_w, h=guide_tb, center=false) ;  // Bevel
         difference() {
-            translate([0,0,guide_offset-guide_ist])
-                shade_shell(guide_w/2-1, guide_w/2, guide_ost+guide_ist) ;     // Shade
-            translate([0,0,guide_offset+guide_tb-guide_ist])
-                rotate([0,-10,0])
-                    cube(size=[guide_w*2, guide_w, guide_ist*2], center=true) ;
-            translate([0,0,guide_offset+guide_tb+guide_ost])
-                rotate([0,45,0])
-                    cube(size=[guide_w*2, guide_w, guide_ost*2], center=true) ;
+            translate([0,0,guide_offset-guide_ist])             // Shade shell
+                shade_shell(guide_w/2-shade_t, guide_w/2, guide_ost+guide_ist) ;
+            translate([0,0,guide_offset+guide_tb])    // Inner shade
+                rotate([0,-20,0])
+                    translate([0,0,-guide_ist])
+                        cube(size=[guide_w*2, guide_w, guide_ist*2], center=true) ;
+            translate([0,0,guide_offset+guide_tb])    // Outer shade
+                rotate([0,40,0])
+                    translate([0,0,guide_ost])
+                        cube(size=[guide_w*2, guide_w, guide_ost*2], center=true) ;
         }
 
     }
@@ -158,7 +161,7 @@ module tape_reader_bridge_dovetailed() {
     module bridge_dovetail_cutout() {
         translate([-read_total_l/2+read_side_t,0,0])
             dovetail_tongue_cutout(
-                read_side_t, read_w-3, read_w-2, read_side_apex_w, read_side_apex_h
+                read_side_t+delta, read_w-3, read_w-2, read_w+delta, read_side_apex_h
         ) ;
     }
     difference() {
@@ -759,10 +762,10 @@ module tape_follower_short_arm() {
 }
 
 ////-tape_follower_short_arm_4off
-translate([0,-30,0]) tape_follower_short_arm() ;
-translate([0,-10,0]) tape_follower_short_arm() ;
-translate([0,+10,0]) tape_follower_short_arm() ;
-translate([0,+30,0]) tape_follower_short_arm() ;
+// translate([0,-30,0]) tape_follower_short_arm() ;
+// translate([0,-10,0]) tape_follower_short_arm() ;
+// translate([0,+10,0]) tape_follower_short_arm() ;
+// translate([0,+30,0]) tape_follower_short_arm() ;
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -841,7 +844,7 @@ module layout_reader_bridge_dovetailed() {
 ////-tape_reader_bridge
 // tape_reader_bridge() ;
 ////-tape_reader_bridge_dovetailed
-// tape_reader_bridge_dovetailed() ;
+tape_reader_bridge_dovetailed() ;
 ////-read_side_support_dovetailed
 // translate([0,spacing,0])
 //     read_side_support_dovetailed() ;

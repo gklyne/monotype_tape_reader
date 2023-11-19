@@ -1,5 +1,20 @@
 # stepper-control.py
 
+# To set up environment:
+#
+# SSH to RPi:
+#  ssh graham@192.168.1.23
+#
+
+# venv notes (NOT NEEDED)
+#
+#  $(which python3) -m venv venv
+#  . venv/bin/activate
+#  pip install --upgrade pip
+#  pip install wheel
+#  pip install RPi.GPIO
+#
+
 import sys
 import tty, termios
 import time

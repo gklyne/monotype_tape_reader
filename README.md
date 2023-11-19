@@ -131,6 +131,23 @@ Mechanical parts for reading paper tape created by Monotype keyboard.
 [x] Progressive slowing of stepper motor as reading proceeds.
 
 
+## 2023-09-24:
+
+Following [meeting with Dawn](Journal/20230924-more-reader-changes-needed.md).
+
+[ ] Wider slot for brighter EL wire (+0.2mm)
+
+[ ] Wider light baffles on EL bridge
+
+[ ] Drive belt tensioning arrangement
+
+[ ] More flexibility of camera positioning
+
+[ ] Make camera clamp screws easier to access
+
+[ ] Mount for Pi Zero and EL switch wire (and power supplies?)
+
+
 ## To consider
 
 [ ] Marker threshold setting is rather sensitive

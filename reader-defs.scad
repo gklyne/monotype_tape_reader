@@ -83,17 +83,16 @@ read_side_apex_h = 6 ;
 read_side_base_w = 40 ;
 read_side_peg_d  = m4 ;
 
-read_groove_w = 2.25 ;  // EL wire goove width
-read_groove_d = 2.5 ;   // EL wire groove depth
+read_groove_w = 2.4 ;   // EL wire groove width
+read_groove_d = 2.75 ;  // EL wire groove depth
 
 guide_w  = 28 ;         // Width of guide flange on bridge
 guide_tc = 2 ;          // Guide thickness at core
 guide_tr = 1 ;          // Guide thickness at rim
 guide_tb = guide_tc-guide_tr ;  // Guide thickness of bevel
-guide_eld = 4.5 ;       // EL wire threading hole diameter
+guide_eld = 5.5 ;       // EL wire threading hole diameter
 guide_ist = 3 ;         // EL wire shade inner overhang thickness
-guide_ost = (read_total_l-spool_w_all)/2 ; // EL wire shade outer overhang thickness
-
+guide_ost = (read_total_l-spool_w_all)/2+1 ; // EL wire shade outer overhang thickness
 
 
 // Parts for holding phone camera
@@ -101,7 +100,7 @@ guide_ost = (read_total_l-spool_w_all)/2 ; // EL wire shade outer overhang thick
 hold_side_l = 80 ;      // Length is side of holder
 hold_side_h = 12 ;      // Height of side above base
 hold_side_t1 = 8 ;      // Thickness of side at base
-hold_side_t2 = 10 ;      // Thickness of side at top
+hold_side_t2 = 10 ;     // Thickness of side at top
 
 hold_base_l1 = 60 ;     // Length of base near side
 hold_base_l2 = 50 ;     // Length of base towards centre
