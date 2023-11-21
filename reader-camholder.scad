@@ -34,7 +34,7 @@ module phone_holder_rod_fixing_arm() {
 
 module phone_holder_rod_fixing_plate() {
     // NOTE: all holes are centred rod diameter from edges
-    hole_x = hold_fix_rod_d + hold_fix_o_x ;
+    hole_x = hold_fix_o_x ;
     hole_y = hold_fix_plate_w/2 + hold_fix_o_y ;
     module plate_outline() {
         linear_extrude(height=hold_fix_t)
@@ -67,8 +67,11 @@ module phone_holder_rod_fixing_plate() {
 
 module phone_holder_rod_anti_rotation_plate() {
     // NOTE: all holes are centred rod diameter from edges
+    slot_x1 = hold_slot_o_x1 ;
+    slot_x2 = hold_slot_o_x2 ;
     slot_y  = hold_fix_plate_w/2 + hold_fix_o_y ;
-    neck_x  = (hold_slot_o_x1 + hold_slot_o_x2)/2 ;
+    //neck_x  = (hold_slot_o_x1 + hold_slot_o_x2)/2 ;
+    neck_x  = hold_slot_o_x1 + hold_fix_plate_w/4 ;
     module plate_outline() {
         linear_extrude(height=hold_fix_t)
             {
@@ -91,7 +94,44 @@ module phone_holder_rod_anti_rotation_plate() {
         }
     difference() {
         plate_outline() ;
-        shaft_slot(hold_slot_o_x1, hold_slot_o_x2, slot_y, hold_fix_rod_d, hold_fix_t) ;
+        shaft_slot(slot_x1, slot_x2, slot_y, hold_fix_rod_d, hold_fix_t) ;
+        translate([hold_fix_rod_d, hold_fix_rod_d+hold_fix_p, 0])
+            shaft_hole(hold_fix_d, hold_fix_rod_d ) ;
+        translate([hold_fix_rod_d, hold_fix_rod_d, 0])
+            shaft_hole(hold_fix_d, hold_fix_t ) ;
+    }
+}
+
+module phone_holder_rod_adjusting_plate() {
+    // NOTE: all holes are centred rod diameter from edges
+    slot_x1 = hold_short_slot_o_x1 ;
+    slot_x2 = hold_short_slot_o_x2 ;
+    slot_y  = hold_fix_plate_w/2 + hold_fix_o_y ;
+    //neck_x  = (hold_short_slot_o_x1 + hold_short_slot_o_x2)/2 ;
+    neck_x  = hold_slot_o_x1 + hold_fix_plate_w/4 ;
+    module plate_outline() {
+        linear_extrude(height=hold_fix_t)
+            {
+            polygon(
+                points=[
+                    [0,0], 
+                    [hold_fix_rod_d*2, 0], 
+                    [neck_x,slot_y-hold_fix_rod_d],
+                    [slot_x2, slot_y-hold_fix_rod_d], 
+                    [slot_x2, slot_y+hold_fix_rod_d],
+                    [neck_x,slot_y+hold_fix_rod_d],
+                    [hold_fix_rod_d*2, hold_fix_plate_w], 
+                    [0, hold_fix_plate_w]
+                    ],
+                paths=[[0,1,2,3,4,5,6,7,0]]
+                ) ;
+            }
+        translate([hold_short_slot_o_x2, slot_y, 0])
+            cylinder(h=hold_fix_t, r=hold_fix_rod_d, center=false) ;
+        }
+    difference() {
+        plate_outline() ;
+        shaft_slot(hold_short_slot_o_x1, hold_short_slot_o_x2, slot_y, hold_fix_rod_d, hold_fix_t) ;
         translate([hold_fix_rod_d, hold_fix_rod_d+hold_fix_p, 0])
             shaft_hole(hold_fix_d, hold_fix_rod_d ) ;
         translate([hold_fix_rod_d, hold_fix_rod_d, 0])
@@ -242,15 +282,14 @@ module phone_camera_holder() {
 }
 
 
-
 // Layout all parts
 
 module layout_reader_camera_holder() {
     // Phone/camera holder
-    translate([-spacing*0, -spacing*0.3, 0])
-        phone_camera_holder() ;
-    translate([spacing*0, spacing*0.3, 0])
-        phone_camera_holder() ;
+    // translate([-spacing*0, -spacing*0.3, 0])
+    //     phone_camera_holder() ;
+    // translate([spacing*0, spacing*0.3, 0])
+    //     phone_camera_holder() ;
     // translate([-spacing*1.5, spacing*1, 0])
     //     phone_holder_rod_support() ;    
     // translate([spacing*0, spacing*1, 0])
@@ -259,10 +298,12 @@ module layout_reader_camera_holder() {
     //     phone_holder_rod_fixing_arm() ;
     // translate([-spacing*1.5,spacing*2,0])
     //     phone_holder_rod_fixing_plate() ;
-    // translate([-spacing*0.5,spacing*2,0])
+    // translate([-spacing*0,spacing*0,0])
     //     phone_holder_rod_anti_rotation_plate() ;
-    // translate([+spacing*0,spacing*2,0])
+    // translate([+spacing*0,spacing*0.6,0])
     //    phone_holder_rod_fixing_plate() ;
+    translate([-spacing*0,spacing*0,0])
+        phone_holder_rod_adjusting_plate() ;
 }
 
 ////-layout_reader_camera_holder

@@ -115,7 +115,7 @@ hold_fix_p   = 25 ;     // Distance between fixing holes
 hold_fix_d   = m4 ;     // Diameter of fixing holes
 hold_nut_t   = 3.1 ;    // Thickness of holder fixing nut
 hold_nut_af  = 6.9 ;    // Size across faces of holder fixing nut recess (tight fit)
-hold_fix_o_x = 12 ;     // X-offset from vertical rod to holder fixing holes
+hold_fix_o_x = 20 ;     // X-offset from vertical rod to holder fixing holes
 hold_fix_o_y = 0 ;      // Y-offset from vertical rod to centre between fixing holes
 
 hold_fix_t = 6 ;        // Thickness of phone holder-to-rod fixing
@@ -124,13 +124,17 @@ hold_fix_l = 80 ;       // Length of phone holder-to-rod fixing
 hold_fix_rod_d = 8 ;    // Diameter of phone holder support rod
 hold_fix_hub_d = 16 ;   // Diameter of phone holder support hub
 
-hold_fix_plate_l = hold_fix_o_x + hold_fix_rod_d*2 ;
+hold_fix_plate_l = hold_fix_o_x + hold_fix_rod_d ;
 hold_fix_plate_w = hold_fix_p + hold_fix_rod_d*2 ;
 
-hold_slot_o_x1 = 25 ;   // Start of anti-rotation slot
-hold_slot_o_x2 = 100 ;  // end of anti-rotation slot
+hold_slot_o_x1 = 15 ;   // Start of anti-rotation slot
+hold_slot_o_x2 = 80 ;  // end of anti-rotation slot
+// hold_slot_plate_l = hold_slot_o_x2 + hold_fix_rod_d ;
 
-hold_slot_plate_l = hold_slot_o_x2 + hold_fix_rod_d ;
+// Dimensions for short slot plate to allow sideways adjustment of camera
+hold_short_slot_o_x1 = 15 ;   // Start of anti-rotation slot
+hold_short_slot_o_x2 = 30 ;  // end of anti-rotation slot
+// hold_short_slot_plate_l = hold_slot_o_x2 + hold_fix_rod_d ;
 
 // Bracket to hold phone camera support rod
 
