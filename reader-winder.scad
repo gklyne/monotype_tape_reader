@@ -293,13 +293,24 @@ module spool_side_support_slotted(r=145) {
             translate([shaft_d*0.25,-shaft_d,winder_side_t+delta])
                 cube(size=[shaft_d*2, shaft_d*2, winder_side_spacer_h]) ;
         } 
+        // Cutout to reduce plastic used
+        cutout_r    = winder_apex_d*0.4 ;
+        translate([0,0,-delta])
+            rounded_triangle_plate(
+                winder_apex_d, 0, 
+                winder_side_h-winder_base_t,  (winder_side_w/2-cutout_r*2),
+                winder_side_h-winder_base_t, -(winder_side_w/2-cutout_r*2),
+                cutout_r, winder_side_t+2*delta
+            ) ;
+
+
     }    
 }
 
 
 ////-spool_side_support_slotted(r=145)
-translate([spacing*0.5,-spacing*0.5,0]) spool_side_support_slotted(r=125) ;
-translate([spacing*0.5,+spacing*0.5,0]) spool_side_support_slotted(r=-125) ;
+// translate([spacing*0.5,-spacing*0.5,0]) spool_side_support_slotted(r=125) ;
+// translate([spacing*0.5,+spacing*0.5,0]) spool_side_support_slotted(r=-125) ;
 // translate([spacing*1.5,-spacing*0.5,0]) spool_side_support_slotted(r=140) ;
 // translate([spacing*1.5,+spacing*0.5,0]) spool_side_support_slotted(r=-140) ;
 
@@ -360,16 +371,184 @@ stepper_body_height = 31.5 ;    // Includes wire entry cover
 stepper_wire_height = 2 ;       // Height of wire entry cover (beyond body radius)
 stepper_wire_width  = 19 ;      // Width of wire entry cover
 stepper_hole_dia    = m4 ;
-stepper_nut_af      = 7 ;
+stepper_nut_af      = m4_nut_af ;
 stepper_hole_pitch  = 35 ;
 
 bracket_sd          = m8 ;                                  // Bracket shaft hole diameter
 bracket_fw          = 4 ;                                   // Width of frame around motor
-bracket_ft          = winder_side_t+12 ;                     // Thickness of frame and brace
+bracket_ft          = winder_side_t+12 ;                    // Thickness of frame and brace
 bracket_hubd        = bracket_sd*1.5 ;                      // Shaft-suppoort= hub diameter
 bracket_od          = stepper_body_dia + bracket_fw*2 ;     // Holder outside diamater
 bracket_mount_x     = (bracket_od*0.6) ;                    // X-offset of shaft from motor centre
 bracket_mount_y     = bracket_od/2-bracket_hubd/2 ;         // Y-offset of shaft from motor centre
+
+
+module stepper_mount(bd, fw, ft, hd, hp, af) {
+    // Stepper motor mount on X-Y plane, motor axis centred on origin
+    //
+    // bd   = diameter of motor body
+    // fw   = frame width (around motor body)
+    // ft   = frame thickness (~ length of motor body)
+    // hd   = mounting hole diameter
+    // hp   = mounting hole pitch
+    // af   = across face size of nut recess
+    //
+
+    hubd = bracket_hubd ;     // Bracket end hub diameter
+    hubr = hubd/2 ;
+    od   = bd + fw*2 ;        // Outside diameter of bracket frame
+    r    = 1 ;
+    x1   = -stepper_wire_width/2+r ;
+    x2   = -x1 ;
+    y1   = -stepper_body_dia/2-stepper_wire_height+r ;
+    y2   = 0 ;
+    difference() {
+        union() {
+            // body ring
+            cylinder(d=od, h=ft) ;
+            // wire cover extension
+            rounded_rectangle_plate(x1,y1, x2,y2, r+fw, ft) ;
+            // mounting lugs
+            oval_xy(
+                -stepper_hole_pitch/2,0,
+                stepper_hole_pitch/2,0, 
+                d=stepper_hole_dia*3, h=ft
+            ) ;
+        }
+        // Cutaway:
+        hc = ft + 2*delta ;
+        translate([0,0,-delta]) {
+            //   body
+            cylinder(d=bd, h=hc) ;
+            //   L mounting hole
+            translate([-stepper_hole_pitch/2,0,0]) {
+                cylinder(d=hd, h=hc) ;
+                translate([0,0,5])  // Leaves 5mm for mounting
+                    rotate([0,0,90])
+                        nut_recess(af, ft) ;
+            }
+            //   R mounting hole
+            translate([+stepper_hole_pitch/2,0,0]) {
+                cylinder(d=hd, h=hc) ;
+                translate([0,0,5])  // Leaves 5mm for mounting
+                    rotate([0,0,90])
+                        nut_recess(af, ft) ;
+            }
+            //   wire entry cover (rounded rect r=1)
+            rounded_rectangle_plate(x1,y1, x2,y2, r, hc) ;
+            //   wire entry
+            weh = 2.8 ;     // Wire entry height
+            wew = 8 ;       // Wire entry width
+            translate([-wew/2,y1-r-fw-delta,-delta])
+                bevel_y(-delta,fw+delta, wew,weh, weh-0.25, 38)
+                    bevel_y(-delta,fw+delta, 0,weh, weh-0.25, -38)
+                        cube(size=[wew,fw+2*delta,weh]) ;
+        }
+    }
+}
+////-stepper_mount(bd, fw, ft, hd, hp, af)
+//  stepper_mount(stepper_body_dia, bracket_fw, bracket_ft, 
+//      stepper_hole_dia, stepper_hole_pitch, stepper_nut_af) ;
+
+module cond_mirror_y(side) {
+    // Conditionally mirrors child objects if the supplied "side" value is negative
+    if (side < 0)
+        { mirror([0,1,0]) children() ; }
+    else
+        { children() ; }
+}
+
+module stepper_swivel_bracket(bd, fw, ft, hd, hp, af, side) {
+    // Stepper motor mount on X-Y plane, with swivel hinge centred on origin
+    // 
+    // bd   = diameter of motor body
+    // fw   = frame width (around motor body)
+    // ft   = frame thickness (~ length of motor body)
+    // hd   = mounting hole diameter
+    // hp   = mounting hole pitch
+    // af   = across face size of nut recess
+    //
+    hto = 4 ;           // Size of outer hinge tongues
+    hti = ft-hto*2 ;    // Size of inner hinge tongue
+    translate([-stepper_body_dia/2-stepper_wire_height-fw,stepper_body_dia/2*side,0])
+        rotate([0,0,90])
+            stepper_mount(bd, fw, ft, hd, hp, af) ;
+    // Hinge mount for adjustment
+    translate([0,0,0])
+        rotate([0,0,180-side*45])
+            hinge_inner(fw, ft, hti, fw, m3_hinge_dia, m3) ;
+    // Locking plate for adjustment
+    ring_r1 = stepper_wire_width + fw*1.4 ;
+    ring_r2 = stepper_wire_width + fw*4 ;
+    slot_r2 = ring_r2 - fw*0.75 ;    // (ring_r1+ring_r2+m3)/2 ;
+    slot_r1 = slot_r2 - m3 ;    // (ring_r1+ring_r2-m3)/2 ;
+    cond_mirror_y(side) {
+        ring_segment_slotted(45, 98, ring_r1, ring_r2, fw, 47, 84, slot_r1, slot_r2) ;
+    }
+}
+
+// Combined spool and swivel mount for motor bracket
+//
+// dir  +1/-1 to select orientation
+//
+module spool_and_swivel_mount_side_support(side) {
+    ft  = bracket_ft ;
+    pt  = winder_side_t ;
+    hto = 4 ;           // Size of outer hinge tongues
+    hti = ft-hto*2 ;    // Size of inner hinge tongue
+    difference() {
+        union() {
+            slot_rotation = 140*side ;
+            // Spool support, translating winder crank axis to origin
+            translate([0,0,0])
+                rotate([0,0,-90])
+                    spool_side_support_slotted(r=slot_rotation) ;
+            // Hinge arm from spool support base
+            translate([-winder_side_w/2*side,-winder_side_h,0])
+                rotate([0,0,70*side-90])
+                    translate([-motor_support_l,pt/2*side,0])
+                        hinge_outer(motor_support_l, ft, hti, pt, m3_hinge_dia, m3, m3_nut_af, m3_nut_t) ;
+        }
+        // Hole for adjustment locking arm
+        translate([-winder_apex_d*0.4*side,-winder_apex_d*0.45, pt+delta])
+            countersinkZ(m3*2, pt+2*delta, m3, pt+2*delta) ;
+    }
+}
+
+module swivel_arm_locking_brace(l, t, sd, nut_af, nut_t) {
+    // Upper arm for adjustment lock
+    //
+    // l        = distance between brace centres
+    // t        = thickness of brace
+    // sd       = locking screw diameter
+    // nut_af   = locking nut size across faces
+    // nut_t    = locking nut thickness (for recess)
+    //
+    // brace_xy(x1, y1, x2, y2, w, d1, d2, h)
+    difference() {
+        brace_xy(0,0, l, 0, sd*2, sd*3, sd, t) ;
+        translate([0,0,t-nut_t])
+            nut_recess(nut_af, nut_t+delta) ;
+        translate([l,0,t-nut_t])
+            nut_recess(nut_af, nut_t+delta) ;
+    }
+    
+}
+
+
+////-stepper_mount_tension_adjustable
+////-stepper_swivel_bracket(bd, fw, ft, hd, hp, af, side)
+translate([-10,0,0])
+    stepper_swivel_bracket(
+        stepper_body_dia, bracket_fw, bracket_ft, 
+        stepper_hole_dia, stepper_hole_pitch, stepper_nut_af, -1) ;
+////-spool_and_swivel_mount_side_support(side)
+translate([60,winder_side_h-20,0])
+    spool_and_swivel_mount_side_support(-1) ;
+////-swivel_arm_locking_brace(l, ft, sd, nut_af, nut_t)
+translate([0,winder_side_h-20,0])
+    swivel_arm_locking_brace(motor_support_l, bracket_fw, m3, m3_nut_af, m3_nut_t) ;
+
 
 module stepper_bracket(bd, fw, ft, hd, hp, af, side=+1) {
     // Stepper motor bracket on X-Y plane, motor axis centred on origin
@@ -462,9 +641,9 @@ module stepper_bracket_sleeve() {
 }
 
 ////-stepper_bracket(bd, fw, ft, hd, hp, af, side=+1)
-// stepper_bracket(stepper_body_dia, bracket_fw, bracket_ft, 
+//stepper_bracket(stepper_body_dia, bracket_fw, bracket_ft, 
 //    stepper_hole_dia, stepper_hole_pitch, stepper_nut_af) ;
-// stepper_bracket_sleeve() ;
+//  stepper_bracket_sleeve() ;
 
 // Combined spool and stepper motor bracket
 //
@@ -474,12 +653,12 @@ module spool_and_motor_side_support(dir) {
     winder_x    = winder_apex_d/2 ;
     winder_y    = -outer_d*0.6 ;
     // Stepper bracket, translating attachment point to origin
-    translate([-bracket_mount_x*dir,-bracket_mount_y,0])
-        stepper_bracket(
-            stepper_body_dia, bracket_fw, bracket_ft, 
-            stepper_hole_dia, stepper_hole_pitch, stepper_nut_af, 
-            dir
-            ) ;
+    ////translate([-bracket_mount_x*dir,-bracket_mount_y,0])
+    ////    stepper_bracket(
+    ////        stepper_body_dia, bracket_fw, bracket_ft, 
+    ////        stepper_hole_dia, stepper_hole_pitch, stepper_nut_af, 
+    ////        dir
+    ////        ) ;
     // Spool support, translating winder crank axis to origin
     rotate([0,0,-90])
         translate([-winder_x, -winder_y*dir, 0]) 
@@ -494,7 +673,8 @@ module spool_and_motor_side_support(dir) {
 }
 
 ////-spool_and_motor_side_support(dir)
-// spool_and_motor_side_support(-1) ;
+//  translate([-40,0,0])
+//      spool_and_motor_side_support(-1) ;
 
 
 ////////////////////////////////////////////////////////////////////////////////

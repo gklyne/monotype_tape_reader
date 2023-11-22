@@ -1,9 +1,14 @@
 // Default dimensions
 
 m_clearance = 0.25 ;    // Clearance for close-clearance holes
+m3 = 3+m_clearance ;    // Close clearance hole for M3 screw
 m4 = 4+m_clearance ;    // Close clearance hole for M4 screw
 m5 = 5+m_clearance ;    // Close clearance hole for M5 screw
 m8 = 8+m_clearance ;    // Close clearance hole for M8 screw
+
+m3_nut_af    = 5.5 ;    // M3 nut a/f size
+m3_nut_t     = 2.1 ;    // M3 nut thickness (for recess)
+m3_hinge_dia = 7.5 ;    // M3 hinge knuckle diametert
 
 m4_nut_af    = 7 ;      // M4 nut a/f size
 m4_nut_t     = 3.1 ;    // M4 nut thickness (for recess)
@@ -26,13 +31,17 @@ mt_paper_tickness = 0.08 ;  // Thickness of paper tape
 
 // Winder
 
-shaft_d      = m4 ;         // Shaft diameter
-shaft_nut_af = m4_nut_af ;  // Nut diameter across faces
-shaft_nut_t  = m4_nut_t ;   // Nut thickness
+small_shaft_d      = m4 ;           // Shaft diameter
+small_shaft_nut_af = m4_nut_af ;    // Nut diameter across faces
+small_shaft_nut_t  = m4_nut_t ;     // Nut thickness
 
-// shaft_d      = m8 ;        // Shaft diameter
-// shaft_nut_af = 13 ;        // Nut diameter across faces
-// shaft_nut_t  = 4 ;         // Nut thickness
+// shaft_d      = small_shaft_d ;
+// shaft_nut_af = small_shaft_nut_af ;
+// shaft_nut_t  = small_shaft_nut_t ;
+
+shaft_d      = m8 ;                 // Shaft diameter
+shaft_nut_af = m8_nut_af ;          // Nut diameter across faces
+shaft_nut_t  = m8_slimnut_t ;       // Nut thickness
 
 core_d = 40 ;           // Core diameter
 bevel_d = 72 ;          // Bevel inner diameter
@@ -68,6 +77,10 @@ winder_side_w = 40 ;    // Width base of winder side support
 winder_side_t = sup_t ; // Thickness of winder side support
 winder_apex_d = 19 ;    // Diameter of apex of winder side support
 winder_base_t = 16 ;    // Thickness at base of winder
+
+motor_support_l = 40 ;  // Length of motor mount support arm
+motor_support_a = 20 ;  // Angle of motor mount support arm
+
 
 // Reader bridge
 
@@ -118,23 +131,26 @@ hold_nut_af  = 6.9 ;    // Size across faces of holder fixing nut recess (tight 
 hold_fix_o_x = 20 ;     // X-offset from vertical rod to holder fixing holes
 hold_fix_o_y = 0 ;      // Y-offset from vertical rod to centre between fixing holes
 
-hold_fix_t = 6 ;        // Thickness of phone holder-to-rod fixing
-hold_fix_w = 8 ;        // Width of phone holder-to-rod fixing
-hold_fix_l = 80 ;       // Length of phone holder-to-rod fixing
+// Dimensions for phone holder-to-rod attachment plate
+
+hold_fix_t = 6 ;        // Thickness of plate (Z)
+hold_fix_w = 8 ;        // Width of plate to shoulder (X)
+hold_fix_l = 80 ;       // Length of phone holder-to-rod fixing (Y)
 hold_fix_rod_d = 8 ;    // Diameter of phone holder support rod
 hold_fix_hub_d = 16 ;   // Diameter of phone holder support hub
 
 hold_fix_plate_l = hold_fix_o_x + hold_fix_rod_d ;
 hold_fix_plate_w = hold_fix_p + hold_fix_rod_d*2 ;
 
-hold_slot_o_x1 = 15 ;   // Start of anti-rotation slot
-hold_slot_o_x2 = 80 ;  // end of anti-rotation slot
-// hold_slot_plate_l = hold_slot_o_x2 + hold_fix_rod_d ;
+// Dimensions for long slot plate to prevent rotation of camera
+
+hold_slot_o_x1 = 60 ;   // Start of anti-rotation slot
+hold_slot_o_x2 = 100 ;  // end of anti-rotation slot
 
 // Dimensions for short slot plate to allow sideways adjustment of camera
-hold_short_slot_o_x1 = 15 ;   // Start of anti-rotation slot
-hold_short_slot_o_x2 = 30 ;  // end of anti-rotation slot
-// hold_short_slot_plate_l = hold_slot_o_x2 + hold_fix_rod_d ;
+
+hold_short_slot_o_x1 = 15 ;   // Start of adjustment slot
+hold_short_slot_o_x2 = 40 ;   // end of adjustment slot
 
 // Bracket to hold phone camera support rod
 

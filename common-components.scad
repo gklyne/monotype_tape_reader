@@ -481,6 +481,81 @@ module countersinkY(od, oh, sd, sh)
 
 
 ////////////////////////////////////////////////////////////////////////////////
+// Hinge parts
+////////////////////////////////////////////////////////////////////////////////
+
+module hinge_outer(l, ow, tw, pt, kd, sd, nut_af, nut_t) {
+    // Outer hinge part, with hinge line on +Z axis.
+    //
+    // Has shaft attachment at each end, countersunk on bottom face and with
+    // nut recess on upper.
+    //
+    // Print with supports between shaft attachments.
+    //
+    // l        = length of plate (end to hinge pivot line)
+    // ow       = overall width of attachment plate
+    // tw       = width for hinge tongue between shaft attachment knuckles
+    // pt       = thickness of hinge plate
+    // kd       = diameter of hinge knuckle
+    // sd       = diameter of pivot shaft
+    // nut_af   = nut recess dimension across faces
+    // nut_t    = nut recess depth (thickness of nut)
+    //
+    difference() {
+        union() {
+            translate([0,-pt/2,0]) cube(size=[l, pt, ow]) ;     // Main plate
+            cylinder(d=kd, h=ow, $fn=12) ;                      // Knuckle
+        }
+    //translate([0,0,-delta])
+    //    cylinder(d=sd, h=ow+2*delta, $fn=12) ;                  // Shaft hole
+    translate([0,0,-delta])
+        rotate([180,0,0])
+            countersinkZ(kd, ow+2*delta, sd, ow+2*delta) ;      // Shaft hole with countersink
+    translate([0,0,(ow-tw)/2])
+        cylinder(d=kd+delta, h=tw, $fn=12) ;                    // Space for hinge tongue
+    translate([0,0,(ow-nut_t)])
+        nut_recess(nut_af, nut_t+delta) ;
+    }
+}
+
+
+module hinge_inner(l, ow, tw, pt, kd, sd) {
+    // Inner hinge part, with hinge line on +Z axis.
+    //
+    // Has shaft attachment at each end, countersunk on bottom face and with
+    // nut recess on upper.
+    //
+    // Print with supports under hinge tongue.
+    //
+    // l        = length of plate (end to hinge pivot line)
+    // ow       = overall width of attachment plate
+    // tw       = width for hinge tongue between shaft attachment knuckles
+    // pt       = thickness of hinge plate
+    // kd       = diameter of hinge knuckle
+    // sd       = diameter of pivot shaft
+    //
+    difference() {
+        union() {
+            difference() {
+                translate([0,-pt/2,0]) cube(size=[l, pt, ow]) ; // Main plate
+                translate([0,0,-delta])
+                    cylinder(d=kd, h=ow+2*delta, $fn=12) ;    // Knuckle cut-out
+                }
+        translate([0,0,(ow-tw)/2])
+            cylinder(d=kd, h=tw, $fn=12) ;                      // Hinge tongue
+        }
+    translate([0,0,-delta])
+        cylinder(d=sd, h=ow+2*delta, $fn=12) ;                  // Shaft hole
+    }
+}
+
+
+////-hinge_outer(l, ow, tw, pt, kd, sd, nut_af, nut_t)
+// translate([10,0,0]) hinge_outer(15, 20, 10, 4, 10, m4, m4_nut_af, m4_nut_t) ;
+////-hinge_inner(l, ow, tw, pt, kd, sd)
+// translate([-10,0,0]) rotate([0,0,180]) hinge_inner(15, 20, 10, 4, 10, m4) ;
+
+////////////////////////////////////////////////////////////////////////////////
 // Basic wheel shapes
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -592,6 +667,50 @@ module ring_segment(a1, a2, r1, r2, t) {
 ////-ring_segment(a1, a2, r1, r2, t) instance
 // ring_segment(60, 120, 30, 40, 5) ;
 
+module ring_segment_rounded(a1, a2, r1, r2, t) {
+    // Like ring_segment, but with semicircular rounded ends added to the ring
+    //
+    // NOTE: only works for angles up to 180 degrees.
+    //
+    // a1 = first radial edge angle
+    // a2 = second radial edge angle (a2>a1)
+    // r1 = inner radius
+    // r2 = outer radius
+    // t  = thickness
+    ring_segment(a1, a2, r1, r2, t) ;
+    for ( a = [a1, a2] ) {
+        cx = (r1+r2)*cos(a)*0.5 ;
+        cy = (r1+r2)*sin(a)*0.5 ;
+        translate([cx,cy,0])
+            cylinder(d=r2-r1, h=t, $fn=24) ;
+    }
+}
+////-ring_segment_rounded(a1, a2, r1, r2, t) instance
+//ring_segment_rounded(60, 120, 30, 40, 5) ;
+
+module ring_segment_slotted(a1, a2, r1, r2, t, sa1, sa2, sr1, sr2) {
+    // Slotted ring segment.
+    // Like ring_segment_rounded, with with circular slot around same centre
+    //
+    // a1   = first radial edge angle (to centre of rounded end)
+    // a2   = second radial edge angle (a2>a1)
+    // r1   = inner radius
+    // r2   = outer radius
+    // t    = thickness
+    // sa1  = first radial angle for slot (to centre of rounded end of slot)
+    // sa2  = second radial angle for slot
+    // sr1  = inner radius of slot
+    // sr2  = outer radius of slot
+    //
+    difference() {
+        ring_segment_rounded(a1, a2, r1, r2, t) ;
+        translate([0,0,-delta]) 
+            ring_segment_rounded(sa1, sa2, sr1, sr2, t+2*delta) ;
+    }
+}
+
+////-ring_segment_rounded(a1, a2, r1, r2, t) instance
+// ring_segment_slotted(60, 120, 30, 40, 5, 65, 115, 33, 37) ;
 
 module segment_rounded(a, sr, t, fr) {
     // Circle segment (see `segment`) but with corners rounded with 
