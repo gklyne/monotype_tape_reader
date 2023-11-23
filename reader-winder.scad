@@ -478,12 +478,14 @@ module stepper_swivel_bracket(bd, fw, ft, hd, hp, af, side) {
         rotate([0,0,180-side*45])
             hinge_inner(fw, ft, hti, fw, m3_hinge_dia, m3) ;
     // Locking plate for adjustment
-    ring_r1 = stepper_wire_width + fw*1.4 ;
-    ring_r2 = stepper_wire_width + fw*4 ;
-    slot_r2 = ring_r2 - fw*0.75 ;    // (ring_r1+ring_r2+m3)/2 ;
-    slot_r1 = slot_r2 - m3 ;    // (ring_r1+ring_r2-m3)/2 ;
+    ring_r1 = stepper_wire_width + fw*1.6 ;
+    ring_r2 = stepper_wire_width + fw*3.6 ;
+    slot_r1 = (ring_r1+ring_r2-m3)/2 ;
+    slot_r2 = (ring_r1+ring_r2+m3)/2 ;
+    // slot_r2 = ring_r2 - fw*0.75 ;    // (ring_r1+ring_r2+m3)/2 ;
+    // slot_r1 = slot_r2 - m3 ;    // (ring_r1+ring_r2-m3)/2 ;
     cond_mirror_y(side) {
-        ring_segment_slotted(45, 98, ring_r1, ring_r2, fw, 47, 84, slot_r1, slot_r2) ;
+        ring_segment_slotted(45, 100, ring_r1, ring_r2, fw, 47, 84, slot_r1, slot_r2) ;
     }
 }
 
@@ -511,7 +513,7 @@ module spool_and_swivel_mount_side_support(side) {
         }
         // Hole for adjustment locking arm
         translate([-winder_apex_d*0.4*side,-winder_apex_d*0.45, pt+delta])
-            countersinkZ(m3*2, pt+2*delta, m3, pt+2*delta) ;
+            countersinkZ(m3_csink, pt+2*delta, m3, pt+2*delta) ;
     }
 }
 
