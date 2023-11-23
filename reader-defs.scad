@@ -80,7 +80,7 @@ winder_side_t = sup_t ; // Thickness of winder side support
 winder_apex_d = 19 ;    // Diameter of apex of winder side support
 winder_base_t = 16 ;    // Thickness at base of winder
 
-motor_support_l = 40 ;  // Length of motor mount support arm
+motor_support_l = 30 ;  // Length of motor mount support arm
 motor_support_a = 20 ;  // Angle of motor mount support arm
 
 

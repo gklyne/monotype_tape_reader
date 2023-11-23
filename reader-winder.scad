@@ -489,7 +489,7 @@ module stepper_swivel_bracket(bd, fw, ft, hd, hp, af, side) {
     }
 }
 
-// Combined spool and swivel mount for motor bracket
+// Combined spool support and swivel mount for motor bracket
 //
 // dir  +1/-1 to select orientation
 //
@@ -498,6 +498,8 @@ module spool_and_swivel_mount_side_support(side) {
     pt  = winder_side_t ;
     hto = 4 ;           // Size of outer hinge tongues
     hti = ft-hto*2 ;    // Size of inner hinge tongue
+    alx = winder_apex_d*0.55 ;  // X-offset of adjustment link end
+    aly = winder_apex_d*0.45 ;  // Y-offset of adjustment link end
     difference() {
         union() {
             slot_rotation = 140*side ;
@@ -510,10 +512,18 @@ module spool_and_swivel_mount_side_support(side) {
                 rotate([0,0,70*side-90])
                     translate([-motor_support_l,pt/2*side,0])
                         hinge_outer(motor_support_l, ft, hti, pt, m3_hinge_dia, m3, m3_nut_af, m3_nut_t) ;
+            // Bulge for adjustment locking arm
+            translate([-alx*side, -aly, 0])
+                cylinder(d=m3*3, h=pt, $fn=12) ;
         }
         // Hole for adjustment locking arm
-        translate([-winder_apex_d*0.4*side,-winder_apex_d*0.45, pt+delta])
-            countersinkZ(m3_csink, pt+2*delta, m3, pt+2*delta) ;
+        //translate([-winder_apex_d*0.4*side, -aly, pt+delta])
+        //    countersinkZ(m3_csink, pt+2*delta, m3, pt+2*delta) ;
+        translate([-alx*side, -aly, -delta]) {
+            cylinder(d=m3, h=pt+2*delta, $fn=12) ;
+            translate([0,0,pt-m3_nut_t])
+                nut_recess(m3_nut_af, m3_nut_t+delta) ;
+        }
     }
 }
 
@@ -527,14 +537,34 @@ module swivel_arm_locking_brace(l, t, sd, nut_af, nut_t) {
     // nut_t    = locking nut thickness (for recess)
     //
     // brace_xy(x1, y1, x2, y2, w, d1, d2, h)
+    // countersinkZ(od, oh, sd, sh)
+    //
     difference() {
         brace_xy(0,0, l, 0, sd*2, sd*3, sd, t) ;
-        translate([0,0,t-nut_t])
-            nut_recess(nut_af, nut_t+delta) ;
-        translate([l,0,t-nut_t])
-            nut_recess(nut_af, nut_t+delta) ;
+        translate([0,0,t+delta])
+            countersinkZ(sd*2-m_clearance, t+2*delta, sd, t+delta) ;
+        translate([l,0,t+delta])
+            countersinkZ(sd*2-m_clearance, t+2*delta, sd, t+delta) ;
+        // translate([0,0,t-nut_t])
+        //     nut_recess(nut_af, nut_t+delta) ;
+        // translate([l,0,t-nut_t])
+        //     nut_recess(nut_af, nut_t+delta) ;
     }
     
+}
+
+module swivel_arm_locking_nut_holder(sd, t, nut_af, nut_t) {
+    // oval(x, d, h)
+    difference() {
+        union() {
+            oval(sd,sd*2,t) ;
+            oval(sd,sd-clearance,t*1.5) ;
+        }
+        translate([sd*0.5,0,-delta]) {
+            cylinder(d=sd, h=t*2+delta*2, $fn=12) ;
+            nut_recess(nut_af, nut_t) ;
+        }
+    }
 }
 
 
@@ -550,6 +580,9 @@ translate([60,winder_side_h-20,0])
 ////-swivel_arm_locking_brace(l, ft, sd, nut_af, nut_t)
 translate([0,winder_side_h-20,0])
     swivel_arm_locking_brace(motor_support_l, bracket_fw, m3, m3_nut_af, m3_nut_t) ;
+////-swivel_arm_locking_nut_holder(sd, t, nut_afd, nut_t)
+translate([0,winder_side_h-40,0])
+    swivel_arm_locking_nut_holder(m3, bracket_fw, m3_nut_af, m3_nut_t) ;
 
 
 module stepper_bracket(bd, fw, ft, hd, hp, af, side=+1) {
