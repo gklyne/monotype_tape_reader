@@ -458,6 +458,9 @@ module cond_mirror_y(side) {
         { children() ; }
 }
 
+ring_r1 = stepper_wire_width + bracket_fw*1.6 ;
+ring_r2 = stepper_wire_width + bracket_fw*3.6 ;
+
 module stepper_swivel_bracket(bd, fw, ft, hd, hp, af, side) {
     // Stepper motor mount on X-Y plane, with swivel hinge centred on origin
     // 
@@ -470,22 +473,33 @@ module stepper_swivel_bracket(bd, fw, ft, hd, hp, af, side) {
     //
     hto = 4 ;           // Size of outer hinge tongues
     hti = ft-hto*2 ;    // Size of inner hinge tongue
-    translate([-stepper_body_dia/2-stepper_wire_height-fw,stepper_body_dia/2*side,0])
+    translate([-stepper_body_dia/2-stepper_wire_height-fw-1,(stepper_body_dia/2+1)*side,0])
         rotate([0,0,90])
             stepper_mount(bd, fw, ft, hd, hp, af) ;
     // Hinge mount for adjustment
     translate([0,0,0])
         rotate([0,0,180-side*45])
-            hinge_inner(fw, ft, hti, fw, m3_hinge_dia, m3) ;
+            hinge_inner(fw*2, ft, hti, fw, m3_hinge_dia, m3) ;
     // Locking plate for adjustment
-    ring_r1 = stepper_wire_width + fw*1.6 ;
-    ring_r2 = stepper_wire_width + fw*3.6 ;
     slot_r1 = (ring_r1+ring_r2-m3)/2 ;
     slot_r2 = (ring_r1+ring_r2+m3)/2 ;
-    // slot_r2 = ring_r2 - fw*0.75 ;    // (ring_r1+ring_r2+m3)/2 ;
-    // slot_r1 = slot_r2 - m3 ;    // (ring_r1+ring_r2-m3)/2 ;
     cond_mirror_y(side) {
-        ring_segment_slotted(45, 100, ring_r1, ring_r2, fw, 47, 84, slot_r1, slot_r2) ;
+        ring_segment_slotted(45, 100, ring_r1, ring_r2, fw, 47, 88, slot_r1, slot_r2) ;
+    }
+}
+
+module swivel_arm_locking_nut_holder(sd, t, nut_af, nut_t) {
+    // oval(x, d, h)
+    difference() {
+        union() {
+            oval(0,(ring_r2-ring_r1),t) ;
+            translate([-(sd*0.5),0,0])
+                oval(sd*0.75,sd-clearance,t*1.5) ;
+        }
+        translate([0,0,-delta]) {
+            cylinder(d=sd, h=t*2+delta*2, $fn=12) ;
+            nut_recess(nut_af, nut_t) ;
+        }
     }
 }
 
@@ -517,8 +531,6 @@ module spool_and_swivel_mount_side_support(side) {
                 cylinder(d=m3*3, h=pt, $fn=12) ;
         }
         // Hole for adjustment locking arm
-        //translate([-winder_apex_d*0.4*side, -aly, pt+delta])
-        //    countersinkZ(m3_csink, pt+2*delta, m3, pt+2*delta) ;
         translate([-alx*side, -aly, -delta]) {
             cylinder(d=m3, h=pt+2*delta, $fn=12) ;
             translate([0,0,pt-m3_nut_t])
@@ -553,35 +565,21 @@ module swivel_arm_locking_brace(l, t, sd, nut_af, nut_t) {
     
 }
 
-module swivel_arm_locking_nut_holder(sd, t, nut_af, nut_t) {
-    // oval(x, d, h)
-    difference() {
-        union() {
-            oval(sd,sd*2,t) ;
-            oval(sd,sd-clearance,t*1.5) ;
-        }
-        translate([sd*0.5,0,-delta]) {
-            cylinder(d=sd, h=t*2+delta*2, $fn=12) ;
-            nut_recess(nut_af, nut_t) ;
-        }
-    }
-}
-
 
 ////-stepper_mount_tension_adjustable
 ////-stepper_swivel_bracket(bd, fw, ft, hd, hp, af, side)
-translate([-10,0,0])
+translate([0,20,0])
     stepper_swivel_bracket(
         stepper_body_dia, bracket_fw, bracket_ft, 
         stepper_hole_dia, stepper_hole_pitch, stepper_nut_af, -1) ;
 ////-spool_and_swivel_mount_side_support(side)
-translate([60,winder_side_h-20,0])
+translate([60,winder_side_h,0])
     spool_and_swivel_mount_side_support(-1) ;
 ////-swivel_arm_locking_brace(l, ft, sd, nut_af, nut_t)
-translate([0,winder_side_h-20,0])
-    swivel_arm_locking_brace(motor_support_l, bracket_fw, m3, m3_nut_af, m3_nut_t) ;
+translate([0,winder_side_h,0])
+    swivel_arm_locking_brace(motor_swivel_l, bracket_fw, m3, m3_nut_af, m3_nut_t) ;
 ////-swivel_arm_locking_nut_holder(sd, t, nut_afd, nut_t)
-translate([0,winder_side_h-40,0])
+translate([0,winder_side_h-20,0])
     swivel_arm_locking_nut_holder(m3, bracket_fw, m3_nut_af, m3_nut_t) ;
 
 

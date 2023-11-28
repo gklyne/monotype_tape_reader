@@ -135,17 +135,32 @@ Mechanical parts for reading paper tape created by Monotype keyboard.
 
 Following [meeting with Dawn](Journal/20230924-more-reader-changes-needed.md).
 
-[ ] Wider slot for brighter EL wire (+0.2mm)
+[x] Wider slot for brighter EL wire (+0.2mm)
 
-[ ] Wider light baffles on EL bridge
+[x] Wider light baffles on EL bridge
 
-[ ] Drive belt tensioning arrangement
+[x] Drive belt tensioning arrangement
 
-[ ] More flexibility of camera positioning
+[x] More flexibility of camera positioning
 
 [ ] Make camera clamp screws easier to access
 
 [ ] Mount for Pi Zero and EL switch wire (and power supplies?)
+
+
+## 2023-11-25
+
+[x] Winder side clip not closed
+
+[x] Hinge on motor mount is too close
+
+[x] Extend curved slot towards motor body
+
+[x] Extend tension adjustment link by 2-3mm
+
+[x] Shorten & widen tension adjustment clamp/nut holder
+
+[ ] Shorter roller arm on take-up spool side?
 
 
 ## To consider
@@ -159,7 +174,6 @@ Following [meeting with Dawn](Journal/20230924-more-reader-changes-needed.md).
 ## Notes
 
 ### Notes: 2023-03-05
-
 
 
 ## Write-up notes
