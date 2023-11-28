@@ -572,15 +572,15 @@ translate([0,20,0])
     stepper_swivel_bracket(
         stepper_body_dia, bracket_fw, bracket_ft, 
         stepper_hole_dia, stepper_hole_pitch, stepper_nut_af, -1) ;
+////-swivel_arm_locking_nut_holder(sd, t, nut_afd, nut_t)
+translate([0,winder_side_h-20,0])
+    swivel_arm_locking_nut_holder(m3, bracket_fw, m3_nut_af, m3_nut_t) ;
 ////-spool_and_swivel_mount_side_support(side)
 translate([60,winder_side_h,0])
     spool_and_swivel_mount_side_support(-1) ;
 ////-swivel_arm_locking_brace(l, ft, sd, nut_af, nut_t)
 translate([0,winder_side_h,0])
     swivel_arm_locking_brace(motor_swivel_l, bracket_fw, m3, m3_nut_af, m3_nut_t) ;
-////-swivel_arm_locking_nut_holder(sd, t, nut_afd, nut_t)
-translate([0,winder_side_h-20,0])
-    swivel_arm_locking_nut_holder(m3, bracket_fw, m3_nut_af, m3_nut_t) ;
 
 
 module stepper_bracket(bd, fw, ft, hd, hp, af, side=+1) {
