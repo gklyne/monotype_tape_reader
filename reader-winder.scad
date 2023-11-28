@@ -473,18 +473,18 @@ module stepper_swivel_bracket(bd, fw, ft, hd, hp, af, side) {
     //
     hto = 4 ;           // Size of outer hinge tongues
     hti = ft-hto*2 ;    // Size of inner hinge tongue
-    translate([-stepper_body_dia/2-stepper_wire_height-fw-1,(stepper_body_dia/2+1)*side,0])
+    translate([-stepper_body_dia/2-stepper_wire_height-fw/2,(stepper_body_dia/2+fw/2+1)*side,0])
         rotate([0,0,90])
             stepper_mount(bd, fw, ft, hd, hp, af) ;
     // Hinge mount for adjustment
     translate([0,0,0])
-        rotate([0,0,180-side*45])
-            hinge_inner(fw*2, ft, hti, fw, m3_hinge_dia, m3) ;
+        rotate([0,0,180-side*90])
+            hinge_inner(fw*3, ft, hti, fw, m3_hinge_dia, m3) ;
     // Locking plate for adjustment
     slot_r1 = (ring_r1+ring_r2-m3)/2 ;
     slot_r2 = (ring_r1+ring_r2+m3)/2 ;
     cond_mirror_y(side) {
-        ring_segment_slotted(45, 100, ring_r1, ring_r2, fw, 47, 88, slot_r1, slot_r2) ;
+        ring_segment_slotted(45, 88, ring_r1, ring_r2, fw, 45, 80, slot_r1, slot_r2) ;
     }
 }
 
@@ -523,7 +523,7 @@ module spool_and_swivel_mount_side_support(side) {
                     spool_side_support_slotted(r=slot_rotation) ;
             // Hinge arm from spool support base
             translate([-winder_side_w/2*side,-winder_side_h,0])
-                rotate([0,0,70*side-90])
+                rotate([0,0,62*side-90])
                     translate([-motor_support_l,pt/2*side,0])
                         hinge_outer(motor_support_l, ft, hti, pt, m3_hinge_dia, m3, m3_nut_af, m3_nut_t) ;
             // Bulge for adjustment locking arm
@@ -553,10 +553,10 @@ module swivel_arm_locking_brace(l, t, sd, nut_af, nut_t) {
     //
     difference() {
         brace_xy(0,0, l, 0, sd*2, sd*3, sd, t) ;
-        translate([0,0,t+delta])
-            countersinkZ(sd*2-m_clearance, t+2*delta, sd, t+delta) ;
-        translate([l,0,t+delta])
-            countersinkZ(sd*2-m_clearance, t+2*delta, sd, t+delta) ;
+        translate([0,0,t])
+            countersinkZ(sd*2, t+2*delta, sd, t+delta) ;
+        translate([l,0,t])
+            countersinkZ(sd*2, t+2*delta, sd, t+delta) ;
         // translate([0,0,t-nut_t])
         //     nut_recess(nut_af, nut_t+delta) ;
         // translate([l,0,t-nut_t])

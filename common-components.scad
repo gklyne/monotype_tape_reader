@@ -661,7 +661,8 @@ module ring_segment(a1, a2, r1, r2, t) {
     // t  = thickness
     difference() {
         ring(r1, r2, t) ;
-        segment_cutout(a1, a2, r2, t) ;
+        translate([0,0,-delta])
+            segment_cutout(a1, a2, r2+delta, t+delta*2) ;
     }
 }
 ////-ring_segment(a1, a2, r1, r2, t) instance
