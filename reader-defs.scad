@@ -37,11 +37,16 @@ small_shaft_d      = m4 ;           // Shaft diameter
 small_shaft_nut_af = m4_nut_af ;    // Nut diameter across faces
 small_shaft_nut_t  = m4_nut_t ;     // Nut thickness
 
+// Spool shaft may be used with a sleeve to make up to "shaft_d"
+spool_shaft_d      = m4 ;           // Shaft diameter in spool
+spool_shaft_nut_af = m4_nut_af ;    // Nut diameter across faces
+spool_shaft_nut_t  = m4_nut_t ;     // Nut thickness
+
 // shaft_d      = small_shaft_d ;
 // shaft_nut_af = small_shaft_nut_af ;
 // shaft_nut_t  = small_shaft_nut_t ;
 
-shaft_d      = m8 ;                 // Shaft diameter
+shaft_d      = m8 ;                 // Shaft diameter in carrier
 shaft_nut_af = m8_nut_af ;          // Nut diameter across faces
 shaft_nut_t  = m8_slimnut_t ;       // Nut thickness
 

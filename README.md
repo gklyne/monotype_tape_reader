@@ -164,6 +164,9 @@ Following [meeting with Dawn](Journal/20230924-more-reader-changes-needed.md).
 
 [x] Wider spacer ridge on inside of winder holder side
 
+
+## 2023-12-01
+
 [x] Extend arm on winder holder side; shorten adjustment link.
     - still need to choose adjustment arm length
     - is this a good idea? Single link may be more rigid

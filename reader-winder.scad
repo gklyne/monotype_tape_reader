@@ -152,7 +152,7 @@ module crank_handle_balanced(
 //     ) ;
 
 
-module drive_pulley(shaft_d, drive_pulley_d) {
+module drive_pulley(shaft_d, shaft_nut_af, shaft_nut_t, drive_pulley_d) {
     extra_pulley_t = drive_pulley_t*0.0 ;  // Extra pulley thickness for hub recess, etc.
     intersection() {
         difference() {
@@ -162,25 +162,25 @@ module drive_pulley(shaft_d, drive_pulley_d) {
                     // pulley(drive_pulley_d, drive_pulley_t) ;
                     pulley_round_belt(drive_pulley_d, drive_pulley_t, drive_pulley_t-1) ;
             } ;
-            union() {
-                shaft_hole(d=shaft_d, l=drive_pulley_t*2) ;
+            translate([0,0,-delta])
+                shaft_hole(d=shaft_d, l=drive_pulley_t+2*delta) ;
+            translate([0,0,drive_pulley_t-shaft_nut_t])
                 nut_recess(af=shaft_nut_af, t=shaft_nut_t) ;
-            } ;
         }
     spoked_wheel(
-        hr=shaft_d, sr=drive_pulley_d/2-crank_hub_t*0.6, or=drive_pulley_d, fr=3, 
+        hr=shaft_d+1, sr=drive_pulley_d/2-crank_hub_t*0.6, or=drive_pulley_d, fr=3, 
         wt=crank_hub_t*1.5, 
         ns=6, sw=3
         ) ;
     }
 }
 
-////-drive_pulley(shaft_d, drive_pulley_d)
-// drive_pulley(shaft_d=shaft_d, drive_pulley_d=drive_pulley_d) ;
+////-drive_pulley(shaft_d, shaft_nut_af, shaft_nut_t, drive_pulley_d)
+// drive_pulley(shaft_d=shaft_d,  shaft_nut_af, shaft_nut_t, drive_pulley_d=drive_pulley_d) ;
 // translate([0,spacing,0])
-//     drive_pulley(shaft_d=shaft_d, drive_pulley_d=drive_pulley_d) ;
+//     drive_pulley(shaft_d=shaft_d, shaft_nut_af=shaft_nut_af, shaft_nut_t=shaft_nut_t, drive_pulley_d=drive_pulley_d) ;
 // translate([spacing,spacing,0])
-//     drive_pulley(shaft_d=shaft_d, drive_pulley_d=drive_pulley_d) ;
+//     drive_pulley(shaft_d=shaft_d, shaft_nut_af=shaft_nut_af, shaft_nut_t=shaft_nut_t, drive_pulley_d=drive_pulley_d) ;
 
 
 module rewind_pulley(pd, pt, hd, ht, sd, nut_af, nut_t) {
@@ -571,19 +571,19 @@ module swivel_arm_locking_brace(l, t, sd, nut_af, nut_t) {
 
 ////-stepper_mount_tension_adjustable
 ////-stepper_swivel_bracket(bd, fw, ft, hd, hp, af, side)
-translate([0,20,0])
-    stepper_swivel_bracket(
-        stepper_body_dia, bracket_fw, bracket_ft, 
-        stepper_hole_dia, stepper_hole_pitch, stepper_nut_af, -1) ;
+//translate([0,20,0])
+//    stepper_swivel_bracket(
+//        stepper_body_dia, bracket_fw, bracket_ft, 
+//        stepper_hole_dia, stepper_hole_pitch, stepper_nut_af, -1) ;
 ////-swivel_arm_locking_nut_holder(sd, t, nut_afd, nut_t)
-translate([0,winder_side_h-20,0])
-    swivel_arm_locking_nut_holder(m3, bracket_fw, m3_nut_af, m3_nut_t) ;
+//translate([0,winder_side_h-20,0])
+//    swivel_arm_locking_nut_holder(m3, bracket_fw, m3_nut_af, m3_nut_t) ;
 ////-spool_and_swivel_mount_side_support(arm_l, side)
-translate([60,winder_side_h,0])
-    spool_and_swivel_mount_side_support(5, -1) ;
+//translate([60,winder_side_h,0])
+//    spool_and_swivel_mount_side_support(5, -1) ;
 ////-swivel_arm_locking_brace(l, ft, sd, nut_af, nut_t)
-translate([0,winder_side_h,0])
-    swivel_arm_locking_brace(motor_swivel_l-4, bracket_fw, m3, m3_nut_af, m3_nut_t) ;
+//translate([0,winder_side_h,0])
+//    swivel_arm_locking_brace(motor_swivel_l-4, bracket_fw, m3, m3_nut_af, m3_nut_t) ;
 
 
 module stepper_bracket(bd, fw, ft, hd, hp, af, side=+1) {
@@ -777,9 +777,8 @@ module spool_core(d_core, w_core) {
         ) ;
 }
 
-module spool_end(shaft_d, core_d, bevel_d, outer_d, side_t, side_rim_t, w_spool_end) {
+module spool_end(shaft_d, shaft_nut_af, shaft_nut_t, core_d, bevel_d, outer_d, side_t, side_rim_t, w_spool_end) {
     r_inner = core_d/2-3 ;
-    ////hub_t   = w_spool_end+side_t ;
     hub_t   = w_spool_end+side_t+spool_w_plug ;
     hub_r   = shaft_d+1 ;
     difference() {
@@ -788,7 +787,6 @@ module spool_end(shaft_d, core_d, bevel_d, outer_d, side_t, side_rim_t, w_spool_
                 shaft_d=shaft_d, core_d=core_d, bevel_d=bevel_d, outer_d=outer_d, 
                 side_t=side_t, side_rim_t=side_rim_t
             );
-            ////@@@@cylinder(d=core_d, h=hub_t) ;
             cylinder(r=r_inner-clearance, h=hub_t) ;
             bayonette_plug(
                 lp=w_spool_end+side_t, lm=spool_w_plug, 
@@ -811,13 +809,6 @@ module spool_end(shaft_d, core_d, bevel_d, outer_d, side_t, side_rim_t, w_spool_
         } ;
     }
 } ;
-
-////-spool_end
-//spool_end(
-//    shaft_d=shaft_d, core_d=core_d, bevel_d=bevel_d, outer_d=outer_d, 
-//    side_t=spool_side_t, side_rim_t=spool_side_rim_t, w_spool_end=spool_w_end
-//    ) ;
-
 
 module spool_middle(w_middle) {
     w_half  = w_middle/2+delta ;
@@ -847,25 +838,20 @@ module spool_middle(w_middle) {
     }
 } ;
 
-
 module spool_middle_hub(w_hub) {
     // A push-in hub for the spool middle piece to support the spool when
     // one end has been removed.
     r_inner = core_d/2-3 ;
     difference() {
         cylinder(r=r_inner-clearance, h=w_hub) ;
-        shaft_hole(d=shaft_d, l=w_hub) ;
+        shaft_hole(d=spool_shaft_d, l=w_hub) ;
         translate([0,0,-delta]) {
-            spoked_wheel_cutouts(hr=shaft_d, sr=core_d/2-5, fr=2, 
+            spoked_wheel_cutouts(hr=spool_shaft_d, sr=core_d/2-5, fr=2, 
                 wt=w_hub+2*delta, ns=3, sw=4) ;
         }
     }
 
 }
-
-////-spool_middle_hub(w_hub)
-// spool_middle_hub(w_hub=spool_w_end) ;
-
 
 module spool_shim(w_shim) {
     dl = 6 ;
@@ -887,14 +873,41 @@ module spool_shim(w_shim) {
     }
 }
 
-////-spool_shim(w_shim)
-//spool_shim(0.2) ;
+module spool_all_parts() {
+    for (x=[0,-1]) {
+        ////-spool_end
+        translate([0,x*(outer_d+5),0])
+        spool_end(
+            shaft_d=spool_shaft_d, shaft_nut_af=spool_shaft_nut_af, shaft_nut_t=spool_shaft_nut_t,
+            core_d=core_d, bevel_d=bevel_d, outer_d=outer_d, 
+            side_t=spool_side_t, side_rim_t=spool_side_rim_t, w_spool_end=spool_w_end
+            ) ;
+
+        ////-spool_shim(w_shim)
+        translate([outer_d,x*(outer_d+5),0])
+        spool_shim(0.2) ;
+    }
+    ////-spool_middle(w_middle)
+    translate([0,outer_d,0])
+        spool_middle(spool_w_mid) ;
+    ////-spool_middle_hub(w_hub)
+    //translate([outer_d,outer_d,0])
+    //    spool_middle_hub(w_hub=spool_w_end) ;
+    ////-drive_pulley(shaft_d, shaft_nut_af, shaft_nut_t, drive_pulley_d)
+    // Drive pulley with matching shaft dimension
+    translate([outer_d,outer_d,0])
+        drive_pulley(
+            shaft_d=spool_shaft_d, shaft_nut_af=spool_shaft_nut_af, shaft_nut_t=spool_shaft_nut_t, 
+            drive_pulley_d=drive_pulley_d) ;
+}
+
+////-spool_all_parts()
+spool_all_parts() ;
 
 
 ////////////////////////////////////////////////////////////////////////////////
 // Tape spool shaft adapters
 ////////////////////////////////////////////////////////////////////////////////
-
 
 module m8_m4_nut_insert(sl) {
     // Insert for M8 nut recess to work with shaft and nut
@@ -1230,11 +1243,12 @@ module spool_clip_open(core_d, outer_d, flange_d, len, end) {
 // Tape spool full set of parts
 ////////////////////////////////////////////////////////////////////////////////
 
-module spool_parts() {
+module spool_parts_old() {
     for (x=[0,1])
         translate([x*(outer_d*1.2),0,0])
             spool_end(
-                shaft_d=shaft_d, core_d=core_d, bevel_d=bevel_d, outer_d=outer_d, 
+                shaft_d=shaft_d, shaft_nut_af=spool_shaft_nut_af, shaft_nut_t=spool_shaft_nut_t,
+                core_d=core_d, bevel_d=bevel_d, outer_d=outer_d, 
                 side_t=spool_side_t, side_rim_t=spool_side_rim_t, w_spool_end=spool_w_end
                 );
     // translate([0,outer_d,0])
