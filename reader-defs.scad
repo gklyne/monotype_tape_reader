@@ -45,6 +45,7 @@ shaft_d      = m8 ;                 // Shaft diameter
 shaft_nut_af = m8_nut_af ;          // Nut diameter across faces
 shaft_nut_t  = m8_slimnut_t ;       // Nut thickness
 
+// Spool dimensions
 core_d = 40 ;           // Core diameter
 bevel_d = 72 ;          // Bevel inner diameter
 outer_d = 80 ;          // Spool outer diameter

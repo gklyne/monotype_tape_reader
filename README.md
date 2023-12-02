@@ -160,7 +160,25 @@ Following [meeting with Dawn](Journal/20230924-more-reader-changes-needed.md).
 
 [x] Shorten & widen tension adjustment clamp/nut holder
 
+[x] Reduce size of screw bulge on motor holder (radius by 1mm?)
+
+[x] Wider spacer ridge on inside of winder holder side
+
+[x] Extend arm on winder holder side; shorten adjustment link.
+    - still need to choose adjustment arm length
+    - is this a good idea? Single link may be more rigid
+
+[x] Adjuster link countersink one end only.  Other end uses cap head.
+
+[x] Lower baffle (shade) on reader bridge
+
+[ ] Winder spool axis: use bearing or sleeving to avoid creep along the shaft thread
+    - use spool design from free end, and add sleeves over M4 screw.
+    - New clip holes need to be diameter of sleeve.
+    - Use sleeve bearings on both spools to reduce drag.
+
 [ ] Shorter roller arm on take-up spool side?
+
 
 
 ## To consider

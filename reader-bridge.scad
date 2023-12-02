@@ -121,13 +121,14 @@ module tape_reader_bridge_with_guides() {
         // guide_tr = Guide thickness at core
         // guide_tb = Guide thickness of bevel
         guide_offset = spool_w_all/2 ;  // Offset to guide (at base of bevel)
-        shade_t = 1 ;                   // Thickness of shade shell
+        shade_t = 0.8 ;                   // Thickness of shade shell
+        shade_o = 0.8 ;                // Shell centre offset (downwards)
         translate([0,0,guide_offset+guide_tb])
             cylinder(d=guide_w, h=guide_tr+delta, center=false) ;        // Rim
         translate([0,0,guide_offset])
             cylinder(d1=read_w, d2=guide_w, h=guide_tb, center=false) ;  // Bevel
         difference() {
-            translate([0,0,guide_offset-guide_ist])             // Shade shell
+            translate([shade_o,0,guide_offset-guide_ist])             // Shade shell
                 shade_shell(guide_w/2-shade_t, guide_w/2, guide_ost+guide_ist) ;
             translate([0,0,guide_offset+guide_tb])    // Inner shade
                 rotate([0,-20,0])
@@ -844,7 +845,7 @@ module layout_reader_bridge_dovetailed() {
 ////-tape_reader_bridge
 // tape_reader_bridge() ;
 ////-tape_reader_bridge_dovetailed
-// tape_reader_bridge_dovetailed() ;
+tape_reader_bridge_dovetailed() ;
 ////-read_side_support_dovetailed
 // translate([0,spacing,0])
 //     read_side_support_dovetailed() ;
