@@ -904,7 +904,7 @@ module spool_all_parts() {
 // All spool parts except middle (see below)
 // 
 ////-spool_all_parts()
-spool_all_parts() ;
+//spool_all_parts() ;
 //
 
 // Print spool middle separately with brim in slicer settings
@@ -1023,47 +1023,6 @@ for (px=[-12,12] ) {
 // Tape spool clip
 ////////////////////////////////////////////////////////////////////////////////
 
-module spool_clip_closed_old(core_d, outer_d, flange_d, len, end) {
-    // The spool clip is also intended to slide off the winder core
-    //
-    // core_d  = inner diameter of clip
-    // outer_d = outer diameter of clip
-    // len     = overall length of clip (width of spool)
-    // end     = width of spool ends with no cutout for anti-rotation ribs
-    //
-    difference() {
-        union () {
-            difference() {
-                union() {
-                    cylinder(d=outer_d, h=len) ;
-                    // Flange to protect tape, and for better print adhesion...
-                    cylinder(d1=flange_d, d2=flange_d-4, h=0.65) ;
-                }
-                translate([0,0,-delta])
-                    cylinder(d=core_d, h=len+2*delta) ;   // Core
-            }
-            // Anti-rotation ribs
-            for (ar=[60,180,300])
-                rotate([0,0,ar])
-                    translate([core_d/2,0,end])
-                        cylinder(d=2.2, h=len-2*end, $fn=10) ;
-        }
-        translate([0,0,len/2])
-            rotate([0,90,0])
-                translate([-len*0.37,0,-outer_d*0.5-delta])
-                    lozenge(len*0.74, core_d*0.5, core_d*0.7, outer_d+2*delta) ;
-        translate([0,0,len/2])
-            rotate([90,0,0])        // Prisms align Y
-                rotate([0,0,90]) {  // Points align Y
-                    translate([+len*0.02,0,-outer_d*0.5-delta])
-                        lozenge(len*0.38, core_d*0.25, core_d*0.4, outer_d+2*delta) ;
-                    translate([-len*0.40,0,-outer_d*0.5-delta])
-                        lozenge(len*0.38, core_d*0.25, core_d*0.4, outer_d+2*delta) ;
-                }
-    }
-}
-
-
 module tape_clip_cutout_shape(l, w, w1, w2, h) {
     // Cutout in spool clip to retain tape
     // Shape standing in X-Y plane with lower end at origin, 
@@ -1154,7 +1113,7 @@ module tape_clip_cutout_shape(l, w, w1, w2, h) {
                 [0,l-w1], 
                 [w-w1,l-(w-w1)], 
                 [w-w1,    l2+support_h],
-                [w-w1*0.5,l2+support_h+w1*0.5],
+                [w-w1*0.5,l2+support_h+w1*0],
                 [w,       l2+support_h],
                 [w,l-(w-w1)]
                 ],
@@ -1165,7 +1124,7 @@ module tape_clip_cutout_shape(l, w, w1, w2, h) {
 }
 
 ////-tape_clip_cutout_shape(l, w, w1, w2, h)
-// tape_clip_cutout_shape(100, 20, 3, 5, 30) ;
+//tape_clip_cutout_shape(100, 20, 3, 5, 30) ;
 
 module tape_clip_cutout_pair(core_d, len, end) {
     // Pair of tape clip cutouts to be positioned each side of a spool rib,
@@ -1183,7 +1142,7 @@ module tape_clip_cutout_pair(core_d, len, end) {
     rotate([0,0,90]) {
         // Rotate to Y-Z plane
         rotate([90,0,0]) {
-            // Define cutout shape and reflection, poisitioned on X-Y plane
+            // Define cutout shape and reflection, positioned on X-Y plane
             translate([w3,3*end,0])
                 tape_clip_cutout_shape(len-6*end, wo, w1, w2, core_d*0.6) ;
             translate([-w3,3*end,0])
@@ -1245,7 +1204,7 @@ module spool_clip_open(core_d, outer_d, flange_d, len, end) {
 
 ////-spool_clip_closed(core_d, outer_d, flange_d, len, end)
 ////-spool_clip_open(core_d, outer_d, flange_d, len, end)
-//spool_clip_closed(core_d+0.8, core_d+3.8, bevel_d-2, spool_w_all-clearance, spool_w_end) ;
+spool_clip_closed(core_d+0.8, core_d+3.8, bevel_d-2, spool_w_all-clearance, spool_w_end) ;
 
 ////////////////////////////////////////////////////////////////////////////////
 // Tape spool full set of parts
