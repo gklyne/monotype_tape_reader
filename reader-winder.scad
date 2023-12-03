@@ -168,7 +168,7 @@ module drive_pulley(shaft_d, shaft_nut_af, shaft_nut_t, drive_pulley_d) {
                 nut_recess(af=shaft_nut_af, t=shaft_nut_t) ;
         }
     spoked_wheel(
-        hr=shaft_d+1, sr=drive_pulley_d/2-crank_hub_t*0.6, or=drive_pulley_d, fr=3, 
+        hr=shaft_d+1, sr=drive_pulley_d/2-crank_hub_t*0.3, or=drive_pulley_d, fr=3, 
         wt=crank_hub_t*1.5, 
         ns=6, sw=3
         ) ;
@@ -826,14 +826,22 @@ module spool_middle(w_middle) {
                         ri=r_inner, rm=r_inner, ro=core_d/2, 
                         hl=2, dl=6, nl=3) ;
             }
+            // Pads for improved base adhesion:
+            // break these off final printed assembly
+            for (ra=[30, 150, 270])
+                rotate([0,0,ra]) {
+                    translate([core_d/2+1.5,0,-delta])
+                        cylinder(d=8, h=0.2, $fn=10) ;
+                }
         } ;
         union() {
             // Anti-rotation grooves
             // for (ra=[105, 225, 345])
             for (ra=[30, 150, 270])
-                rotate([0,0,ra])
+                rotate([0,0,ra]) {
                     translate([core_d/2,0,-delta])
                         cylinder(d=2.6, h=w_middle+2*delta, $fn=10) ;
+                }
         } ;
     }
 } ;
@@ -874,40 +882,38 @@ module spool_shim(w_shim) {
 }
 
 module spool_all_parts() {
-    for (x=[0,-1]) {
+    for (x=[-1,1]) {
         ////-spool_end
-        translate([0,x*(outer_d+5),0])
+        translate([x*(outer_d),0,0])
         spool_end(
             shaft_d=spool_shaft_d, shaft_nut_af=spool_shaft_nut_af, shaft_nut_t=spool_shaft_nut_t,
             core_d=core_d, bevel_d=bevel_d, outer_d=outer_d, 
             side_t=spool_side_t, side_rim_t=spool_side_rim_t, w_spool_end=spool_w_end
             ) ;
-
         ////-spool_shim(w_shim)
-        translate([outer_d,x*(outer_d+5),0])
+        translate([x*(outer_d),outer_d,0])
         spool_shim(0.2) ;
     }
     ////-spool_middle(w_middle)
-    //translate([0,outer_d,0])
-    //    spool_middle(spool_w_mid) ;
+    translate([0,0,0])
+        spool_middle(spool_w_mid) ;
     ////-spool_middle_hub(w_hub)
-    //translate([outer_d,outer_d,0])
+    //translate([0,outer_d,0])
     //    spool_middle_hub(w_hub=spool_w_end) ;
     ////-drive_pulley(shaft_d, shaft_nut_af, shaft_nut_t, drive_pulley_d)
     // Drive pulley with matching shaft dimension
-    translate([outer_d,outer_d,0])
+    translate([0,outer_d,0])
         drive_pulley(
             shaft_d=spool_shaft_d, shaft_nut_af=spool_shaft_nut_af, shaft_nut_t=spool_shaft_nut_t, 
             drive_pulley_d=drive_pulley_d) ;
 }
 
-// All spool parts except middle (see below)
+// All spool parts
 // 
 ////-spool_all_parts()
-//spool_all_parts() ;
-//
+spool_all_parts() ;
 
-// Print spool middle separately with brim in slicer settings
+// Print spool middle separately with brim in slicer settings to prevent break away from base
 ////-spool_middle(w_middle)
 //spool_middle(spool_w_mid) ;
 
@@ -1204,7 +1210,7 @@ module spool_clip_open(core_d, outer_d, flange_d, len, end) {
 
 ////-spool_clip_closed(core_d, outer_d, flange_d, len, end)
 ////-spool_clip_open(core_d, outer_d, flange_d, len, end)
-spool_clip_closed(core_d+0.8, core_d+3.8, bevel_d-2, spool_w_all-clearance, spool_w_end) ;
+//spool_clip_closed(core_d+0.8, core_d+3.8, bevel_d-2, spool_w_all-clearance, spool_w_end) ;
 
 ////////////////////////////////////////////////////////////////////////////////
 // Tape spool full set of parts
