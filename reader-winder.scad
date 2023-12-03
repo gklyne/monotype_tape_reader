@@ -888,8 +888,8 @@ module spool_all_parts() {
         spool_shim(0.2) ;
     }
     ////-spool_middle(w_middle)
-    translate([0,outer_d,0])
-        spool_middle(spool_w_mid) ;
+    //translate([0,outer_d,0])
+    //    spool_middle(spool_w_mid) ;
     ////-spool_middle_hub(w_hub)
     //translate([outer_d,outer_d,0])
     //    spool_middle_hub(w_hub=spool_w_end) ;
@@ -901,8 +901,16 @@ module spool_all_parts() {
             drive_pulley_d=drive_pulley_d) ;
 }
 
+// All spool parts except middle (see below)
+// 
 ////-spool_all_parts()
 spool_all_parts() ;
+//
+
+// Print spool middle separately with brim in slicer settings
+////-spool_middle(w_middle)
+//spool_middle(spool_w_mid) ;
+
 
 
 ////////////////////////////////////////////////////////////////////////////////
