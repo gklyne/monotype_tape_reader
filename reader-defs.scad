@@ -9,7 +9,7 @@ m8 = 8+m_clearance ;    // Close clearance hole for M8 screw/sleeve
 
 m3_nut_af    = 5.5 ;    // M3 nut a/f size
 m3_nut_t     = 2.2 ;    // M3 nut thickness (for recess)
-m3_hinge_dia = 7.5 ;    // M3 hinge knuckle diameter
+m3_hinge_dia = 8.0 ;    // M3 hinge knuckle diameter
 m3_csink     = m3*2 ;   // M3 countersink diameter
 
 m4_nut_af    = 7 ;      // M4 nut a/f size

@@ -572,24 +572,24 @@ module swivel_arm_locking_brace(l, t, sd, nut_af, nut_t) {
 }
 
 
-// //-stepper_mount_tension_adjustable
-//
-// //-stepper_swivel_bracket(bd, fw, ft, hd, hp, af, side)
-// translate([0,20,0])
-//     stepper_swivel_bracket(
-//         stepper_body_dia, bracket_fw, bracket_ft, 
-//         stepper_hole_dia, stepper_hole_pitch, stepper_nut_af, -1) ;
-// //-swivel_arm_locking_nut_holder(sd, t, nut_afd, nut_t)
-// translate([0,winder_side_h-20,0])
-//     swivel_arm_locking_nut_holder(m3, bracket_fw, m3_nut_af, m3_nut_t) ;
-// //-swivel_arm_locking_brace(l, ft, sd, nut_af, nut_t)
-// translate([0,winder_side_h,0])
-//     swivel_arm_locking_brace(motor_swivel_l-4, bracket_fw, m3, m3_nut_af, m3_nut_t) ;
+//-stepper_mount_tension_adjustable
+
+//-stepper_swivel_bracket(bd, fw, ft, hd, hp, af, side)
+translate([0,20,0])
+    stepper_swivel_bracket(
+        stepper_body_dia, bracket_fw, bracket_ft, 
+        stepper_hole_dia, stepper_hole_pitch, stepper_nut_af, -1) ;
+//-swivel_arm_locking_nut_holder(sd, t, nut_afd, nut_t)
+translate([0,winder_side_h-20,0])
+    swivel_arm_locking_nut_holder(m3, bracket_fw, m3_nut_af, m3_nut_t) ;
+//-swivel_arm_locking_brace(l, ft, sd, nut_af, nut_t)
+translate([0,winder_side_h,0])
+    swivel_arm_locking_brace(motor_swivel_l-4, bracket_fw, m3, m3_nut_af, m3_nut_t) ;
 
 // // Motor mount side 
 // //-spool_and_swivel_mount_side_support(arm_l, side, s_d=shaft_d)
-// translate([60,winder_side_h,0])
-//  spool_and_swivel_mount_side_support(5, -1, s_d=m6) ;
+translate([60,winder_side_h,0])
+    spool_and_swivel_mount_side_support(5, -1, s_d=m6) ;
 // // Non motor mount side 
 // //-module spool_side_support_slotted(r=145, s_d=shaft_d) {
 // translate([150,winder_side_h,0]) 
@@ -932,11 +932,11 @@ module spool_all_parts() {
 //spool_middle(spool_w_mid) ;
 
 // Print spool end separately
-spool_end(
-    shaft_d=spool_shaft_d, shaft_nut_af=spool_shaft_nut_af, shaft_nut_t=spool_shaft_nut_t,
-    core_d=core_d, bevel_d=bevel_d, outer_d=outer_d, 
-    side_t=spool_side_t, side_rim_t=spool_side_rim_t, w_spool_end=spool_w_end
-    ) ;
+// spool_end(
+//     shaft_d=spool_shaft_d, shaft_nut_af=spool_shaft_nut_af, shaft_nut_t=spool_shaft_nut_t,
+//     core_d=core_d, bevel_d=bevel_d, outer_d=outer_d, 
+//     side_t=spool_side_t, side_rim_t=spool_side_rim_t, w_spool_end=spool_w_end
+//     ) ;
 
 
 

@@ -512,7 +512,7 @@ module hinge_outer(l, ow, tw, pt, kd, sd, nut_af, nut_t) {
         rotate([180,0,0])
             countersinkZ((sd-m_clearance)*2, ow+2*delta, sd, ow+2*delta) ;  // Shaft hole with countersink
     translate([0,0,(ow-tw)/2])
-        cylinder(d=kd+clearance, h=tw, $fn=12) ;                // Space for hinge tongue
+        cylinder(d=kd+clearance*4, h=tw, $fn=12) ;                // Space for hinge tongue
     translate([0,0,(ow-nut_t)])
         nut_recess(nut_af, nut_t+delta) ;
     }
@@ -542,10 +542,10 @@ module hinge_inner(l, ow, tw, pt, kd, sd) {
                     cylinder(d=kd+clearance, h=ow+2*delta, $fn=12) ; // Knuckle cut-out
                 }
         translate([0,0,(ow-tw+clearance)/2])
-            cylinder(d=kd, h=tw-clearance, $fn=12) ;                      // Hinge tongue
+            cylinder(d=kd, h=tw-clearance*4, $fn=12) ;      // Hinge tongue
         }
     translate([0,0,-delta])
-        cylinder(d=sd, h=ow+2*delta, $fn=12) ;                  // Shaft hole
+        cylinder(d=sd, h=ow+2*delta, $fn=12) ;              // Shaft hole
     }
 }
 
