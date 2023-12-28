@@ -267,8 +267,10 @@ module spool_side_support_slotted(r=145, s_d=shaft_d) {
         s_ox  = 0.65 ;                      // Slot offset diameter multiplier
         f_xm = s_d*s_ox/2 ;                 // Mid-point of flex cutout
         f_d  = 1.7 ;                        // width of flex cutout
-        f_l  = 7.0 ;                        // Length flex cutout (excl radius ends)
-        f_oy = 0.5*(s_d+f_d) + 0.65 ;       // Y-offset of flex cutout
+        f_l  = 8.0 ;                        // Length flex cutout (excl radius ends)
+                                            // NOTE: reduce to 7.0 for M8 shaft
+        f_bw = 0.8 ;                        // Width of flexible clip bar bar
+        f_oy = 0.5*(s_d+f_d) + f_bw ;       // Y-offset of flex cutout
         // Overall height of spacer ridge to prevent spool edges fouling:
         winder_side_spacer_h = winder_side_t+1.0 ;
         union() {
@@ -308,13 +310,14 @@ module spool_side_support_slotted(r=145, s_d=shaft_d) {
 
 
 ////-spool_side_support_slotted(r=145, s_d=shaft_d)
-translate([spacing*0.5,-spacing*0.5,0]) spool_side_support_slotted(r=125, s_d=m6) ;
-translate([spacing*0.5,+spacing*0.5,0]) spool_side_support_slotted(r=-125, s_d=m6) ;
-// translate([spacing*1.5,-spacing*0.5,0]) spool_side_support_slotted(r=140) ;
-// translate([spacing*1.5,+spacing*0.5,0]) spool_side_support_slotted(r=-140) ;
+translate([spacing*0.5,-spacing*0.3,0]) spool_side_support_slotted(r=125, s_d=m6) ;
+// translate([spacing*0.5,+spacing*0.3,0]) spool_side_support_slotted(r=-125, s_d=m6) ;
+// translate([spacing*1.5,-spacing*0.3,0]) spool_side_support_slotted(r=140) ;
+// translate([spacing*1.5,+spacing*0.3,0]) spool_side_support_slotted(r=-140) ;
 
-module spool_and_winder_side_support(side) {
+module spool_and_winder_side_support(side, s_d=shaft_d) {
     // Spool and winder support
+    // NO LONGER USED
     //
     // side = +/- 1, for different sides
     //
@@ -328,7 +331,7 @@ module spool_and_winder_side_support(side) {
     cutout_r    = winder_apex_d*0.4 ;
     difference() {
         union () {
-            spool_side_support_slotted(r=slot_rotation) ;
+            spool_side_support_slotted(r=slot_rotation, s_d=s_d) ;
             difference() {
                 // Side arms to hold winder
                 union() {
@@ -356,9 +359,10 @@ module spool_and_winder_side_support(side) {
     }
 }
 
-////-spool_and_winder_side_support(side)
-//translate([spacing*0.5,-spacing*0.75,0]) spool_and_winder_side_support(-1) ;
-//translate([spacing*0.5,+spacing*0.75,0]) spool_and_winder_side_support(+1) ;
+////-spool_and_winder_side_support(side, s_d=shaft_d)
+//// NO LONGER USED
+// translate([spacing*0.5,-spacing*0.75,0]) spool_and_winder_side_support(-1, s_d=m6) ;
+// translate([spacing*0.5,+spacing*0.75,0]) spool_and_winder_side_support(+1, s_d=m6) ;
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -503,8 +507,9 @@ module swivel_arm_locking_nut_holder(sd, t, nut_af, nut_t) {
 //
 // arm_l    length of arm to hold adjustment link
 // dir      +1/-1 to select orientation
+// s_d      shaft/sleeve diameter for spool support
 //
-module spool_and_swivel_mount_side_support(arm_l, side) {
+module spool_and_swivel_mount_side_support(arm_l, side, s_d=shaft_d) {
     ft  = bracket_ft ;
     pt  = winder_side_t ;
     hto = 4 ;                   // Size of outer hinge tongues
@@ -519,7 +524,7 @@ module spool_and_swivel_mount_side_support(arm_l, side) {
             // Spool support, translating winder crank axis to origin
             translate([0,0,0])
                 rotate([0,0,-90])
-                    spool_side_support_slotted(r=slot_rotation) ;
+                    spool_side_support_slotted(r=slot_rotation, s_d=s_d) ;
             // Hinge arm from spool support base
             translate([-winder_side_w/2*side,-winder_side_h,0])
                 rotate([0,0,62*side-90])
@@ -568,17 +573,21 @@ module swivel_arm_locking_brace(l, t, sd, nut_af, nut_t) {
 
 
 ////-stepper_mount_tension_adjustable
+
 ////-stepper_swivel_bracket(bd, fw, ft, hd, hp, af, side)
 //translate([0,20,0])
 //    stepper_swivel_bracket(
 //        stepper_body_dia, bracket_fw, bracket_ft, 
 //        stepper_hole_dia, stepper_hole_pitch, stepper_nut_af, -1) ;
+
 ////-swivel_arm_locking_nut_holder(sd, t, nut_afd, nut_t)
 //translate([0,winder_side_h-20,0])
 //    swivel_arm_locking_nut_holder(m3, bracket_fw, m3_nut_af, m3_nut_t) ;
-////-spool_and_swivel_mount_side_support(arm_l, side)
-//translate([60,winder_side_h,0])
-//    spool_and_swivel_mount_side_support(5, -1) ;
+
+////-spool_and_swivel_mount_side_support(arm_l, side, s_d=shaft_d)
+translate([60,winder_side_h,0])
+ spool_and_swivel_mount_side_support(5, -1, s_d=m6) ;
+
 ////-swivel_arm_locking_brace(l, ft, sd, nut_af, nut_t)
 //translate([0,winder_side_h,0])
 //    swivel_arm_locking_brace(motor_swivel_l-4, bracket_fw, m3, m3_nut_af, m3_nut_t) ;
