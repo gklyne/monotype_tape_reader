@@ -4,7 +4,8 @@ m_clearance = 0.25 ;    // Clearance for close-clearance holes
 m3 = 3+m_clearance ;    // Close clearance hole for M3 screw
 m4 = 4+m_clearance ;    // Close clearance hole for M4 screw
 m5 = 5+m_clearance ;    // Close clearance hole for M5 screw
-m8 = 8+m_clearance ;    // Close clearance hole for M8 screw
+m6 = 6+m_clearance ;    // Close clearance hole for M6 screw/sleeve
+m8 = 8+m_clearance ;    // Close clearance hole for M8 screw/sleeve
 
 m3_nut_af    = 5.5 ;    // M3 nut a/f size
 m3_nut_t     = 2.2 ;    // M3 nut thickness (for recess)

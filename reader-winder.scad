@@ -209,7 +209,7 @@ module rewind_pulley(pd, pt, hd, ht, sd, nut_af, nut_t) {
 // Spool supports
 ////////////////////////////////////////////////////////////////////////////////
 
-module spool_side_support() {
+module spool_side_support(s_d=shaft_d) {
     // Side in X-Y plane, shaft centre at origin, extends along +X axis
     module side_profile() {
         linear_extrude(height=winder_side_t)
@@ -253,46 +253,46 @@ module spool_side_support() {
                 web_xz(winder_side_h-winder_side_t, -winder_side_w/2, winder_side_t, -web_side, web_side, winder_side_t) ;
                 web_xz(winder_side_h-winder_side_t,  winder_side_w/2, winder_side_t, -web_side, web_side, winder_side_t) ;
             } ;
-        shaft_hole(shaft_d, winder_side_t) ;
+        shaft_hole(s_d, winder_side_t) ;
         }
 
 }
 
-module spool_side_support_slotted(r=145) {
+module spool_side_support_slotted(r=145, s_d=shaft_d) {
     // Spool support with slot for removing shaft
     //
     // r  = angle of rotation of slot from vertical
     //
     difference() {
         s_ox  = 0.65 ;                      // Slot offset diameter multiplier
-        f_xm = shaft_d*s_ox/2 ;             // Mid-point of flex cutout
+        f_xm = s_d*s_ox/2 ;                 // Mid-point of flex cutout
         f_d  = 1.7 ;                        // width of flex cutout
         f_l  = 7.0 ;                        // Length flex cutout (excl radius ends)
-        f_oy = 0.5*(shaft_d+f_d) + 0.65 ;    // Y-offset of flex cutout
+        f_oy = 0.5*(s_d+f_d) + 0.65 ;       // Y-offset of flex cutout
         // Overall height of spacer ridge to prevent spool edges fouling:
         winder_side_spacer_h = winder_side_t+1.0 ;
         union() {
-            spool_side_support() ;
+            spool_side_support(s_d=s_d) ;
             difference() {
-                // Hub is double diameter of shaft
-                cylinder(r=shaft_d, h=winder_side_spacer_h) ;
+                // Spacer ring
+                cylinder(r=f_oy+f_d+1, h=winder_side_spacer_h) ;
                 translate([0,0,-delta]) {
-                    cylinder(r=shaft_d-1, h=winder_side_spacer_h+2*delta) ;
+                    cylinder(r=f_oy+f_d, h=winder_side_spacer_h+2*delta) ;
                 }
             }
         }
         // Cutout to allow spool to be removed
         rotate([0,0,r]) {
-            translate([shaft_d*s_ox,0,-delta])
-                oval(winder_apex_d/2, shaft_d, winder_side_spacer_h+delta*2) ;
+            translate([s_d*s_ox,0,-delta])
+                oval(winder_apex_d/2, s_d, winder_side_spacer_h+delta*2) ;
             // Cutouts to flex retaining lugs
             translate([f_xm-f_l/2, f_oy, -delta])
                 oval(f_l, f_d, winder_side_spacer_h+delta*2) ;
             translate([f_xm-f_l/2, -f_oy, -delta])
                 oval(f_l, f_d, winder_side_spacer_h+delta*2) ;
             // Remove part of spacer ring
-            translate([shaft_d*0.25,-shaft_d,winder_side_t+delta])
-                cube(size=[shaft_d*2, shaft_d*2, winder_side_spacer_h]) ;
+            translate([s_d*0.25,-f_oy,winder_side_t+delta])
+                cube(size=[s_d*2, f_oy*2, winder_side_spacer_h]) ;
         } 
         // Cutout to reduce plastic used
         cutout_r    = winder_apex_d*0.4 ;
@@ -303,15 +303,13 @@ module spool_side_support_slotted(r=145) {
                 winder_side_h-winder_base_t, -(winder_side_w/2-cutout_r*2),
                 cutout_r, winder_side_t+2*delta
             ) ;
-
-
     }    
 }
 
 
-////-spool_side_support_slotted(r=145)
-// translate([spacing*0.5,-spacing*0.5,0]) spool_side_support_slotted(r=125) ;
-// translate([spacing*0.5,+spacing*0.5,0]) spool_side_support_slotted(r=-125) ;
+////-spool_side_support_slotted(r=145, s_d=shaft_d)
+translate([spacing*0.5,-spacing*0.5,0]) spool_side_support_slotted(r=125, s_d=m6) ;
+translate([spacing*0.5,+spacing*0.5,0]) spool_side_support_slotted(r=-125, s_d=m6) ;
 // translate([spacing*1.5,-spacing*0.5,0]) spool_side_support_slotted(r=140) ;
 // translate([spacing*1.5,+spacing*0.5,0]) spool_side_support_slotted(r=-140) ;
 
@@ -911,7 +909,7 @@ module spool_all_parts() {
 // All spool parts
 // 
 ////-spool_all_parts()
-spool_all_parts() ;
+// spool_all_parts() ;
 
 // Print spool middle separately with brim in slicer settings to prevent break away from base
 ////-spool_middle(w_middle)
