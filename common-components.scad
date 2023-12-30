@@ -501,20 +501,23 @@ module hinge_outer(l, ow, tw, pt, kd, sd, nut_af, nut_t) {
     // nut_af   = nut recess dimension across faces
     // nut_t    = nut recess depth (thickness of nut)
     //
+    kh = (ow-tw)/2 ;    // Height of hinge knuckle (top and bottom)
+    tl = kd*0.6 ;       // Tongue length (to pivot line
+    kc = clearance ;    // Knuckle end-clearance gap
     difference() {
         union() {
             translate([0,-pt/2,0]) cube(size=[l, pt, ow]) ;     // Main plate
             cylinder(d=kd, h=ow, $fn=12) ;                      // Knuckle
         }
-    //translate([0,0,-delta])
-    //    cylinder(d=sd, h=ow+2*delta, $fn=12) ;                // Shaft hole
-    translate([0,0,-delta])
-        rotate([180,0,0])
-            countersinkZ((sd-m_clearance)*2, ow+2*delta, sd, ow+2*delta) ;  // Shaft hole with countersink
-    translate([0,0,(ow-tw)/2])
-        cylinder(d=kd+clearance*4, h=tw, $fn=12) ;                // Space for hinge tongue
-    translate([0,0,(ow-nut_t)])
-        nut_recess(nut_af, nut_t+delta) ;
+        translate([0,0,kh-kc])
+            cylinder(r=tl, h=tw+kc*2, $fn=12) ;                 // Space for hinge tongue
+        //translate([0,0,-delta])
+        //    cylinder(d=sd, h=ow+2*delta, $fn=12) ;            // Shaft hole
+        translate([0,0,-delta])
+            rotate([180,0,0])                                   // Shaft hole with countersink
+                countersinkZ((sd-m_clearance)*2, ow+2*delta, sd, ow+2*delta) ;  
+        translate([0,0,(ow-nut_t)])
+            nut_recess(nut_af, nut_t+delta) ;                   // Nut recess at top
     }
 }
 
@@ -534,15 +537,20 @@ module hinge_inner(l, ow, tw, pt, kd, sd) {
     // kd       = diameter of hinge knuckle
     // sd       = diameter of pivot shaft
     //
+    kh = (ow-tw)/2 ;    // Height of hinge knuckle (top and bottom)
+    tl = kd*0.6 ;       // Tongue length (to pivot line
+    kc = clearance ;    // Knuckle end-clearance gap
     difference() {
         union() {
             difference() {
                 translate([0,-pt/2,0]) cube(size=[l, pt, ow]) ; // Main plate
                 translate([0,0,-delta])
-                    cylinder(d=kd+clearance, h=ow+2*delta, $fn=12) ; // Knuckle cut-out
+                    cylinder(r=tl, h=kh+kc+delta, $fn=12) ; // Knuckle cut-out bottom
+                translate([0,0,ow-kh-kc+delta])
+                    cylinder(r=tl, h=kh+kc+delta, $fn=12) ; // Knuckle cut-out top
                 }
-        translate([0,0,(ow-tw+clearance)/2])
-            cylinder(d=kd, h=tw-clearance*4, $fn=12) ;      // Hinge tongue
+        translate([0,0,kh+kc])
+            cylinder(d=kd, h=tw-kc*2, $fn=12) ;      // Hinge knuckle
         }
     translate([0,0,-delta])
         cylinder(d=sd, h=ow+2*delta, $fn=12) ;              // Shaft hole
@@ -550,9 +558,9 @@ module hinge_inner(l, ow, tw, pt, kd, sd) {
 }
 
 
-////-hinge_outer(l, ow, tw, pt, kd, sd, nut_af, nut_t)
+// //-hinge_outer(l, ow, tw, pt, kd, sd, nut_af, nut_t)
 // translate([10,0,0]) hinge_outer(15, 20, 10, 4, 10, m4, m4_nut_af, m4_nut_t) ;
-////-hinge_inner(l, ow, tw, pt, kd, sd)
+// //-hinge_inner(l, ow, tw, pt, kd, sd)
 // translate([-10,0,0]) rotate([0,0,180]) hinge_inner(15, 20, 10, 4, 10, m4) ;
 
 ////////////////////////////////////////////////////////////////////////////////
