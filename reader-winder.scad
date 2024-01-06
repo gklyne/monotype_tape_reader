@@ -255,20 +255,18 @@ module spool_side_support(s_d=shaft_d) {
             } ;
         shaft_hole(s_d, winder_side_t) ;
         }
-
 }
 
-module spool_side_support_slotted(r=145, s_d=shaft_d) {
+module spool_side_support_slotted(r=150, s_d=shaft_d) {
     // Spool support with slot for removing shaft
     //
     // r  = angle of rotation of slot from vertical
     //
     difference() {
-        s_ox  = 0.65 ;                      // Slot offset diameter multiplier
+        s_ox  = 0.55 ;                      // Slot offset diameter multiplier
         f_xm = s_d*s_ox/2 ;                 // Mid-point of flex cutout
         f_d  = 1.7 ;                        // width of flex cutout
-        f_l  = 8.0 ;                        // Length flex cutout (excl radius ends)
-                                            // NOTE: reduce to 7.0 for M8 shaft
+        f_l  = 7.0 ;                        // Length flex cutout (excl radius ends)
         f_bw = 0.8 ;                        // Width of flexible clip bar bar
         f_oy = 0.5*(s_d+f_d) + f_bw ;       // Y-offset of flex cutout
         // Overall height of spacer ridge to prevent spool edges fouling:
@@ -309,11 +307,11 @@ module spool_side_support_slotted(r=145, s_d=shaft_d) {
 }
 
 
-////-spool_side_support_slotted(r=145, s_d=shaft_d)
-// translate([spacing*0.5,-spacing*0.3,0]) spool_side_support_slotted(r=125, s_d=m6) ;
-// translate([spacing*0.5,+spacing*0.3,0]) spool_side_support_slotted(r=-125, s_d=m6) ;
-// translate([spacing*1.5,-spacing*0.3,0]) spool_side_support_slotted(r=140) ;
-// translate([spacing*1.5,+spacing*0.3,0]) spool_side_support_slotted(r=-140) ;
+////-spool_side_support_slotted(r, s_d)
+translate([spacing*0.5,-spacing*0.3,0]) spool_side_support_slotted(r=150, s_d=m6) ;
+translate([spacing*0.5,+spacing*0.3,0]) spool_side_support_slotted(r=-150, s_d=m6) ;
+// translate([spacing*1.5,-spacing*0.3,0]) spool_side_support_slotted(r=150, s_d=shaft_d ;
+// translate([spacing*1.5,+spacing*0.3,0]) spool_side_support_slotted(r=-150, s_d=shaft_d ;
 
 module spool_and_winder_side_support(side, s_d=shaft_d) {
     // Spool and winder support
@@ -588,8 +586,8 @@ module swivel_arm_locking_brace(l, t, sd, nut_af, nut_t) {
 
 // // Motor mount side 
 // //-spool_and_swivel_mount_side_support(arm_l, side, s_d=shaft_d)
-translate([60,winder_side_h,0])
-    spool_and_swivel_mount_side_support(5, -1, s_d=m6) ;
+// translate([60,winder_side_h,0])
+//     spool_and_swivel_mount_side_support(5, -1, s_d=m6) ;
 // // Non motor mount side 
 // //-module spool_side_support_slotted(r=145, s_d=shaft_d) {
 // translate([150,winder_side_h,0]) 

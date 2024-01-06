@@ -42,6 +42,7 @@ small_shaft_nut_t  = m4_nut_t ;     // Nut thickness
 spool_shaft_d      = m4 ;           // Shaft diameter in spool
 spool_shaft_nut_af = m4_nut_af ;    // Nut diameter across faces
 spool_shaft_nut_t  = m4_nut_t ;     // Nut thickness
+spool_sleeve_d     = m6 ;           // Spool sleeve bearing diameter
 
 // shaft_d      = small_shaft_d ;
 // shaft_nut_af = small_shaft_nut_af ;
@@ -96,7 +97,7 @@ motor_swivel_l  = 35 ;  // Length of motor swivel link (to clear spool rim)
 read_w = 16 ;           // Width of bridge
 read_extra_w = 5 ;      // Extra length for reader bridge for tie-down
 
-read_h = 90 ;           // Height of reader bridge above base plate
+read_h = 95 ;           // Height of reader bridge above base plate
 read_side_t = sup_t ;   // Reader bridge side support thickness
 read_side_base_t = 16 ; // Reader bridge side support thickness at base 
 read_total_l     = spool_w_all + 2*(read_side_t + read_extra_w) ;

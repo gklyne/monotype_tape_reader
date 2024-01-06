@@ -369,6 +369,7 @@ guide_sprocket_spoke_w  = 2 ;
 
 guide_sprocket_dia      = 22 ;
 guide_sprocket_shaft_d  = m4 ;
+guide_sprocket_sleeve_d = m6 ;
 guide_sprocket_hub_r    = m4 ;
 guide_sprocket_rim_r    = guide_sprocket_dia/2 - 1.5 ;
 guide_sprocket_width    = guide_rim_overall_width ;
@@ -464,11 +465,12 @@ guide_roller_spoke_w    = 1.5 ;
 
 guide_roller_outer_d    = 14 ;
 guide_roller_shaft_d    = guide_sprocket_shaft_d ;
+guide_roller_sleeve_d   = guide_sprocket_sleeve_d ;
 guide_roller_hub_r      = guide_roller_shaft_d ;
 guide_roller_rim_r      = guide_roller_outer_d/2 - 0.8 ;
 guide_roller_width      = guide_rim_overall_width ;
 
-guide_roller_centre_x   = guide_sprocket_ht_off*0.7 ;  // e.g. 1.6 for droop, 1 for level, 0.6 for lift
+guide_roller_centre_x   = guide_sprocket_ht_off*1 ;  // e.g. 1.6 for droop, 1 for level, 0.7 for lift
 guide_roller_centre_y   = 
     guide_sprocket_sep/2 + 
     guide_sprocket_dia*0.5 + guide_roller_outer_d*0.5 + 
@@ -521,7 +523,7 @@ module roller_tape_guide() {
 // Tape reader bridge supports
 ////////////////////////////////////////////////////////////////////////////////
 
-module read_side_support() {
+module reader_bridge_side_support() {
     // Side in X-Y plane, shaft centre at origin, extends along +X axis
     module side_profile() {
         base_h = read_side_t + (read_side_base_t - read_side_t) ;
@@ -562,9 +564,9 @@ module read_side_support() {
                 oval(guide_sprocket_sep, guide_sprocket_dia, read_side_t) ;
         // Shaft support hubs
         translate([guide_sprocket_ht_off, guide_sprocket_sep/2, 0])
-            cylinder(d=guide_sprocket_shaft_d+2, h=read_side_t+guide_sprocket_off) ;
+            cylinder(d=guide_sprocket_sleeve_d+2, h=read_side_t+guide_sprocket_off) ;
         translate([guide_sprocket_ht_off, -guide_sprocket_sep/2, 0])
-            cylinder(d=guide_sprocket_shaft_d+2, h=read_side_t+guide_sprocket_off) ;
+            cylinder(d=guide_sprocket_sleeve_d+2, h=read_side_t+guide_sprocket_off) ;
     }
 
     module side_guide_roller_arms(side) {
@@ -576,7 +578,7 @@ module read_side_support() {
             guide_roller_outer_d, winder_side_t
         ) ;
         translate([guide_roller_centre_x, guide_roller_centre_y*side, 0])
-            cylinder(d=guide_roller_shaft_d+2, h=read_side_t+guide_sprocket_off) ;
+            cylinder(d=guide_roller_sleeve_d+2, h=read_side_t+guide_sprocket_off) ;
     }
 
     // Reader side support assembly...
@@ -593,14 +595,14 @@ module read_side_support() {
         } ;
         // Shaft holes for guide sprockets
         translate([guide_sprocket_ht_off, guide_sprocket_sep/2, 0])
-            shaft_hole(guide_sprocket_shaft_d, read_side_t+guide_sprocket_off) ;
+            shaft_hole(guide_sprocket_sleeve_d, read_side_t+guide_sprocket_off) ;
         translate([guide_sprocket_ht_off, -guide_sprocket_sep/2, 0])
-            shaft_hole(guide_sprocket_shaft_d, read_side_t+guide_sprocket_off) ;
+            shaft_hole(guide_sprocket_sleeve_d, read_side_t+guide_sprocket_off) ;
         // Shaft holes for guide rollers
         translate([guide_roller_centre_x, guide_roller_centre_y, 0])
-            shaft_hole(guide_sprocket_shaft_d, read_side_t+guide_sprocket_off) ;
+            shaft_hole(guide_roller_sleeve_d, read_side_t+guide_sprocket_off) ;
         translate([guide_roller_centre_x, -guide_roller_centre_y, 0])
-            shaft_hole(guide_sprocket_shaft_d, read_side_t+guide_sprocket_off) ;
+            shaft_hole(guide_roller_sleeve_d, read_side_t+guide_sprocket_off) ;
         // Cutout to reduce plastic used
         cutout_r = shaft_d ;
         translate([0,0,-delta])
@@ -612,39 +614,41 @@ module read_side_support() {
             ) ;
     }
 
-} // module read_side_support
+} // module reader_bridge_side_support
 
-module read_side_support_dovetailed() {
+module reader_bridge_side_support_dovetailed() {
     difference() {
-        read_side_support() ;
+        reader_bridge_side_support() ;
         translate([0,0,read_side_t])
             rotate([0,-90,0])
                 dovetail_socket_cutout(read_side_t, read_w-3, read_w-2, read_side_apex_h) ;
     }
 }
 
-////--read_side_support_dovetailed()
+////--reader_bridge_side_support_dovetailed()
 // translate([-42,-42,0])
-//     read_side_support_dovetailed() ;
+//     reader_bridge_side_support_dovetailed() ;
 // translate([+42,+42,0])
 //     rotate([0,0,180])
-//         read_side_support_dovetailed() ;
+//         reader_bridge_side_support_dovetailed() ;
 
 
 ////////////////////////////////////////////////////////////////////////////////
 // Tape follower arm (supporting tape_follower_roller)
 ////////////////////////////////////////////////////////////////////////////////
 
-tape_follower_arm_l   = 40 ;            // Arm length between shaft centres
-tape_follower_short_arm_l = 28 ;        // Short arm length between shaft centres
-tape_follower_elbow_l = 10 ;            // Length from pivot to end of elbow
-tape_follower_arm_w   = m4+4 ;
-tape_follower_arm_t   = sup_t ;
-tape_follower_hub_t   = sup_t*1.4 ;
-tape_follower_hub_d   = m4_nut_af+4 ;
-tape_follower_pivot_t = sup_t*2.5 ;     // Thickness of pivot hub
+tape_follower_arm_l         = 40 ;          // Arm length between shaft centres
+tape_follower_short_arm_l   = 24 ;          // Short arm length between shaft centres
+tape_follower_elbow_l       = 10 ;          // Length from pivot to end of elbow
+tape_follower_arm_w         = m4+4 ;
+tape_follower_arm_t         = sup_t ;
+tape_follower_hub_t         = sup_t*1.4 ;
+tape_follower_short_hub_t   = sup_t*2 ;
+tape_follower_hub_d         = m4_nut_af+4 ;
+tape_follower_pivot_t       = sup_t*2.5 ;   // Thickness of pivot hub
+tape_follower_short_pivot_t = sup_t ;       // Short arm thickness of pivot hub
 
-module tape_follower_arm_param(l, w, t, hd, ht, sd, snaf, snt) {
+module tape_follower_arm_param(l, w, t, pt, hd, ht, sd, snaf, snt) {
     // Tape follower arm, holds guide roller loosely in position where its
     // weight maintains a slight tension in the tape and helps to ensure a
     // more controlled feed onto the first roller guide.
@@ -654,13 +658,14 @@ module tape_follower_arm_param(l, w, t, hd, ht, sd, snaf, snt) {
     // l    = length of arm (between shaft centres)
     // w    = width of arm
     // t    = thickness of arm
+    // pt   = thickness of pivot hub
     // hd   = diameter of roller shaft hub
     // ht   = thickness of roller shaft hub
     // sd   = shaft diameter through hub and end of arm
     // snaf = shaft nut AF size
     // snt  = shaft nut thickness
     //
-    pt = tape_follower_pivot_t ;        
+    //---pt = tape_follower_pivot_t ;        
     elbow_l1 = tape_follower_elbow_l + w*0.65 ;
     elbow_l2 = l - tape_follower_elbow_l - w*0.5;
     difference() {
@@ -694,16 +699,13 @@ module tape_follower_arm_param(l, w, t, hd, ht, sd, snaf, snt) {
 module tape_follower_arm() {
     tape_follower_arm_param(
         tape_follower_arm_l, tape_follower_arm_w, tape_follower_arm_t, 
+        tape_follower_pivot_t,
         tape_follower_hub_d, tape_follower_hub_t, 
         m4, m4_nut_af, m4_slimnut_t
         ) ;    
 }
 
-////-tape_follower_arm_2off
-// translate([0,-10,0]) tape_follower_arm() ;
-// translate([0,+10,0]) tape_follower_arm() ;
-
-module tape_follower_short_arm_param(l, w, t, hd, ht, sd, snaf, snt) {
+module tape_follower_short_arm_param(l, w, t, pt, hd, ht, sd, snaf, snt) {
     // Tape follower arm, holds guide roller loosely in position where its
     // weight maintains a slight tension in the tape and helps to ensure a
     // more controlled feed onto the first roller guide.
@@ -713,13 +715,14 @@ module tape_follower_short_arm_param(l, w, t, hd, ht, sd, snaf, snt) {
     // l    = length of arm (between shaft centres)
     // w    = width of arm
     // t    = thickness of arm
+    // pt   = thickness of pivot hub
     // hd   = diameter of roller shaft hub
     // ht   = thickness of roller shaft hub
     // sd   = shaft diameter through hub and end of arm
     // snaf = shaft nut AF size
     // snt  = shaft nut thickness
     //
-    pt = tape_follower_pivot_t ;    // Thickness of pivot hub
+    //// pt = tape_follower_pivot_t ;    // Thickness of pivot hub
     difference() {
         union() {
             translate([0,0,0])
@@ -746,10 +749,11 @@ module tape_follower_short_arm_param(l, w, t, hd, ht, sd, snaf, snt) {
     }
 }
 
-module _unused_tape_follower_short_arm_old() {
+module tape_follower_short_arm_no_elbow() {
     tape_follower_short_arm_param(
         tape_follower_short_arm_l, tape_follower_arm_w, tape_follower_arm_t, 
-        tape_follower_hub_d, tape_follower_hub_t, 
+        tape_follower_short_pivot_t,
+        tape_follower_hub_d, tape_follower_short_hub_t, 
         m4, m4_nut_af, m4_slimnut_t
         ) ;    
 }
@@ -757,14 +761,15 @@ module _unused_tape_follower_short_arm_old() {
 module tape_follower_short_arm() {
     tape_follower_arm_param(
         tape_follower_short_arm_l, tape_follower_arm_w, tape_follower_arm_t, 
-        tape_follower_hub_d, tape_follower_hub_t, 
+        tape_follower_short_pivot_t,
+        tape_follower_hub_d, tape_follower_short_hub_t, 
         m4, m4_nut_af, m4_slimnut_t
         ) ;    
 }
 
 ////-tape_follower_short_arm_4off
-// translate([0,-30,0]) tape_follower_short_arm() ;
-// translate([0,-10,0]) tape_follower_short_arm() ;
+// translate([0,-30,0]) tape_follower_short_arm_no_elbow() ;
+// translate([0,-10,0]) tape_follower_short_arm_no_elbow() ;
 // translate([0,+10,0]) tape_follower_short_arm() ;
 // translate([0,+30,0]) tape_follower_short_arm() ;
 
@@ -820,9 +825,9 @@ module layout_reader_bridge() {
     0,spacing*1,0])
         tape_reader_bridge() ;
     translate([-winder_side_h/2,spacing*1.5,0])
-        read_side_support() ;
+        reader_bridge_side_support() ;
     translate([-winder_side_h/2,spacing*2,0])
-        read_side_support() ;
+        reader_bridge_side_support() ;
 }
 
 module layout_reader_bridge_dovetailed() {
@@ -830,9 +835,9 @@ module layout_reader_bridge_dovetailed() {
     translate([0,spacing*0,0])
         tape_reader_bridge_dovetailed() ;
     translate([-winder_side_h/2,50,0])
-        read_side_support_dovetailed() ;
+        reader_bridge_side_support_dovetailed() ;
     translate([-winder_side_h/2,120,0])
-        read_side_support_dovetailed() ;
+        reader_bridge_side_support_dovetailed() ;
 }
 
 // ## reader-bridge
@@ -845,12 +850,20 @@ module layout_reader_bridge_dovetailed() {
 ////-tape_reader_bridge
 // tape_reader_bridge() ;
 ////-tape_reader_bridge_dovetailed
-tape_reader_bridge_dovetailed() ;
-////-read_side_support_dovetailed
-// translate([0,spacing,0])
-//     read_side_support_dovetailed() ;
+// tape_reader_bridge_dovetailed() ;
+////-reader_bridge_side_support_dovetailed
+// translate([0,spacing*,0])
+//     reader_bridge_side_support_dovetailed() ;
 
 
-
+////-reader-bridge-side-supports-and-follower-arms()
+for (i=[0,1]) {
+    rotate([0,0,90+i*180]) {
+        translate([-read_h*0.65,read_side_base_w*0.75,0]) {
+            reader_bridge_side_support_dovetailed() ;
+            translate([40, 40, 0]) tape_follower_short_arm_no_elbow() ;    
+        }
+    }
+}
 
 
