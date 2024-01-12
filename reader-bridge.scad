@@ -121,8 +121,8 @@ module tape_reader_bridge_with_guides() {
         // guide_tr = Guide thickness at core
         // guide_tb = Guide thickness of bevel
         guide_offset = spool_w_all/2 ;  // Offset to guide (at base of bevel)
-        shade_t = 0.8 ;                   // Thickness of shade shell
-        shade_o = 0.8 ;                // Shell centre offset (downwards)
+        shade_t = 0.8 ;                 // Thickness of shade shell
+        shade_o = 0.8 ;                 // Shell centre offset (downwards)
         translate([0,0,guide_offset+guide_tb])
             cylinder(d=guide_w, h=guide_tr+delta, center=false) ;        // Rim
         translate([0,0,guide_offset])
@@ -130,29 +130,43 @@ module tape_reader_bridge_with_guides() {
         difference() {
             translate([shade_o,0,guide_offset-guide_ist])             // Shade shell
                 shade_shell(guide_w/2-shade_t, guide_w/2, guide_ost+guide_ist) ;
+            // Angled cutaway for inner shade
             translate([0,0,guide_offset+guide_tb])    // Inner shade
                 rotate([0,-25,0])
                     translate([0,0,-guide_ist])
                         cube(size=[guide_w*2, guide_w, guide_ist*2], center=true) ;
-            translate([0,0,guide_offset+guide_tb])    // Outer shade
-                rotate([0,40,0])
-                    translate([0,0,guide_ost])
-                        cube(size=[guide_w*2, guide_w, guide_ost*2], center=true) ;
+            // Angled cutaway for outer shade
+            // read_side_apex_h is height of dovetail on sides
+            // read_extra_l is distance of side from guide flange
+            // read_total_l     = spool_w_all + 2*(read_side_t + read_extra_l) ;
+            // -X translates to +Z after rotation
+            outer_shade_a = 45 ;
+            outer_shade_h = read_side_apex_h - (read_extra_l-guide_tc)/tan(outer_shade_a) + clearance*2 ;
+            translate([-outer_shade_h,0,guide_offset+guide_tc])    // Outer shade
+                rotate([0,outer_shade_a,0]) {
+                    cylinder(d=1,h=guide_w+2) ;
+                    translate([-guide_w,-guide_w/2,0]) {
+                        cube(size=[guide_w, guide_w, guide_ost*2]) ;
+                    }
+                }
+            // Cutaway lower part of outer shade shell
+            translate([-outer_shade_h,-guide_w/2,guide_offset+guide_tb+guide_tr])
+                cube(size=[guide_w, guide_w, guide_ost*2]) ;
         }
-
     }
-    difference() {
-        rotate([0,90,0])
+    rotate([0,90,0])
+        difference() {
             union() {
                 cylinder(d=read_w, h=read_total_l, center=true) ;
                 guide_flange() ;
                 mirror(v=[0, 0, 1]) guide_flange() ;
             }
-        translate([0,0,-read_w/2])
-            cube(size=[read_total_l+delta, guide_w+delta, read_w+delta], center=true) ;
-        translate([0,0,(read_w-read_groove_d)/2])
-            cube(size=[read_total_l+delta, read_groove_w, read_groove_d], center=true) ;
-        rotate([0,90,0])
+            // Cutaway lower part of bridge cylinder
+            translate([read_w/2, 0, 0])
+                cube(size=[read_w+delta, guide_w+delta, read_total_l+delta], center=true) ;
+            // Cutaway groove for EL wire, flared at top
+            translate([-(read_w-read_groove_d)/2,0,0])
+                cube(size=[read_groove_d, read_groove_w, read_total_l+delta], center=true) ;
             translate([-read_w/2-guide_eld*0.2,0,0])
                 cylinder(d=guide_eld, h=read_total_l+delta, center=true, $fn=8) ;
     }
@@ -844,8 +858,8 @@ module tape_follower_roller() {
 }
 
 
-////--tape_follower_roller
-tape_follower_roller() ;
+////-tape_follower_roller
+// tape_follower_roller() ;
 
 // To see inside...
 // difference() { tape_follower_roller() ; cube(size=[20,20,160]) ; }
@@ -886,7 +900,7 @@ module layout_reader_bridge_dovetailed() {
 ////-tape_reader_bridge
 // tape_reader_bridge() ;
 ////-tape_reader_bridge_dovetailed
-// tape_reader_bridge_dovetailed() ;
+tape_reader_bridge_dovetailed() ;
 ////-reader_bridge_side_support_dovetailed
 // translate([0,spacing*,0])
 //     reader_bridge_side_support_dovetailed() ;

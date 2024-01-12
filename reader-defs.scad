@@ -100,19 +100,19 @@ motor_swivel_l  = 35 ;  // Length of motor swivel link (to clear spool rim)
 // Reader bridge
 
 read_w = 16 ;           // Width of bridge
-read_extra_w = 5 ;      // Extra length for reader bridge for tie-down
+read_extra_l = 5 ;      // Extra length of reader bridge for guides and tie-down
 
 read_h = 95 ;           // Height of reader bridge above base plate
 read_side_t = sup_t ;   // Reader bridge side support thickness
 read_side_base_t = 16 ; // Reader bridge side support thickness at base 
-read_total_l     = spool_w_all + 2*(read_side_t + read_extra_w) ;
+read_total_l     = spool_w_all + 2*(read_side_t + read_extra_l) ;
 read_side_apex_w = 24 ;
-read_side_apex_h = 6 ;
+read_side_apex_h = 6 ;  // Height of dovetail on sides
 read_side_base_w = 40 ;
 read_side_peg_d  = m4 ;
 
 read_groove_w = 2.4 ;   // EL wire groove width
-read_groove_d = 2.75 ;  // EL wire groove depth
+read_groove_d = 3 ;     // EL wire groove depth
 
 guide_w  = 28 ;         // Width of guide flange on bridge
 guide_tc = 2 ;          // Guide thickness at core

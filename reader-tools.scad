@@ -160,15 +160,23 @@ module nut_spinner_tool(l, od, sd, af, nt) {
                     translate([0,-sd/2,0])
                         cube(size=[sd*2.5,sd,0.4]) ;
         }
-        translate([0,0,-delta])
-            hex_screw_recess_Z(sd*1.5, l+2*delta, af, nt) ;
+        translate([0,0,l+delta])
+            mirror([0,0,1])
+                hex_screw_recess_Z(sd*1.5, l+2*delta, af, nt) ;
     }
 }
 
 module nut_spinner_tool_m4(l) {
-    nut_spinner_tool(l, m4*2.2, m4, m4_nut_af+clearance, m4_nut_t*1.5) ;
+    nut_spinner_tool(l, m4*2.25, m4, m4_nut_af+clearance*2, m4_nut_t*1.6) ;
+}
+
+module nut_spinner_tool_m3(l) {
+    nut_spinner_tool(l, m3*2.25, m3, m3_nut_af+clearance*2, m3_nut_t*1.6) ;
 }
 
 ////-nut_spinner_tool_m4(l)
-nut_spinner_tool_m4(35) ;
+translate([-10,0,0])
+    nut_spinner_tool_m3(35) ;
+translate([+10,0,0])
+    nut_spinner_tool_m4(40) ;
 
