@@ -69,10 +69,10 @@ module spool_removal_tool(tool_l, tool_w, tool_t, side_r, side_t, side_l, slot_w
 }
 
 ////-spool_removal_tool()
-spool_removal_tool(
-    spool_removal_tool_l, spool_removal_tool_w, spool_removal_tool_t, 
-    winder_apex_d/2, 1.6, 2, spool_sleeve_d
-    ) ;
+// spool_removal_tool(
+//     spool_removal_tool_l, spool_removal_tool_w, spool_removal_tool_t, 
+//     winder_apex_d/2, 1.6, 2, spool_sleeve_d
+//     ) ;
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -114,17 +114,17 @@ module roller_gripping_tool(l, w, t, d) {
         }
         translate([0,-d/2+1,t/2]) {
          rotate([0,0,-90])
-             screw_recess_X(m3, ring_t+2, m3_nut_af, m3_nut_t+1) ;
+             hex_screw_recess_X(m3, ring_t+2, m3_nut_af, m3_nut_t+1) ;
         }
     }
 }
 
 ////-roller_gripping_tool()
-translate([0,thumb_d/2+roller_gripping_tool_d,0])
-    roller_gripping_tool(
-        roller_gripping_tool_l, roller_gripping_tool_w, roller_gripping_tool_t, 
-        roller_gripping_tool_d
-        ) ;
+// translate([0,thumb_d/2+roller_gripping_tool_d,0])
+//     roller_gripping_tool(
+//         roller_gripping_tool_l, roller_gripping_tool_w, roller_gripping_tool_t, 
+//         roller_gripping_tool_d
+//         ) ;
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -132,10 +132,43 @@ translate([0,thumb_d/2+roller_gripping_tool_d,0])
 ////////////////////////////////////////////////////////////////////////////////
 
 ////-sprocket_gripping_tool()
-translate([0,thumb_d/2+roller_gripping_tool_d+sprocket_gripping_tool_d+gripping_tool_ring_t*3,0])
-    roller_gripping_tool(
-        sprocket_gripping_tool_l, sprocket_gripping_tool_w, sprocket_gripping_tool_t, 
-        sprocket_gripping_tool_d
-        ) ;
+// translate([0,thumb_d/2+roller_gripping_tool_d+sprocket_gripping_tool_d+gripping_tool_ring_t*3,0])
+//     roller_gripping_tool(
+//         sprocket_gripping_tool_l, sprocket_gripping_tool_w, sprocket_gripping_tool_t, 
+//         sprocket_gripping_tool_d
+//         ) ;
 
+
+////////////////////////////////////////////////////////////////////////////////
+// Nut spinner tool
+////////////////////////////////////////////////////////////////////////////////
+
+//  Used to tighten camera mounting nuts
+//
+//  l   = overall length
+//  od  = overall diameter
+//  sd  = shaft diameter
+//  af  = nut AF size
+//  nt  = nut thickness (depth of hex recess)
+module nut_spinner_tool(l, od, sd, af, nt) {
+    difference() {
+        union() {
+            cylinder(d=od, h=l, $nt=6) ;
+            // Tabs for bed adhesion
+            for (a=[0,120,240])
+                rotate([0,0,a])
+                    translate([0,-sd/2,0])
+                        cube(size=[sd*2.5,sd,0.4]) ;
+        }
+        translate([0,0,-delta])
+            hex_screw_recess_Z(sd*1.5, l+2*delta, af, nt) ;
+    }
+}
+
+module nut_spinner_tool_m4(l) {
+    nut_spinner_tool(l, m4*2.2, m4, m4_nut_af+clearance, m4_nut_t*1.5) ;
+}
+
+////-nut_spinner_tool_m4(l)
+nut_spinner_tool_m4(35) ;
 

@@ -31,9 +31,7 @@ We need some way to tension the reader drive belt so that it doesn't slip.  Two 
 
 Also worth revisiting is to consider if the tape path friction can be further reduced.  Much of the friction now is from the tape path over the read head, so there may not be so much that is easily doable here.
 
-
-@@@@ TODO 
-
+Done ~2023-12.
 
 
 
@@ -43,13 +41,11 @@ Options here include:
 
 (a) Use a darker ambient environment for recording the videos,
 
-(b) See if the light source can be any brighter (I've just ordered some ostensibly brighter EL wire with a USB power supply - this may require the width of the reader bridge slot to be increased).
+(b) See if the light source can be any brighter (I've just ordered some ostensibly brighter EL wire with a USB power supply - this may require the width of the reader bridge slot to be increased).  Done ~2023-12.
 
 (c) Create an enclosure to shade the reader from ambient light.
 
-
-
-@@@ TODO
+@@@ TODO - test new EL wirer
 
 
 

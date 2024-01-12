@@ -98,9 +98,9 @@ module shade_shell(inner_r, outer_r, h) {
     // Same parameters as ring, but defines sloping sides for printing shade
     rotate([0,0,180]) {
         difference() {
-            cylinder(r=outer_r, h=h, center=false, $fn=5) ;
+            cylinder(r=outer_r, h=h, center=false, $fn=7) ;
             translate([0,0,-delta])
-                cylinder(r=inner_r, h=h+2*delta, center=false, $fn=5) ;
+                cylinder(r=inner_r, h=h+2*delta, center=false, $fn=7) ;
         }
     }
     // inner_w = inner_r * sqrt(2) ;
@@ -131,7 +131,7 @@ module tape_reader_bridge_with_guides() {
             translate([shade_o,0,guide_offset-guide_ist])             // Shade shell
                 shade_shell(guide_w/2-shade_t, guide_w/2, guide_ost+guide_ist) ;
             translate([0,0,guide_offset+guide_tb])    // Inner shade
-                rotate([0,-20,0])
+                rotate([0,-25,0])
                     translate([0,0,-guide_ist])
                         cube(size=[guide_w*2, guide_w, guide_ist*2], center=true) ;
             translate([0,0,guide_offset+guide_tb])    // Outer shade
@@ -423,7 +423,7 @@ module sprocket_tape_guide() {
 // Implemented as roller to reduce friction.
 //
 
-module roller_guide_3_spoked(sd, hr, rr, or, fr, sw, gow) {
+module roller_guide_3_spoked(sd, hr, rr, or, fr, sw, gow, ghw) {
     // 3-spoked roller tape guide, end on X-Y plane, centred on origin.
     //
     // sd     = shaft diameter
@@ -433,6 +433,7 @@ module roller_guide_3_spoked(sd, hr, rr, or, fr, sw, gow) {
     // fr     = fillet radius of spoke cutout
     // sw     = spoke width
     // gow    = overall width of guide
+    // ghw    = width of support hub at ends
     //
 
     difference() {
@@ -454,24 +455,31 @@ module roller_guide_3_spoked(sd, hr, rr, or, fr, sw, gow) {
         }
         shaft_hole(sd, gow) ;
         translate([0,0,gow/2])
-            shaft_middle_cutout(rr-fr, gow*0.6) ;
+            shaft_middle_cutout(rr-fr, gow-2*ghw) ;
         translate([0,0,-delta])
             spoked_wheel_cutouts(hr, rr, fr, gow+2*delta, 3, sw) ;
     }
 } ;
 
-guide_roller_fillet_r   = 0.5 ;  
-guide_roller_spoke_w    = 1.5 ;
+guide_roller_fillet_r       = 0.5 ;  
+guide_roller_spoke_w        = 1.5 ;
 
-guide_roller_outer_d    = 14 ;
-guide_roller_shaft_d    = guide_sprocket_shaft_d ;
-guide_roller_sleeve_d   = guide_sprocket_sleeve_d ;
-guide_roller_hub_r      = guide_roller_shaft_d ;
-guide_roller_rim_r      = guide_roller_outer_d/2 - 0.8 ;
-guide_roller_width      = guide_rim_overall_width ;
+guide_roller_outer_d        = 14 ;
+guide_roller_shaft_d        = guide_sprocket_shaft_d ;
+guide_roller_sleeve_d       = guide_sprocket_sleeve_d ;
+guide_roller_hub_r          = guide_roller_shaft_d ;
+guide_roller_rim_r          = guide_roller_outer_d/2 - 0.8 ;
+guide_roller_width          = guide_rim_overall_width ;
+guide_hub_width             = guide_roller_width * 0.2 ;
 
-guide_roller_centre_x   = guide_sprocket_ht_off*1 ;  // e.g. 1.6 for droop, 1 for level, 0.7 for lift
-guide_roller_centre_y   = 
+follower_roller_shaft_d     = m4 ;
+follower_roller_sleeve_d    = m6 ;
+follower_hub_width          = 16 ;
+follower_sleeve_len         = 10 ;
+follower_roller_hub_r       = follower_roller_shaft_d ;
+
+guide_roller_centre_x       = guide_sprocket_ht_off*1 ;  // e.g. 1.6 for droop, 1 for level, 0.7 for lift
+guide_roller_centre_y       = 
     guide_sprocket_sep/2 + 
     guide_sprocket_dia*0.5 + guide_roller_outer_d*0.5 + 
     guide_rim_1_extra_radius*2 + 1 ;
@@ -484,14 +492,14 @@ module roller_tape_guide() {
                 guide_roller_shaft_d, guide_roller_hub_r,  
                 guide_roller_rim_r, or,  
                 guide_roller_fillet_r, guide_roller_spoke_w, 
-                guide_roller_width
+                guide_roller_width, guide_hub_width
                 ) ;
             translate([0,0,12+3.5])
                 circular_platform(r=guide_roller_rim_r+clearance*4, h=6) ;
             translate([0,0,guide_roller_width-12+3.5])
                 circular_platform(r=guide_roller_rim_r+clearance*4, h=6) ;
         }
-        ////@@
+        ////
         // M4 nut cutouts:  7 AF x 3.1 thick
         // translate([0,0,12]) {
         //     // shaft_nut_cutout(7, 3.1, 8, 4, or) ;
@@ -501,7 +509,7 @@ module roller_tape_guide() {
         //     // shaft_nut_cutout(7, 3.1, 8, 4, or) ;
         //     extended_nut_recess_with_ejection_hole(7, 3.1, guide_roller_outer_d+1) ;
         // }
-        ////@@
+        ////
         // M4 nylock nut cutouts
         translate([0,0,10]) {
             extended_nylock_recess_with_ejection_hole(m4_nut_af, m4_nylock_t, guide_sprocket_dia) ;
@@ -645,10 +653,12 @@ tape_follower_arm_t         = sup_t ;
 tape_follower_hub_t         = sup_t*1.4 ;
 tape_follower_short_hub_t   = sup_t*2 ;
 tape_follower_hub_d         = m4_nut_af+4 ;
+tape_follower_pivot_d       = m6 ;          // Diameter of follower arm pivot shaft
 tape_follower_pivot_t       = sup_t*2.5 ;   // Thickness of pivot hub
+tape_follower_short_pivot_d = m6 ;          // Diameter of short follower arm pivot shaft
 tape_follower_short_pivot_t = sup_t ;       // Short arm thickness of pivot hub
 
-module tape_follower_arm_param(l, w, t, pt, hd, ht, sd, snaf, snt) {
+module tape_follower_arm_param(l, w, t, pd, pt, hd, ht, sd, snaf, snt) {
     // Tape follower arm, holds guide roller loosely in position where its
     // weight maintains a slight tension in the tape and helps to ensure a
     // more controlled feed onto the first roller guide.
@@ -658,6 +668,7 @@ module tape_follower_arm_param(l, w, t, pt, hd, ht, sd, snaf, snt) {
     // l    = length of arm (between shaft centres)
     // w    = width of arm
     // t    = thickness of arm
+    // pd   = diameter of pivot shaft hole
     // pt   = thickness of pivot hub
     // hd   = diameter of roller shaft hub
     // ht   = thickness of roller shaft hub
@@ -699,13 +710,13 @@ module tape_follower_arm_param(l, w, t, pt, hd, ht, sd, snaf, snt) {
 module tape_follower_arm() {
     tape_follower_arm_param(
         tape_follower_arm_l, tape_follower_arm_w, tape_follower_arm_t, 
-        tape_follower_pivot_t,
+        tape_follower_pivot_d, tape_follower_pivot_t,
         tape_follower_hub_d, tape_follower_hub_t, 
         m4, m4_nut_af, m4_slimnut_t
         ) ;    
 }
 
-module tape_follower_short_arm_param(l, w, t, pt, hd, ht, sd, snaf, snt) {
+module tape_follower_short_arm_param(l, w, t, pd, pt, hd, ht, sd, snaf, snt) {
     // Tape follower arm, holds guide roller loosely in position where its
     // weight maintains a slight tension in the tape and helps to ensure a
     // more controlled feed onto the first roller guide.
@@ -715,6 +726,7 @@ module tape_follower_short_arm_param(l, w, t, pt, hd, ht, sd, snaf, snt) {
     // l    = length of arm (between shaft centres)
     // w    = width of arm
     // t    = thickness of arm
+    // pd   = diameter of pivot shaft hole
     // pt   = thickness of pivot hub
     // hd   = diameter of roller shaft hub
     // ht   = thickness of roller shaft hub
@@ -734,7 +746,7 @@ module tape_follower_short_arm_param(l, w, t, pt, hd, ht, sd, snaf, snt) {
         // cylinder(d=sd, h=t+2*delta, $fn=16) ;
         // Shaft hole at pivot end of arm
         translate([0,0,-delta]) {
-            cylinder(d=sd, h=pt+2*delta, $fn=16) ;
+            cylinder(d=pd, h=pt+2*delta, $fn=16) ;
         }
         // Countersunk hole at far end of arm
         translate([l,0,-delta]) {
@@ -752,7 +764,7 @@ module tape_follower_short_arm_param(l, w, t, pt, hd, ht, sd, snaf, snt) {
 module tape_follower_short_arm_no_elbow() {
     tape_follower_short_arm_param(
         tape_follower_short_arm_l, tape_follower_arm_w, tape_follower_arm_t, 
-        tape_follower_short_pivot_t,
+        tape_follower_short_pivot_d, tape_follower_short_pivot_t,
         tape_follower_hub_d, tape_follower_short_hub_t, 
         m4, m4_nut_af, m4_slimnut_t
         ) ;    
@@ -761,24 +773,25 @@ module tape_follower_short_arm_no_elbow() {
 module tape_follower_short_arm() {
     tape_follower_arm_param(
         tape_follower_short_arm_l, tape_follower_arm_w, tape_follower_arm_t, 
-        tape_follower_short_pivot_t,
+        tape_follower_short_pivot_t, tape_follower_short_pivot_t,
         tape_follower_hub_d, tape_follower_short_hub_t, 
         m4, m4_nut_af, m4_slimnut_t
         ) ;    
 }
 
 ////-tape_follower_short_arm_4off
-// translate([0,-30,0]) tape_follower_short_arm_no_elbow() ;
-// translate([0,-10,0]) tape_follower_short_arm_no_elbow() ;
-// translate([0,+10,0]) tape_follower_short_arm() ;
-// translate([0,+30,0]) tape_follower_short_arm() ;
+// translate([-20,-40,0]) tape_follower_short_arm_no_elbow() ;
+// translate([-20,-20,0]) tape_follower_short_arm_no_elbow() ;
+// translate([20,-40,0]) tape_follower_short_arm_no_elbow() ;
+// translate([20,-20,0]) tape_follower_short_arm_no_elbow() ;
 
 
 ////////////////////////////////////////////////////////////////////////////////
 // Tape follower roller
 ////////////////////////////////////////////////////////////////////////////////
 
-module tape_follower_roller() {
+////@@@@
+module tape_follower_roller_unused_() {
     od = guide_roller_outer_d+2 ;
     or = od/2 ;
     rr = guide_roller_rim_r+1 ;
@@ -788,7 +801,7 @@ module tape_follower_roller() {
                 guide_roller_shaft_d, guide_roller_hub_r,  
                 rr, or,  
                 guide_roller_fillet_r, guide_roller_spoke_w, 
-                guide_roller_width
+                guide_roller_width, guide_hub_width
                 ) ;
             translate([0,0,12+3.5])
                 circular_platform(r=rr+clearance*4, h=6) ;
@@ -808,11 +821,34 @@ module tape_follower_roller() {
     }
 }
 
+// Roller design without nut cutouts, but using sleeve bearings pushed in to ends
+module tape_follower_roller() {
+    od = guide_roller_outer_d+2 ;
+    or = od/2 ;
+    rr = guide_roller_rim_r+1 ;
+    difference() {
+        union() {
+            roller_guide_3_spoked(
+                guide_roller_shaft_d+1, follower_roller_hub_r,  
+                rr, or,  
+                guide_roller_fillet_r, guide_roller_spoke_w, 
+                guide_roller_width, follower_hub_width
+                ) ;
+        }
+        // Sleeve holes at each end
+        translate([0,0,-delta])
+            shaft_hole(follower_roller_sleeve_d, follower_sleeve_len) ;
+        translate([0,0,guide_roller_width-follower_sleeve_len+delta])
+            shaft_hole(follower_roller_sleeve_d, follower_sleeve_len) ;
+    }
+}
+
+
 ////--tape_follower_roller
-// tape_follower_roller() ;
+tape_follower_roller() ;
 
 // To see inside...
-//difference() { tape_follower_roller() ; cube(size=[20,20,160]) ; }
+// difference() { tape_follower_roller() ; cube(size=[20,20,160]) ; }
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -857,13 +893,13 @@ module layout_reader_bridge_dovetailed() {
 
 
 ////-reader-bridge-side-supports-and-follower-arms()
-for (i=[0,1]) {
-    rotate([0,0,90+i*180]) {
-        translate([-read_h*0.65,read_side_base_w*0.75,0]) {
-            reader_bridge_side_support_dovetailed() ;
-            translate([40, 40, 0]) tape_follower_short_arm_no_elbow() ;    
-        }
-    }
-}
+// for (i=[0,1]) {
+//     rotate([0,0,90+i*180]) {
+//         translate([-read_h*0.65,read_side_base_w*0.75,0]) {
+//             reader_bridge_side_support_dovetailed() ;
+//             translate([40, 40, 0]) tape_follower_short_arm_no_elbow() ;    
+//         }
+//     }
+// }
 
 

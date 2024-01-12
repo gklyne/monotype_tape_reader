@@ -304,11 +304,70 @@ module nut(af, t, sd) {
 }
 
 
-// Return height of nut recess given across-flats size of nut
+// Hex nut recess on centre of X-Y plane, extending +Z from origin.
+//
+// af = nut dimension AF (across flats, = spanner size)
+// t  = thickness of nut
+//
+module nut_recess_Z(af, t) {
+    od = af * 2 / sqrt(3) ; // Diameter
+    cylinder(d=od, h=t+delta*2, $fn=6) ;
+}
+////-nut_recess_Z(af, t)
+// nut_recess_Z(m4_nut_af, m4_nut_t) ;
+
+
+// Hex screw recess on centre of X-Y plane, extending +Z from origin.
+//
+// sd       = diameter of screw
+// sl       = length of screw (including head)
+// nut_af   = nut dimension AF (across flats, = spanner size)
+// nut_t    = thickness of nut
+//
+module hex_screw_recess_Z(sd, sl, nut_af, nut_t) {
+    nut_recess_Z(nut_af, nut_t) ;
+    cylinder(d=sd, h=sl+delta, $fn=16) ;
+}
+////-hex_screw_recess_Z(af, t)
+// hex_screw_recess_Z(m4_nut_af, m4_nut_t) ;
+
+
+// Hex nut recess on centre of Y-Z plane, extending +X from origin.
+//
+// Doesn't require code for printing support; orient sloping sides top and bottom.
+//
+// af = nut dimension AF (across flats, = spanner size)
+// t  = thickness of nut
+//
+module nut_recess_X(af, t) {
+    rotate([0,90,0])
+        nut_recess_Z(af, t) ;
+}
+////-nut_recess_X(af, t)
+// nut_recess_X(m4_nut_af, m4_nut_t) ;
+
+// Hex screw recess on centre of Y-Z plane, extending +X from origin.
+//
+// Doesn't require code for printing support; orient sloping sides top and bottom.
+//
+// sd       = diameter of screw
+// sl       = length of screw (including head)
+// nut_af   = nut dimension AF (across flats, = spanner size)
+// nut_t    = thickness of nut
+//
+module hex_screw_recess_X(sd, sl, nut_af, nut_t) {
+    rotate([0,90,0])
+        hex_screw_recess_Z(sd, sl, nut_af, nut_t) ;
+}
+////-hex_screw_recess_X(af, t)
+// hex_screw_recess_X(m4_nut_af, m4_nut_t) ;
+
+
+
+// Return height of nut recess cone given across-flats size of nut
+// This value should allow for an achievable slope without support
 //
 function nut_recess_height(af) = af*0.30 ;
-
-
 
 // Hex nut recess on centre of X-Y plane
 //
@@ -436,41 +495,6 @@ module extended_nylock_recess_with_ejection_hole(af, t, l) {
 //     // Using dimensions for M4 nylock nut
 //     extended_nylock_recess_with_ejection_hole(m4_nut_af, m4_nylock_t, 20) ;
 // }
-
-
-// Hex nut recess on centre of Y-Z plane, extending +X from origin.
-//
-// Doesn't require code for printing support; orient sloping sides top and bottom.
-//
-// af = nut dimension AF (across flats, = spanner size)
-// t  = thickness of nut
-//
-module nut_recess_X(af, t) {
-    od = af * 2 / sqrt(3) ; // Diameter
-    rotate([0,90,0])
-        cylinder(d=od, h=t+delta*2, $fn=6) ;
-}
-////-nut_recess_X(af, t)
-// nut_recess_X(m4_nut_af, m4_nut_t) ;
-
-// Hex screw recess on centre of Y-Z plane, extending +X from origin.
-//
-// Doesn't require code for printing support; orient sloping sides top and bottom.
-//
-// sd       = diameter of screw
-// sl       = length of screw (including head)
-// nut_af   = nut dimension AF (across flats, = spanner size)
-// nut_t    = thickness of nut
-//
-module screw_recess_X(sd, sl, nut_af, nut_t) {
-    od = nut_af * 2 / sqrt(3) ; // Diameter of hex bounding circle
-    rotate([0,90,0]) {
-        cylinder(d=od, h=nut_t+delta, $fn=6) ;
-        cylinder(d=sd, h=sl+delta, $fn=16) ;
-    }
-}
-////-screw_recess_X(af, t)
-// screw_recess_X(m4_nut_af, m4_nut_t) ;
 
 
 // Cutout for vertical screw hole with downward-facing countersink at top, 
