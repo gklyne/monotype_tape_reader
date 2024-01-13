@@ -137,8 +137,9 @@ module tape_reader_bridge_with_guides() {
                         cube(size=[guide_w*2, guide_w, guide_ist*2], center=true) ;
             // Angled cutaway for outer shade
             // read_side_apex_h is height of dovetail on sides
-            // read_extra_l is distance of side from guide flange
-            // read_total_l     = spool_w_all + 2*(read_side_t + read_extra_l) ;
+            // read_extra_l is distance of side from inner guide flange
+            // guide_tc is the full (combined bevel and rim) thickness of the guide flange
+            // read_total_l = spool_w_all + 2*(read_side_t + read_extra_l) ;
             // -X translates to +Z after rotation
             outer_shade_a = 45 ;
             outer_shade_h = read_side_apex_h - (read_extra_l-guide_tc)/tan(outer_shade_a) + clearance*2 ;

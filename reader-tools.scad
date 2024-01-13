@@ -150,6 +150,7 @@ module roller_gripping_tool(l, w, t, d) {
 //  sd  = shaft diameter
 //  af  = nut AF size
 //  nt  = nut thickness (depth of hex recess)
+//
 module nut_spinner_tool(l, od, sd, af, nt) {
     difference() {
         union() {
@@ -175,8 +176,61 @@ module nut_spinner_tool_m3(l) {
 }
 
 ////-nut_spinner_tool_m4(l)
-translate([-10,0,0])
-    nut_spinner_tool_m3(35) ;
-translate([+10,0,0])
-    nut_spinner_tool_m4(40) ;
+// translate([-10,0,0])
+//     nut_spinner_tool_m3(35) ;
+// translate([+10,0,0])
+//     nut_spinner_tool_m4(40) ;
+
+
+////////////////////////////////////////////////////////////////////////////////
+// Washer positioning tool
+////////////////////////////////////////////////////////////////////////////////
+
+// When assembling the reader rollers,  it is sometimes tricky supporting washers
+// in-place while threading shaft screws into the assembly.  This tool is an attempt to help with this.
+//
+//
+// l    = overall length
+// od   = overall diameter of head
+// wd   = diameter of washer
+// sd   = diameter of shaft
+// wt   = thickness of washer supports (e.g., for up to 3 washers)
+// st   = thickness of supporting shim
+//
+module washer_positioning_tool(l, od, wd, sd, wt, st) {
+    difference() {
+        union() {
+            cylinder(d=od, h=wt+st) ;
+            translate([-wt/2,0,0])
+                cube(size=[wt,l,wt+st]) ;
+        }
+    // Shaft cutout
+    translate([0,0,-delta])
+        // cylinder(d=sd, h=wt+st+2*delta, $fn=16) ;
+        // oval(x, d, h)
+        oval(od, sd, wt+st+2*delta) ;
+    // Washer support cutout
+    translate([0,0,st])
+        // cylinder(d=wd, h=wt+delta, $fn=16) ;
+        oval(od, wd, wt+delta) ;
+    }
+}
+
+////-washer_positioning_tool(l, od, wd, sd, wt, st)
+////-washer_positioning_tool_m4()
+washer_positioning_tool(40, m4_washer_d+2, m4_washer_d, m4, m4_washer_t*3, 0.8) ;
+
+
+//----
+// module part_template(xxx) {
+//     difference() {
+//         union() {
+//             xxx
+//         }
+//     xxx
+//     }
+// }
+//----
+
+
 

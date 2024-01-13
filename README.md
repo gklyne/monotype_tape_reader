@@ -143,9 +143,9 @@ Following [meeting with Dawn](Journal/20230924-more-reader-changes-needed.md).
 
 [x] More flexibility of camera positioning
 
-[ ] Make camera clamp screws easier to access
+[x] Make camera clamp screws easier to access
 
-[ ] Mount for Pi Zero and EL switch wire (and power supplies?)
+[x] Mount for Pi Zero and EL switch wire (and power supplies?)
 
 
 ## 2023-11-25
@@ -175,13 +175,14 @@ Following [meeting with Dawn](Journal/20230924-more-reader-changes-needed.md).
 
 [x] Lower baffle (shade) on reader bridge
 
-[ ] Winder spool axis: use bearing or sleeving to avoid creep along the shaft thread
+[x] Winder spool axis: use bearing or sleeving to avoid creep along the shaft thread
     - use spool design from free end, and add sleeves over M4 screw.
     - New clip holes need to be diameter of sleeve.
     - Use sleeve bearings on both spools to reduce drag.
 
-[ ] Shorter roller arm on take-up spool side?
+[x] Shorter roller arm on take-up spool side?
 
+[x] Small collection of tools to facilitate assembly/maintenance
 
 
 ## To consider
