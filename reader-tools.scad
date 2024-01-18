@@ -198,27 +198,93 @@ module nut_spinner_tool_m3(l) {
 // st   = thickness of supporting shim
 //
 module washer_positioning_tool(l, od, wd, sd, wt, st) {
+    lt = 0.4 ;  // Thickness of retaining lip
     difference() {
         union() {
-            cylinder(d=od, h=wt+st) ;
-            translate([-wt/2,0,0])
-                cube(size=[wt,l,wt+st]) ;
+            cylinder(d=od, h=wt+st+lt) ;
+            translate([-sd/2,0,0])
+                cube(size=[sd,l,wt+st+lt]) ;
         }
     // Shaft cutout
     translate([0,0,-delta])
-        // cylinder(d=sd, h=wt+st+2*delta, $fn=16) ;
         // oval(x, d, h)
         oval(od, sd, wt+st+2*delta) ;
     // Washer support cutout
-    translate([0,0,st])
-        // cylinder(d=wd, h=wt+delta, $fn=16) ;
-        oval(od, wd, wt+delta) ;
+    translate([0,0,st]) {
+        cylinder(d=wd, h=wt, $fn=16) ;
+        oval(od, wd-lt, wt) ;
+    }
+    // Washer support lip cutout
+    translate([0,0,st+wt-delta])
+        oval(od, wd-lt, lt+delta*2) ;
     }
 }
 
 ////-washer_positioning_tool(l, od, wd, sd, wt, st)
 ////-washer_positioning_tool_m4()
-washer_positioning_tool(40, m4_washer_d+2, m4_washer_d, m4, m4_washer_t*3, 0.8) ;
+// washer_positioning_tool(40, m4_washer_d+1.6, m4_washer_d, m4, m4_washer_t*3, 0.8) ;
+
+
+
+////////////////////////////////////////////////////////////////////////////////
+// Tape clip retaining tab lift tool
+////////////////////////////////////////////////////////////////////////////////
+
+module tape_spool_clip_tab_lifter() {
+    lifter_l  = 10 ;    // Length at apex of yoke
+    lifter_l2 = 4 ;     // Length at edge
+    lifter_l3 = 9.2 ;   // Length to retaining ridge
+    handle_l2 = 20 ;    // length to handle
+    handle_l  = 30 ;    // length incl handle
+    lifter_w  = 54 ;
+    lifter_w2 = 36 ;
+    lifter_w3 = 10 ;
+    handle_w  = 20 ;
+    lifter_t  = 2.6 ;
+    bevel_a   = 35 ;
+    difference() {
+        union() {
+            linear_extrude(height=lifter_t)
+                polygon(
+                    points=[
+                        [-lifter_w3/2, lifter_l],   // Inner U apex L
+                        [-lifter_w2/2, 0],
+                        [-lifter_w/2, 0],           // Bottom L corner
+                        [-lifter_w/2, lifter_l2],
+                        [-handle_w/2, handle_l2],
+                        [-handle_w/2, handle_l],    // Top L corner
+                        [+handle_w/2, handle_l],    // Top R corner
+                        [+handle_w/2, handle_l2],
+                        [+lifter_w/2, lifter_l2],
+                        [+lifter_w/2, 0],           // Bottom R corner
+                        [+lifter_w2/2, 0],
+                        [+lifter_w3/2, lifter_l],   // Inner U apex L
+                        ],
+                    paths=[[0,1,2,3,4,5,6,7,8,9,10,11,0]]
+                    ) ;
+        }
+        rotate([bevel_a,0,0])
+            translate([-lifter_w/2-delta,0,-delta])
+                cube(size=[lifter_w+2*delta,lifter_t/sin(bevel_a)+delta,lifter_t+delta]) ;
+        //translate([0,lifter_l3,-0.2])
+        //    rotate([-30,0,0])
+        //        %cube(size=[lifter_w, 2, 1], center=true) ;
+        translate([-lifter_w/2,lifter_l3,0]) {
+            rotate([0,0,0])
+                cube(size=[lifter_w, 1.2*sin(20), 1.2*cos(20)]) ;
+            rotate([-20,0,0])
+                cube(size=[lifter_w, 4, 1.2]) ;
+        }
+    }
+}
+
+////-tape_spool_clip_tab_lifter()
+tape_spool_clip_tab_lifter() ;
+
+
+////////////////////////////////////////////////////////////////////////////////
+// xxxx
+////////////////////////////////////////////////////////////////////////////////
 
 
 //----

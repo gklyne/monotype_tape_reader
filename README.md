@@ -185,6 +185,11 @@ Following [meeting with Dawn](Journal/20230924-more-reader-changes-needed.md).
 [x] Small collection of tools to facilitate assembly/maintenance
 
 
+## 2024-01-13
+
+[x] Iterations on design of tape follower roller arm, to allow free movement of the tape
+
+
 ## To consider
 
 [ ] Marker threshold setting is rather sensitive
@@ -196,7 +201,6 @@ Following [meeting with Dawn](Journal/20230924-more-reader-changes-needed.md).
 ## Notes
 
 ### Notes: 2023-03-05
-
 
 ## Write-up notes
 
@@ -219,7 +223,7 @@ Dealing with noisy data, interactions between:
 - better hardware
 - better tape motion control
 
-Lots of learning:  more efficient use of openSCAD for evolving mechanical design; OpenCV for video analysis and generation, Raspberry Pi to control stepper motor, simple statistics-based algorithms for dealing with noisy data.
+Lots of learning:  more efficient use of OpenSCAD for evolving mechanical design; OpenCV for video analysis and generation, Raspberry Pi to control stepper motor, simple statistics-based algorithms for dealing with noisy data.
 
 Each attempt to improve the decoding software can show up fundamental problems with the raw data, which are not reliably overcome by better processing (e.g. might confuse a human attempting to decode the data), thus giving rise to new hardware iterations.  Then each new hardware iteration and video recording can throw up new patterns of data noise to be handled by the decoding software, so there's a lot of iteration between hardware and software improvements.
 
@@ -249,6 +253,10 @@ Added speed profile (to control software) as analysis had holes merging towards 
 Add tape follower rollers to help keep tape on guide sprockets, and absorb some slack
 
 Add rod mounting plate extensions to leave for space for tape follower roller arms
+
+Add drive belt tensioner to control slippage
+
+Use smaller shafts and metal sleeve bearings for smoother tape movement
 
 
 ### Decoding software

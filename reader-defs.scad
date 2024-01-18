@@ -22,8 +22,8 @@ m4_nut_t     = 3.1 ;        // M4 nut thickness (for recess)
 m4_slimnut_t = 2.5 ;        // M4 slim nut thickness (for recess)
 m4_nylock_t  = 4.3 ;        // M4 nylock nut thickness (for recess)
 m4_csink     = m4*2 ;       // M4 countersink diameter
-m4_washer_d  = 9.8 ;        // M4 washer diameter
-m4_washer_t  = 1.0 ;        // M4 washer thickness
+m4_washer_d  = 8.9 ;        // M4 washer diameter
+m4_washer_t  = 0.9 ;        // M4 washer thickness
 
 m8_nut_af    = 13 ;         // M8 nut a/f size
 m8_nut_t     = 6.5 ;        // M8 nut thickness (for recess)
@@ -113,8 +113,7 @@ read_side_apex_h = 6 ;  // Height of dovetail on sides
 read_side_base_w = 40 ;
 read_side_peg_d  = m4 ;
 
-read_groove_w = 2.4 ;   // EL wire groove width
-read_groove_d = 3 ;     // EL wire groove depth
+read_groove_w = 2.6 ;   // EL wire groove width
 
 guide_w  = 28 ;         // Width of guide flange on bridge
 guide_tc = 2 ;          // Guide thickness at core

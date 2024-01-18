@@ -328,8 +328,8 @@ module hex_screw_recess_Z(sd, sl, nut_af, nut_t) {
     nut_recess_Z(nut_af, nut_t) ;
     cylinder(d=sd, h=sl+delta, $fn=16) ;
 }
-////-hex_screw_recess_Z(af, t)
-// hex_screw_recess_Z(m4_nut_af, m4_nut_t) ;
+////-hex_screw_recess_Z(sd, sl, af, t)
+// hex_screw_recess_Z(m4, 10, m4_nut_af, m4_nut_t) ;
 
 
 // Hex nut recess on centre of Y-Z plane, extending +X from origin.
