@@ -520,6 +520,8 @@ module roller_tape_guide() {
 ////////////////////////////////////////////////////////////////////////////////
 
 module reader_bridge_side_support() {
+    pivot_hub_t = read_side_t+guide_sprocket_off ;
+
     // Side in X-Y plane, shaft centre at origin, extends along +X axis
     module side_profile() {
         base_h = read_side_t + (read_side_base_t - read_side_t) ;
@@ -560,9 +562,9 @@ module reader_bridge_side_support() {
                 oval(guide_sprocket_sep, guide_sprocket_dia, read_side_t) ;
         // Shaft support hubs
         translate([guide_sprocket_ht_off, guide_sprocket_sep/2, 0])
-            cylinder(d=guide_sprocket_sleeve_d+2, h=read_side_t+guide_sprocket_off) ;
+            cylinder(d=guide_sprocket_sleeve_d+2, h=pivot_hub_t) ;
         translate([guide_sprocket_ht_off, -guide_sprocket_sep/2, 0])
-            cylinder(d=guide_sprocket_sleeve_d+2, h=read_side_t+guide_sprocket_off) ;
+            cylinder(d=guide_sprocket_sleeve_d+2, h=pivot_hub_t) ;
     }
 
     module side_guide_roller_arms(side) {
@@ -574,7 +576,7 @@ module reader_bridge_side_support() {
             guide_roller_outer_d, winder_side_t
         ) ;
         translate([guide_roller_centre_x, guide_roller_centre_y*side, 0])
-            cylinder(d=guide_roller_sleeve_d+2, h=read_side_t+guide_sprocket_off) ;
+            cylinder(d=guide_roller_sleeve_d+2, h=pivot_hub_t) ;
     }
 
     module side_guide_follower_arms(side) {
@@ -585,9 +587,9 @@ module reader_bridge_side_support() {
             guide_follower_pivot_x, guide_follower_pivot_y*side, 
             guide_roller_outer_d, winder_side_t
         ) ;
-        // Extra thickness for hub/spacer
-        // translate([guide_follower_pivot_x, guide_follower_pivot_y*side, 0])
-        //     cylinder(d=guide_roller_sleeve_d+2, h=read_side_t+guide_sprocket_off) ;
+        // Extra thickness for nut holder
+        translate([guide_follower_pivot_x, guide_follower_pivot_y*side, 0])
+            cylinder(d=guide_roller_sleeve_d+4, h=pivot_hub_t) ;
     }
 
     // Reader side support assembly...
@@ -606,18 +608,17 @@ module reader_bridge_side_support() {
         } ;
         // Shaft holes
         for (side=[-1,1]) {
-
             // Shaft holes for guide sprockets
             translate([guide_sprocket_ht_off, side*guide_sprocket_sep/2, 0])
-                shaft_hole(guide_sprocket_sleeve_d, read_side_t+guide_sprocket_off) ;
+                shaft_hole(guide_sprocket_sleeve_d, pivot_hub_t) ;
             // Shaft holes for guide rollers
             translate([guide_roller_centre_x, side*guide_roller_centre_y, 0])
-                shaft_hole(guide_roller_sleeve_d, read_side_t+guide_sprocket_off) ;
+                shaft_hole(guide_roller_sleeve_d, pivot_hub_t) ;
             // Shaft holes for follower pivots
-            translate([guide_follower_pivot_x, side*guide_follower_pivot_y, read_side_t+delta]) {
-                // shaft_hole(guide_roller_shaft_d, read_side_t+guide_sprocket_off) ;
+            translate([guide_follower_pivot_x, side*guide_follower_pivot_y, pivot_hub_t+delta]) {
+                // shaft_hole(guide_roller_shaft_d, pivot_hub_t) ;
                 mirror([0,0,1])
-                    hex_screw_recess_Z(m4, read_side_t+2*delta, m4_nut_af, m4_slimnut_t) ;
+                    hex_screw_recess_Z(m4, pivot_hub_t+2*delta, m4_nut_af, m4_nut_t) ;
             }
         }
         // Cutout to reduce plastic used
@@ -629,39 +630,6 @@ module reader_bridge_side_support() {
                 read_h-read_side_base_t-read_side_t, -0.15*read_side_base_w,
                 cutout_r, winder_side_t+2*delta
             ) ;
-
-
-
-
-
-        // // Shaft holes for guide sprockets
-        // translate([guide_sprocket_ht_off, guide_sprocket_sep/2, 0])
-        //     shaft_hole(guide_sprocket_sleeve_d, read_side_t+guide_sprocket_off) ;
-        // translate([guide_sprocket_ht_off, -guide_sprocket_sep/2, 0])
-        //     shaft_hole(guide_sprocket_sleeve_d, read_side_t+guide_sprocket_off) ;
-        // // Shaft holes for guide rollers
-        // translate([guide_roller_centre_x, guide_roller_centre_y, 0])
-        //     shaft_hole(guide_roller_sleeve_d, read_side_t+guide_sprocket_off) ;
-        // translate([guide_roller_centre_x, -guide_roller_centre_y, 0])
-        //     shaft_hole(guide_roller_sleeve_d, read_side_t+guide_sprocket_off) ;
-        // // Shaft holes for follower pivots
-        // translate([guide_follower_pivot_x, guide_follower_pivot_y, 0])
-        //     shaft_hole(guide_roller_sleeve_d, read_side_t+guide_sprocket_off) ;
-        // translate([guide_follower_pivot_x, -guide_follower_pivot_y, 0])
-        //     shaft_hole(guide_roller_sleeve_d, read_side_t+guide_sprocket_off) ;
-        // // Cutout to reduce plastic used
-        // cutout_r = shaft_d ;
-        // translate([0,0,-delta])
-        //     rounded_triangle_plate(
-        //         guide_sprocket_dia*0.75, 0, 
-        //         read_h-read_side_base_t-read_side_t, +0.15*read_side_base_w,
-        //         read_h-read_side_base_t-read_side_t, -0.15*read_side_base_w,
-        //         cutout_r, winder_side_t+2*delta
-        //     ) ;
-
-
-
-
     }
 
 } // module reader_bridge_side_support
@@ -904,11 +872,15 @@ module layout_reader_bridge_dovetailed() {
 
 ////-reader_bridge_side_support_dovetailed() ;
 reader_bridge_side_support_dovetailed() ;
+
+////-reader_bridge_side_support_dovetailed-2off() ;
+//   NOTE: this caused some printing problems; 
+//         printing as two single parts worked better.
+//         Possibly exacerbated by cold room (~15C) when printing?
 // translate([-winder_side_h-40,0,0])
 //     reader_bridge_side_support_dovetailed() ;
 // translate([+winder_side_h+40,0,0])
 //     mirror([1,0,0]) reader_bridge_side_support_dovetailed() ;
-
 
 ////-sprocket_tape_guide
 //sprocket_tape_guide() ;
