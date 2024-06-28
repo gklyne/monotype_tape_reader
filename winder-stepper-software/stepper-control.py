@@ -3,7 +3,9 @@
 # To set up environment:
 #
 # SSH to RPi:
-#  ssh graham@192.168.1.23
+#  ssh graham@192.168.1.23  (p:a...?)
+# or:
+#  ssh graham@mcreader.local
 #
 
 # venv notes (NOT NEEDED)

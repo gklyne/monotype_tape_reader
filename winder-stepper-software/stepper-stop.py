@@ -4,7 +4,7 @@ import sys
 import time
 import RPi.GPIO as GPIO
 
-# PiStepo2 pins to use:
+# PiStep2 pins to use:
 #
 # Physical pins 11, 12, 13, 15 for Motor A (GPIO 17, 18, 27, 22)
 # Physical pins 7, 22, 18. 16 for Motor B (GPIO 4, 25, 24, 23)

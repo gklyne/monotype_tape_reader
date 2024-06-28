@@ -2,6 +2,12 @@
 
 Mechanical parts for reading paper tape created by Monotype keyboard.
 
+To run the tape reader, plug the reader RPi in to the Mac USB port, allow it a few seconds to start up, then SSH to the RPi:
+    ssh graham@192.168.1.23  (p:a...?)
+or:
+    ssh graham@mcreader.local
+
+Then seek out and run `stepper-control.py`.
 
 ## TODO
 
@@ -190,12 +196,48 @@ Following [meeting with Dawn](Journal/20230924-more-reader-changes-needed.md).
 [x] Iterations on design of tape follower roller arm, to allow free movement of the tape
 
 
-## To consider
+
+## 2024-02-21
+
+[x] Increase overhang of bridge shade shells (+1mm inside and outside)
+
+[x] Revert to smaller EL wire and smaller gap in bridge
+
+[x] Move matrix mapping tables to separate module; use import <foo> as ...
+
+[x] Trace detection: require overlap in successive frames; some sprockets are getting merged
+
+[ ] 
+
+
+## To consider (2024-02-13)
+
+[ ] Threshold detection coordinate extraction is a bottleneck -- can this be optimized?
+    - see function 'find_frame_regions'
+    - possible to detect and merge local overlaps before comparing all?
+    - Or collapse row-runs of pixels into (min,max) groupings?
+
+[ ] Shorter EL wire? 
+
+[ ] Provide "output_log.txt" file to analyse algorithm behaviour details
+    - region detection: num regions, region size, shape variations
+    - trace detection: summarize contributing regions
+    - row detection: initial and final candidates
 
 [ ] Marker threshold setting is rather sensitive
 
+[ ] Analyze threshold setting w.r.t. region area and shape variations; also number of regions detected.  Can threshold setting be adjusted automatically using this?   (See logging options above.)
+
+
+## Shelved
+
 [ ] Running calibration of data scale - maybe it's not truly linear (consistent hole 22 deviation).
     Consider low order polynomial, correction (quadratic?, cubic?)
+
+[ ] Use battery supply for EL wire (less prone to brightness changes?)
+
+[ ] Attach battery supply to reader rig
+
 
 
 ## Notes
@@ -246,7 +288,7 @@ Increase spool size to reduce tape speed variation beginning to end (pre-stepper
 
 Switched to stepper motor drive for better control of tape speed
 
-Additional hardware (rPI, stepper controller, stepper motor) and software to control stepper
+Additional hardware (RPi, stepper controller, stepper motor) and software to control stepper
 
 Added speed profile (to control software) as analysis had holes merging towards end of tape
 
@@ -257,6 +299,10 @@ Add rod mounting plate extensions to leave for space for tape follower roller ar
 Add drive belt tensioner to control slippage
 
 Use smaller shafts and metal sleeve bearings for smoother tape movement
+
+Experiment with wider, brighter EL wire, but this ended up with rows getting merged
+
+Extra hardware for mounting RPi, and other bits, on reader frame
 
 
 ### Decoding software

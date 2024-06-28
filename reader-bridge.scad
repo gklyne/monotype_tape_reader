@@ -8,13 +8,15 @@ use <reader-common.scad> ;
 // Definitions
 ////////////////////////////////////////////////////////////////////////////////
 
+// @@@@ moved to reader-defs.scad
 // Guide roller parameters (shape of rims each end)
 
-guide_rim_1_extra_radius = 3 ;      // Rim bevel outer 
-guide_rim_2_extra_radius = 0.25 ;   // Rim bevel inner
-guide_rim_1_width        = 0.2 ;    // Rim end thickness
-guide_rim_2_width        = 2 ;    // Rim bevel thickness 
-guide_rim_overall_width  = mt_overall_width + 5 ;  // Each rim 2.2 + 0.6 tape clearance
+// guide_rim_1_extra_radius = 3 ;      // Rim bevel outer 
+// guide_rim_2_extra_radius = 0.25 ;   // Rim bevel inner
+// guide_rim_1_width        = 0.2 ;    // Rim end thickness
+// guide_rim_2_width        = 2 ;      // Rim bevel thickness 
+// guide_rim_overall_width  = mt_overall_width + 5 ;  // Each rim 2.2 + 0.6 tape clearance
+// @@@@
 
 ////////////////////////////////////////////////////////////////////////////////
 // Utilities for tape guide objects
@@ -120,7 +122,7 @@ module tape_reader_bridge_with_guides() {
                 shade_shell(guide_w/2-shade_t, guide_w/2, guide_ost+guide_ist) ;
             // Angled cutaway for inner shade
             translate([0,0,guide_offset+guide_tb])    // Inner shade
-                rotate([0,-25,0])
+                rotate([0,-26,0])
                     translate([0,0,-guide_ist])
                         cube(size=[guide_w*2, guide_w, guide_ist*2], center=true) ;
             // Angled cutaway for outer shade
@@ -154,12 +156,18 @@ module tape_reader_bridge_with_guides() {
             translate([read_w/2, 0, 0])
                 cube(size=[read_w+delta, guide_w+delta, read_total_l+delta], center=true) ;
             // Cutaway groove for EL wire
-            translate([-(read_w-read_groove_w)/2,0,0])
+            //    -(read_w-read_groove_w)/2 -> tangential to top of bridge
+            //    ... +read_groove_w*___    -> move down to create narrower slot
+            translate([-(read_w-read_groove_w)/2+read_groove_w*0.1,0,0])
                 cylinder(d=read_groove_w, h=read_total_l+delta, center=true, $fn=12) ;
-            translate([-read_w/2-guide_eld*0.5+read_groove_w*0.4,0,0])
+            // Cutaway threading hole
+            //    -read_w/2-guide_eld*0.5 -> tangential to top of bridge
+            //    ... +read_groove_w*0.4_ -> move down to create slot
+            translate([-read_w/2-guide_eld*0.5+read_groove_w*0.45,0,0])
                 cylinder(d=guide_eld, h=read_total_l+delta, center=true, $fn=12) ;
     }
 }
+
 
 module tape_reader_bridge_dovetailed() {
     module bridge_dovetail_cutout() {
@@ -175,6 +183,25 @@ module tape_reader_bridge_dovetailed() {
     }
 }
 
+module tape_reader_bridge_el_wire_clip() {
+    // Clip to hold down ends of EL wire in reader bridge groove
+    //
+    // Pushes on over end of bridge and sits inside the support sides
+    //
+    clip_w = 3 ;        // Width of clip
+    clip_t = 2.5 ;      // Thickness of clip
+    clip_r1 = read_w/2+clearance ;
+    clip_r2 = read_w/2+clip_w ;
+    difference() {
+        union() {
+            ring(r1=clip_r1, r2=clip_r2, t=clip_t) ;
+            translate([-read_w/2,-read_w/2-clip_w,0])
+                cube(size=[read_w/2, 2*clip_r2, clip_t]) ;
+            }
+        translate([-clip_r1-clip_w,-clip_r2-delta,-delta])
+            cube(size=[read_w/2, 2*clip_r2+2*delta, clip_t+2*delta]) ;
+    }
+}
 
 module curved_edge(l,t,dir) {
     //  Curved edge for platform:
@@ -360,10 +387,17 @@ module sprocket_guide_3_spoked(sd, hr, rr, or_max, fr, sw, pd, gsw, gow) {
     }
 } ;
 
+// @@@@ moved to reader-defs.scad
+// Guide sprocket diameter and positioning...
+// guide_sprocket_dia      = 22 ;
+// guide_sprocket_sep      = guide_sprocket_dia*1.8 + read_w ;
+// guide_sprocket_ht_off   = guide_sprocket_dia*0.5 ;
+// @@@@
+
+// Guide sprocket details
 guide_sprocket_fillet_r = 1.5 ;  
 guide_sprocket_spoke_w  = 2 ;
 
-guide_sprocket_dia      = 22 ;
 guide_sprocket_shaft_d  = m4 ;
 guide_sprocket_sleeve_d = m6 ;
 guide_sprocket_hub_r    = m4 ;
@@ -371,7 +405,8 @@ guide_sprocket_rim_r    = guide_sprocket_dia/2 - 1.5 ;
 guide_sprocket_width    = guide_rim_overall_width ;
 guide_sprocket_off      = 1 ;       // Offset from side (standoff hub thickness)
 
-// Positioning...
+// Guide sprocket diameter and positioning...
+guide_sprocket_dia      = 22 ;
 guide_sprocket_sep      = guide_sprocket_dia*1.8 + read_w ;
 guide_sprocket_ht_off   = guide_sprocket_dia*0.5 ;
 
@@ -454,7 +489,7 @@ module roller_guide_3_spoked(sd, hr, rr, or, fr, sw, gow, ghw) {
 guide_roller_fillet_r       = 0.5 ;  
 guide_roller_spoke_w        = 1.5 ;
 
-guide_roller_outer_d        = 14 ;
+// @@@@ guide_roller_outer_d        = 14 ;
 guide_roller_shaft_d        = guide_sprocket_shaft_d ;
 guide_roller_sleeve_d       = guide_sprocket_sleeve_d ;
 guide_roller_hub_r          = guide_roller_shaft_d ;
@@ -468,14 +503,16 @@ follower_hub_width          = 12 ;
 follower_sleeve_len         = 6 ;
 follower_roller_hub_r       = follower_roller_shaft_d ;
 
-guide_roller_centre_x       = guide_sprocket_ht_off*1.6 ;  // e.g. 1.6 for droop, 1 for level, 0.7 for lift
-guide_roller_centre_y       = 
-    guide_sprocket_sep/2 + 
-    guide_sprocket_dia*0.5 + guide_roller_outer_d*0.5 + 
-    guide_rim_1_extra_radius*2 + 1 ;
-
-guide_follower_pivot_x      = guide_sprocket_ht_off*1 ;  // e.g. 1.6 for droop, 1 for level, 0.7 for lift
-guide_follower_pivot_y      = guide_roller_centre_y + 12 ;
+// @@@@
+// guide_roller_centre_x       = guide_sprocket_ht_off*1.6 ;  // e.g. 1.6 for droop, 1 for level, 0.7 for // lift
+// guide_roller_centre_y       = 
+//     guide_sprocket_sep/2 + 
+//     guide_sprocket_dia*0.5 + guide_roller_outer_d*0.5 + 
+//     guide_rim_1_extra_radius*2 + 1 ;
+// 
+// guide_follower_pivot_x      = guide_sprocket_ht_off*1 ;  // e.g. 1.6 for droop, 1 for level, 0.7 for lift
+// guide_follower_pivot_y      = guide_roller_centre_y + 12 ;
+// @@@@
 
 
 module roller_tape_guide() {
@@ -648,9 +685,11 @@ module reader_bridge_side_support_dovetailed() {
 // Tape follower arm (supporting tape_follower_roller)
 ////////////////////////////////////////////////////////////////////////////////
 
-tape_follower_arm_l         = 40 ;          // Arm length between shaft centres
-tape_follower_short_arm_l   = 24 ;          // Short arm length between shaft centres
-tape_follower_elbow_l       = 10 ;          // Length from pivot to end of elbow
+// @@@@
+// tape_follower_arm_l         = 40 ;          // Arm length between shaft centres
+// tape_follower_short_arm_l   = 24 ;          // Short arm length between shaft centres
+// tape_follower_elbow_l       = 10 ;          // Length from pivot to end of elbow
+// @@@@
 tape_follower_arm_w         = m4+4 ;
 tape_follower_arm_t         = sup_t ;
 tape_follower_hub_t         = sup_t*1.4 ;
@@ -870,8 +909,17 @@ module layout_reader_bridge_dovetailed() {
 // translate([0,spacing*1,0])
 //     reader_bridge_side_support_dovetailed() ;
 
+////-tape_reader_bridge_el_wire_clip()
+// translate([0,-read_w,0])
+//     tape_reader_bridge_el_wire_clip() ;
+// translate([0,+read_w,0])
+//     tape_reader_bridge_el_wire_clip() ;
+
+
+
+
 ////-reader_bridge_side_support_dovetailed() ;
-reader_bridge_side_support_dovetailed() ;
+// reader_bridge_side_support_dovetailed() ;
 
 ////-reader_bridge_side_support_dovetailed-2off() ;
 //   NOTE: this caused some printing problems; 

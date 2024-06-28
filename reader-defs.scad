@@ -113,15 +113,49 @@ read_side_apex_h = 6 ;  // Height of dovetail on sides
 read_side_base_w = 40 ;
 read_side_peg_d  = m4 ;
 
-read_groove_w = 2.6 ;   // EL wire groove width
+// See: module tape_reader_bridge_with_guides
+read_groove_w = 2.5 ;    // EL wire groove width
+                         // (bright wire is 2.6 dia; use ???)
+                         // (regular wire is 2.25-2.3 dia;  use 2.5)
 
 guide_w  = 28 ;         // Width of guide flange on bridge
 guide_tc = 2 ;          // Guide thickness at core
 guide_tr = 1 ;          // Guide thickness at rim
 guide_tb = guide_tc-guide_tr ;  // Guide thickness of bevel
 guide_eld = 5.5 ;       // EL wire threading hole diameter
-guide_ist = 4 ;         // EL wire shade inner overhang thickness
-guide_ost = (read_total_l-spool_w_all)/2+1 ; // EL wire shade outer overhang thickness
+guide_ist = 5 ;         // EL wire shade inner overhang thickness
+guide_ost = (read_total_l-spool_w_all)/2+2 ; // EL wire shade outer overhang thickness
+
+// Guide roller parameters (shape of rims each end)
+
+guide_rim_1_extra_radius = 3 ;      // Rim bevel outer 
+guide_rim_2_extra_radius = 0.25 ;   // Rim bevel inner
+guide_rim_1_width        = 0.2 ;    // Rim end thickness
+guide_rim_2_width        = 2 ;      // Rim bevel thickness 
+guide_rim_overall_width  = mt_overall_width + 5 ;  // Each rim 2.2 + 0.6 tape clearance
+
+// Guide sprocket diameter and positioning...
+guide_sprocket_dia      = 22 ;
+guide_sprocket_sep      = guide_sprocket_dia*1.8 + read_w ;
+guide_sprocket_ht_off   = guide_sprocket_dia*0.5 ;
+
+// Guide roller diameter and positioning...
+guide_roller_outer_d        = 14 ;
+guide_roller_centre_x       = guide_sprocket_ht_off*1.6 ;   // e.g. 1.6 for droop, 
+                                                            // 1 for level, 0.7 for lift
+guide_roller_centre_y       = 
+    guide_sprocket_sep/2 + 
+    guide_sprocket_dia*0.5 + guide_roller_outer_d*0.5 + 
+    guide_rim_1_extra_radius*2 + 1 ;
+
+// Guide follower positioning
+guide_follower_pivot_x      = guide_sprocket_ht_off*1 ;     // e.g. 1.6 for droop, 
+                                                            // 1 for level, 0.7 for lift
+guide_follower_pivot_y      = guide_roller_centre_y + 12 ;
+
+tape_follower_arm_l         = 40 ;          // Arm length between shaft centres
+tape_follower_short_arm_l   = 24 ;          // Short arm length between shaft centres
+tape_follower_elbow_l       = 10 ;          // Length from pivot to end of elbow
 
 
 // Parts for holding phone camera
@@ -175,13 +209,13 @@ rod_support_t = sup_t ;     // Rod support side support thickness
 rod_support_base_t = 20 ;   // Rod support side support thickness at base 
 rod_support_base_o = 89 ;   // X-offset from reader bar to phone support rod
 
-rod_support_apex_w = 24 ;
-rod_support_base_w = 45 ;
-rod_support_shell_w = 24 ;
+rod_support_apex_w  = 24 ;
+rod_support_base_w  = 45 ;
+rod_support_shell_w = 48 ;  // Rod support position: increase to move away from tape path
 
 // Baseplate dimensions
 
-base_l   = 360 ; // was 300, 240, 400 ;
+base_l   = 400 ; // was 300, 240, 400 ;
 base_w   = 130 ;
 base_t   = 4 ;
 border_w = 8 ;

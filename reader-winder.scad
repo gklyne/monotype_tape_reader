@@ -313,55 +313,6 @@ translate([spacing*0.5,+spacing*0.3,0]) spool_side_support_slotted(r=-150, s_d=m
 // translate([spacing*1.5,-spacing*0.3,0]) spool_side_support_slotted(r=150, s_d=shaft_d ;
 // translate([spacing*1.5,+spacing*0.3,0]) spool_side_support_slotted(r=-150, s_d=shaft_d ;
 
-module spool_and_winder_side_support(side, s_d=shaft_d) {
-    // Spool and winder support
-    // NO LONGER USED
-    //
-    // side = +/- 1, for different sides
-    //
-    slot_rotation = 140*side ;
-    lower_arm_x = winder_side_h-winder_base_t ;
-    lower_arm_y = 0 ;
-    upper_arm_x = winder_apex_d/2 ;
-    upper_arm_y = 0 ;
-    winder_x    = winder_apex_d/2 ;
-    winder_y    = -outer_d*0.6*side ;
-    cutout_r    = winder_apex_d*0.4 ;
-    difference() {
-        union () {
-            spool_side_support_slotted(r=slot_rotation, s_d=s_d) ;
-            difference() {
-                // Side arms to hold winder
-                union() {
-                    brace_xy(lower_arm_x,lower_arm_y,
-                        winder_x,winder_y,
-                        shaft_d*0.8,shaft_d*1.6,shaft_d,winder_side_t
-                    ) ;
-                    brace_xy(upper_arm_x,upper_arm_y,
-                        winder_x,winder_y,
-                        shaft_d*0.8,shaft_d*0,shaft_d,winder_side_t
-                        ) ;
-                }
-                translate([winder_x,winder_y,0])
-                    shaft_hole(shaft_d, winder_side_t) ;
-            }
-        }
-        // Cutout to reduce plastic used
-        translate([0,0,-delta])
-            rounded_triangle_plate(
-                winder_apex_d, 0, 
-                winder_side_h-winder_base_t,  (winder_side_w/2-cutout_r*2),
-                winder_side_h-winder_base_t, -(winder_side_w/2-cutout_r*2),
-                cutout_r, winder_side_t+2*delta
-            ) ;
-    }
-}
-
-////-spool_and_winder_side_support(side, s_d=shaft_d)
-//// NO LONGER USED
-// translate([spacing*0.5,-spacing*0.75,0]) spool_and_winder_side_support(-1, s_d=m6) ;
-// translate([spacing*0.5,+spacing*0.75,0]) spool_and_winder_side_support(+1, s_d=m6) ;
-
 
 ////////////////////////////////////////////////////////////////////////////////
 // Stepper motor bracket
@@ -378,7 +329,7 @@ stepper_hole_pitch  = 35 ;
 bracket_sd          = m8 ;                                  // Bracket shaft hole diameter
 bracket_fw          = 4 ;                                   // Width of frame around motor
 bracket_ft          = winder_side_t+12 ;                    // Thickness of frame and brace
-bracket_hubd        = bracket_sd*1.5 ;                      // Shaft-suppoort= hub diameter
+bracket_hubd        = bracket_sd*1.5 ;                      // Shaft-support = hub diameter
 bracket_od          = stepper_body_dia + bracket_fw*2 ;     // Holder outside diamater
 bracket_mount_x     = (bracket_od*0.6) ;                    // X-offset of shaft from motor centre
 bracket_mount_y     = bracket_od/2-bracket_hubd/2 ;         // Y-offset of shaft from motor centre
@@ -689,40 +640,6 @@ module stepper_bracket_sleeve() {
 // stepper_bracket(stepper_body_dia, bracket_fw, bracket_ft, 
 //     stepper_hole_dia, stepper_hole_pitch, stepper_nut_af) ;
 // stepper_bracket_sleeve() ;
-
-// Combined spool and stepper motor bracket
-// NO LONGER USED
-//
-// dir  +1/-1 to select orientation
-//
-module spool_and_motor_side_support(dir) {
-    winder_x    = winder_apex_d/2 ;
-    winder_y    = -outer_d*0.6 ;
-    // Stepper bracket, translating attachment point to origin
-    ////translate([-bracket_mount_x*dir,-bracket_mount_y,0])
-    ////    stepper_bracket(
-    ////        stepper_body_dia, bracket_fw, bracket_ft, 
-    ////        stepper_hole_dia, stepper_hole_pitch, stepper_nut_af, 
-    ////        dir
-    ////        ) ;
-    // Spool support, translating winder crank axis to origin
-    rotate([0,0,-90])
-        translate([-winder_x, -winder_y*dir, 0]) 
-            spool_and_winder_side_support(dir) ;
-    // Extra stiffening brace
-    brace_xy(
-        -(winder_y+winder_side_w/2-winder_side_t/2)*dir, -winder_side_h+winder_x+winder_side_t*0.5, 
-        -(bracket_mount_x-(stepper_body_dia+bracket_fw)*0.5)*dir, -bracket_mount_y-stepper_hole_dia*1.5, 
-        bracket_fw, bracket_fw, 1, bracket_ft
-        ) ;
-
-}
-
-////-spool_and_motor_side_support(dir)
-// NO LONGER USED
-// translate([-40,0,0])
-//     spool_and_motor_side_support(-1) ;
-
 
 ////////////////////////////////////////////////////////////////////////////////
 // Stepper motor pulley
