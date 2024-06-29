@@ -235,6 +235,21 @@ foot_h   = 14 ;
 plate_px = base_l/2 ;
 plate_py = base_w/2 ;
 
+// Electronics mounting rail
+
+function rod_clamp_screw_pitch(rod_d)   = rod_d*2 ;
+function rod_clamp_len(rod_d)           = rod_d*3.2 ;
+function rod_clamp_wid(rod_d)           = rod_d*1.5 ;
+
+mount_rail_rod_p        = 89*2 ;    // Distance between support rods
+mount_rail_len          = mount_rail_rod_p + rod_clamp_len(8) ;
+mount_rail_wid          = rod_clamp_wid(8) ;
+mount_rail_t            = 5 ;
+mount_rail_hole_x       = [0, 8, 16, 24, 32, 40, 48, 56, 64, 72] ;
+mount_rail_clamp_x      = [mount_rail_rod_p/2-8, mount_rail_rod_p/2+8] ;
+
+
+
 // Misc
 delta = 0.01 ;          // Small value to force overlap
 clearance = 0.1 ;       // Clearance for close-fitting objects

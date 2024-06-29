@@ -1152,23 +1152,10 @@ module spool_clip_open(core_d, outer_d, flange_d, len, end) {
 // Tape spool full set of parts
 ////////////////////////////////////////////////////////////////////////////////
 
-module spool_parts_old() {
-    for (x=[0,1])
-        translate([x*(outer_d*1.2),0,0])
-            spool_end(
-                shaft_d=shaft_d, shaft_nut_af=spool_shaft_nut_af, shaft_nut_t=spool_shaft_nut_t,
-                core_d=core_d, bevel_d=bevel_d, outer_d=outer_d, 
-                side_t=spool_side_t, side_rim_t=spool_side_rim_t, w_spool_end=spool_w_end
-                );
-    // translate([0,outer_d,0])
-    //     spool_middle(spool_w_mid) ;
-    // translate([0,0,0])
-    //     spool_middle_hub(w_hub=spool_w_end) ;
-}
-
-
-////-spool_parts()
-// spool_parts() ;
+// All spool parts
+// 
+////-spool_all_parts()
+// spool_all_parts() ;
 
 // ## spool_clips
 //

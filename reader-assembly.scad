@@ -2,10 +2,6 @@
 //
 // Monoscope (Monotype Tape reader) assembly
 
-offset_X = 30 ;
-offset_Y = 20 ;
-offset_Z = 20 ;
-
 
 include <reader-defs.scad> ;
 
@@ -13,6 +9,30 @@ use <reader-baseplate.scad> ;
 use <reader-camholder.scad> ;
 use <reader-winder.scad> ;
 use <reader-bridge.scad> ;
+use <reader-electronics_mounting.scad> ;
+
+offset_X = 40 ;
+offset_Y = 40 ;
+offset_Z = 40 ;
+
+camera_Z            = 260 ;
+electronics_Z       = 60 ;
+
+stepper_body_dia    = 29.5 ;
+stepper_body_height = 31.5 ;    // Includes wire entry cover
+stepper_wire_height = 2 ;       // Height of wire entry cover (beyond body radius)
+stepper_wire_width  = 19 ;      // Width of wire entry cover
+stepper_hole_dia    = m4 ;
+stepper_nut_af      = m4_nut_af ;
+stepper_hole_pitch  = 35 ;
+
+bracket_sd          = m8 ;                                  // Bracket shaft hole diameter
+bracket_fw          = 4 ;                                   // Width of frame around motor
+bracket_ft          = winder_side_t+12 ;                    // Thickness of frame and brace
+bracket_hubd        = bracket_sd*1.5 ;                      // Shaft-suppoort= hub diameter
+bracket_od          = stepper_body_dia + bracket_fw*2 ;     // Holder outside diamater
+bracket_mount_x     = (bracket_od*0.6) ;                    // X-offset of shaft from motor centre
+bracket_mount_y     = bracket_od/2-bracket_hubd/2 ;         // Y-offset of shaft from motor centre
 
 // Base plate
 module base_plate() {
@@ -27,7 +47,7 @@ module base_plate() {
 // Rod supports
 module rod_supports() {
     xo = rod_support_base_o + 2*offset_X ;
-    yo = base_w/2+rod_support_shell_w ;
+    yo = base_w/2 + offset_Y ;
     zo = rod_support_h + offset_Z ;
     translate([xo, yo, zo])
         rotate([90,90,0])
@@ -40,7 +60,7 @@ module rod_supports() {
 
 // Camera holder
 module camera_holder() {
-    translate([0,0,200+3*offset_Z]) {
+    translate([0,0,camera_Z+3*offset_Z]) {
         xo1 = rod_support_base_o + 2*offset_X - (hold_slot_o_x1+hold_slot_o_x2)/2 ;
         yo1 = base_w/2 + rod_support_shell_w + hold_fix_plate_w/2 + hold_fix_o_y ;
         zo1 = 0 ;
@@ -75,7 +95,8 @@ module camera_holder() {
 module feed_spool_holder() {
     xo = base_l/2 - winder_side_w/2 + 2*offset_X ;
     yo = base_w/2 ;
-    translate([-xo,0,winder_side_h+2*offset_Z]) {
+    zo = winder_side_h+2*offset_Z ;
+    translate([-xo,0,zo]) {
         translate([0,-yo,0])
             rotate([-90,90,0])
                 spool_side_support_slotted(r=140, s_d=m6) ;
@@ -86,24 +107,7 @@ module feed_spool_holder() {
 }
 
 // Winder spool holder
-module winder_spool_holder() {
-
-    stepper_body_dia    = 29.5 ;
-    stepper_body_height = 31.5 ;    // Includes wire entry cover
-    stepper_wire_height = 2 ;       // Height of wire entry cover (beyond body radius)
-    stepper_wire_width  = 19 ;      // Width of wire entry cover
-    stepper_hole_dia    = m4 ;
-    stepper_nut_af      = m4_nut_af ;
-    stepper_hole_pitch  = 35 ;
-
-    bracket_sd          = m8 ;                                  // Bracket shaft hole diameter
-    bracket_fw          = 4 ;                                   // Width of frame around motor
-    bracket_ft          = winder_side_t+12 ;                    // Thickness of frame and brace
-    bracket_hubd        = bracket_sd*1.5 ;                      // Shaft-suppoort= hub diameter
-    bracket_od          = stepper_body_dia + bracket_fw*2 ;     // Holder outside diamater
-    bracket_mount_x     = (bracket_od*0.6) ;                    // X-offset of shaft from motor centre
-    bracket_mount_y     = bracket_od/2-bracket_hubd/2 ;         // Y-offset of shaft from motor centre
-
+module draw_spool_holder() {
     xo = base_l/2 - winder_side_w/2 + 2*offset_X ;
     yo = base_w/2 ;
     translate([xo,0,winder_side_h+2*offset_Z]) {
@@ -124,7 +128,7 @@ module winder_spool_holder() {
                     stepper_hole_dia, stepper_hole_pitch, stepper_nut_af, -1) ;
         // Motor bracket locking arm
         lox = winder_apex_d*0.55 + 5 ;
-        loy = yo + offset_Y ;
+        loy = yo + 0.5*offset_Y ;
         loz = winder_apex_d*0.45 ;
         translate([-lox,-loy,-loz])
             rotate([90,150,0])
@@ -133,6 +137,7 @@ module winder_spool_holder() {
     }
 }
 
+// Read bridge supports and rollers
 module reader_bridge() {
     yo = base_w/2 + 2*offset_Y ;
     zo = offset_Z ;
@@ -168,7 +173,7 @@ module reader_bridge() {
                     roller_tape_guide() ;
             // Follower arms
             pox = side*guide_follower_pivot_y ;
-            poy = base_w/2 + 3*offset_Y ;
+            poy = yo + offset_Y/2 ;
             poz = read_h - guide_follower_pivot_x ;
             apy = side*90 - 90 ;  // zero or -180
             translate([pox,poy,poz])
@@ -177,7 +182,7 @@ module reader_bridge() {
             translate([pox,-poy,poz])
                 rotate([-90,apy,0])
                     tape_follower_short_arm_no_elbow() ;
-            // Tape followers
+            // Tape follower roller
             fox = pox + side*tape_follower_short_arm_l ;
             foy = guide_rim_overall_width/2 ;
             foz = poz ;
@@ -188,13 +193,157 @@ module reader_bridge() {
     }
 }
 
+// Tape feed spool
+module feed_spool() {
+    xo = base_l/2 - winder_side_w/2 + 4*offset_X ;
+    yo = base_w/2 ;
+    zo = winder_side_h+2*offset_Z ;
+    // Spool middle
+    translate([-xo,spool_w_mid/2,zo])
+        rotate([90,0,0])
+            spool_middle(spool_w_mid) ;
+    // Spool ends
+    yoe = yo - spool_side_t - spool_w_end + offset_Y ;
+    translate([-xo,yoe,zo])
+        rotate([90,0,0])
+            spool_end(
+                shaft_d=spool_shaft_d, shaft_nut_af=spool_shaft_nut_af, shaft_nut_t=spool_shaft_nut_t,
+                core_d=core_d, bevel_d=bevel_d, outer_d=outer_d, 
+                side_t=spool_side_t, side_rim_t=spool_side_rim_t, w_spool_end=spool_w_end
+                ) ;
+    translate([-xo,-yoe,zo])
+        rotate([-90,0,0])
+            spool_end(
+                shaft_d=spool_shaft_d, shaft_nut_af=spool_shaft_nut_af, shaft_nut_t=spool_shaft_nut_t,
+                core_d=core_d, bevel_d=bevel_d, outer_d=outer_d, 
+                side_t=spool_side_t, side_rim_t=spool_side_rim_t, w_spool_end=spool_w_end
+                ) ;
+    // Crank nuts and crank
+    yon = yoe + 0.5*offset_Y ;
+    translate([-xo,-yon,zo])
+        rotate([90,0,0])
+            crank_handle_pushon_nut(m8_nut_af, 5, m4, m4_nut_af, m4_nut_t) ;
+    translate([-xo,yon,zo])
+        rotate([-90,0,0])
+            crank_handle_pushon_nut(m8_nut_af, 5, m4, m4_nut_af, m4_nut_t) ;
+    yoh = yon + 0.5*offset_Y ;
+    translate([-xo,-yoh,zo])
+        rotate([-90,0,0])
+            crank_handle_pushon(
+                shaft_d=shaft_d, crank_hub_d=18, crank_hub_t=7, 
+                drive_nut_af=m8_nut_af, drive_nut_t=5, 
+                crank_arm_l=crank_l, crank_arm_t=5, 
+                handle_d=handle_d, handle_hub_d=handle_hub_d, handle_hub_t=6
+                ) ;
+    // Spool clip
+    yoc = yo + spool_w_all + 2*offset_Y ;
+    translate([-xo,yoc,zo])
+        rotate([90,0,0])
+            spool_clip_closed(core_d+0.8, core_d+3.8, bevel_d-2, spool_w_all-clearance, spool_w_end) ;
+}
 
+// Tape draw spool (driven end)
+module draw_spool() {
+    xo = base_l/2 - winder_side_w/2 + 5*offset_X ;
+    yo = base_w/2 ;
+    zo = winder_side_h+2*offset_Z ;
+    // Spool middle
+    translate([xo,spool_w_mid/2,zo])
+        rotate([90,0,0])
+            spool_middle(spool_w_mid) ;
+    // Spool ends
+    yoe = yo - spool_side_t - spool_w_end + offset_Y ;
+    translate([xo,yoe,zo])
+        rotate([90,0,0])
+            spool_end(
+                shaft_d=spool_shaft_d, shaft_nut_af=spool_shaft_nut_af, shaft_nut_t=spool_shaft_nut_t,
+                core_d=core_d, bevel_d=bevel_d, outer_d=outer_d, 
+                side_t=spool_side_t, side_rim_t=spool_side_rim_t, w_spool_end=spool_w_end
+                ) ;
+    translate([xo,-yoe,zo])
+        rotate([-90,0,0])
+            spool_end(
+                shaft_d=spool_shaft_d, shaft_nut_af=spool_shaft_nut_af, shaft_nut_t=spool_shaft_nut_t,
+                core_d=core_d, bevel_d=bevel_d, outer_d=outer_d, 
+                side_t=spool_side_t, side_rim_t=spool_side_rim_t, w_spool_end=spool_w_end
+                ) ;
+    // Drive pulley
+    yop = yoe + offset_Y ;
+    translate([xo,-yop,zo])
+        rotate([90,0,0])
+            drive_pulley(
+                shaft_d=shaft_d, shaft_nut_af=shaft_nut_af, shaft_nut_t=shaft_nut_t, drive_pulley_d=drive_pulley_d
+            ) ;
+    // Spool clip
+    yoc = yo + spool_w_all + 2*offset_Y ;
+    translate([xo,yoc,zo])
+        rotate([90,0,0])
+            spool_clip_closed(core_d+0.8, core_d+3.8, bevel_d-2, spool_w_all-clearance, spool_w_end) ;
+}
+
+
+// Electronics mount rail
+module electronics_mount() {
+    yo = base_w/2 + 4.6*offset_Y ;
+    zo = electronics_Z + 2*offset_Z ;
+    // Rail
+    translate([0,yo,zo])
+        rotate([90,0,0])
+            electronics_mount_rail() ;
+    // Rod clamp blocks
+    xoc  = mount_rail_rod_p / 2 ;
+    yoc1 = yo - 0.4*offset_Y ;
+    yoc2 = yo - 1*offset_Y ;
+    translate([xoc,yoc1,zo])
+        rotate([90,0,0])
+            rod_mounting_clamp(8,m4,m4_nut_af,m4_nut_t) ;
+    translate([xoc,yoc2,zo])
+        rotate([-90,0,0])
+            rod_mounting_clamp(8,m4,m4_nut_af,m4_nut_t) ;
+    translate([-xoc,yoc1,zo])
+        rotate([90,0,0])
+            rod_mounting_clamp(8,m4,m4_nut_af,m4_nut_t) ;
+    translate([-xoc,yoc2,zo])
+        rotate([-90,0,0])
+            rod_mounting_clamp(8,m4,m4_nut_af,m4_nut_t) ;
+    // Raspberry Pi mounting plate
+    xop = 0 ;
+    yop = yo + offset_Y ;
+    translate([xop,yop,zo])
+       rotate([-90,0,0])
+            pizero_rail_mount_plate() ;
+}
 
 
 base_plate() ;
 rod_supports() ;
 camera_holder() ;
 feed_spool_holder() ;
-winder_spool_holder() ;
+feed_spool() ;
+draw_spool_holder() ;
+draw_spool() ;
 reader_bridge() ;
+electronics_mount() ;
 
+
+// Parts to print - white
+module parts_to_print_white() {
+    translate([0,25,0])
+        phone_holder_rod_support() ;
+    translate([0,75,0])
+        phone_holder_rod_support() ;
+    translate([0,-50,0])
+        phone_holder_rod_anti_rotation_plate() ;
+
+    translate([-75,-25,0])
+        stepper_swivel_bracket(
+            stepper_body_dia, bracket_fw, bracket_ft, 
+            stepper_hole_dia, stepper_hole_pitch, stepper_nut_af, -1) ;
+    translate([-75,50,0])
+        spool_and_swivel_mount_side_support(5, -1, s_d=m6) ;
+}
+
+
+// Parts to print - brown/dark
+module parts_to_print_brown() {
+}
