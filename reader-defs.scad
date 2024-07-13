@@ -186,7 +186,7 @@ hold_fix_o_y = 0 ;      // Y-offset from vertical rod to centre between fixing h
 hold_fix_t = 6 ;        // Thickness of plate (Z)
 hold_fix_w = 8 ;        // Width of plate to shoulder (X)
 hold_fix_l = 80 ;       // Length of phone holder-to-rod fixing (Y)
-hold_fix_rod_d = 8 ;    // Diameter of phone holder support rod
+hold_fix_rod_d = m8 ;   // Diameter of phone holder support rod
 hold_fix_hub_d = 16 ;   // Diameter of phone holder support hub
 
 hold_fix_plate_l = hold_fix_o_x + hold_fix_rod_d ;
@@ -205,9 +205,12 @@ hold_short_slot_o_x2 = 40 ;   // end of adjustment slot
 // Bracket to hold phone camera support rod
 
 rod_support_h = 50 ;
-rod_support_t = sup_t ;     // Rod support side support thickness
-rod_support_base_t = 20 ;   // Rod support side support thickness at base 
-rod_support_base_o = 89 ;   // X-offset from reader bar to phone support rod
+rod_support_t = sup_t ;                     // Rod support side support thickness
+rod_support_base_t = 20 ;                   // Rod support side support thickness at base 
+rod_support_base_o = 89 ;                   // X-offset from reader bar to phone support rod
+rod_support_block_t = sup_t + m8_nut_t ;    // Rod support block thickness
+rod_support_nut_af  = m8_nut_af ;           // Rod support retaining nut AF
+rod_support_nut_t   = m8_nut_t ;            // Rod support retaining nut thickness
 
 rod_support_apex_w  = 24 ;
 rod_support_base_w  = 45 ;

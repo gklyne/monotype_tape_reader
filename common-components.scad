@@ -383,7 +383,7 @@ module nut_recess(af, t)  {
     // assume that these are short enough for the printing to bridge.
     // Similarly, tip of pyramid is truncated.
     translate([0,0,t])
-        cylinder(d1=af-0.25, d2=2, h=nut_recess_height(af), $fn=12) ;
+        cylinder(d1=af-0.3, d2=0, h=nut_recess_height(af), $fn=12) ;
     }
 }
 

@@ -324,36 +324,47 @@ module electronics_mount() {
             pizero_rail_mount_plate() ;
 }
 
-
-base_plate() ;
-rod_supports() ;
-camera_holder() ;
-feed_spool_holder() ;
-feed_spool() ;
-draw_spool_holder() ;
-draw_spool() ;
-reader_bridge() ;
-electronics_mount() ;
-
+// base_plate() ;
+// rod_supports() ;
+// camera_holder() ;
+// feed_spool_holder() ;
+// feed_spool() ;
+// draw_spool_holder() ;
+// draw_spool() ;
+// reader_bridge() ;
+// electronics_mount() ;
 
 // Parts to print - white
 module parts_to_print_white() {
-    translate([0,25,0])
-        phone_holder_rod_support() ;
-    translate([0,75,0])
-        phone_holder_rod_support() ;
-    translate([0,-50,0])
-        phone_holder_rod_anti_rotation_plate() ;
+    // translate([0,25,0])
+    //     phone_holder_rod_support() ;
+    // translate([0,75,0])
+    //     phone_holder_rod_support() ;
 
-    translate([-75,-25,0])
-        stepper_swivel_bracket(
-            stepper_body_dia, bracket_fw, bracket_ft, 
-            stepper_hole_dia, stepper_hole_pitch, stepper_nut_af, -1) ;
-    translate([-75,50,0])
-        spool_and_swivel_mount_side_support(5, -1, s_d=m6) ;
+    // translate([0,-50,0])
+    //     phone_holder_rod_anti_rotation_plate() ;
+
+    // translate([-30,75,0])
+    //     stepper_swivel_bracket(
+    //         stepper_body_dia, bracket_fw, bracket_ft, 
+    //         stepper_hole_dia, stepper_hole_pitch, stepper_nut_af, -1) ;
+    // translate([-75,50,0])
+    //     spool_and_swivel_mount_side_support(5, -1, s_d=m6) ;
+
+    // translate([0,-25,0])
+
+    translate([-60,25,0])
+        pizero_rail_mount_plate() ;
+    translate([0,-20,0])
+        electronics_mount_rail() ;
+
 }
-
+parts_to_print_white() ;
 
 // Parts to print - brown/dark
 module parts_to_print_brown() {
 }
+
+
+
+

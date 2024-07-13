@@ -254,26 +254,48 @@ module phone_camera_holder() {
     }
     module rod_holder() {
         // Rod support block centred on X-Y plane, rod hole aligned with X-axis
-        holder_wdth = hold_fix_rod_d*2 ;
+        holder_wdth = hold_fix_rod_d*2.4 ;
         holder_dpth = rod_support_base_t ;
-        holder_hght = holder_dpth-holder_wdth/2 ;
+        holder_hght = holder_dpth - hold_fix_rod_d - 0*holder_wdth/2 ;
+        recess_t    = rod_support_nut_t ;
         difference() {
             union() {               
                 translate([0,0,holder_hght/2])
-                    cube(size=[rod_support_t, holder_wdth, holder_hght], center=true) ;
-                translate([0,0,holder_dpth-holder_wdth/2])
+                    cube(size=[rod_support_block_t, holder_wdth, holder_hght], center=true) ;
+                translate([0,0,holder_hght])
                     rotate([0,90,0])
-                        cylinder(d=holder_wdth,h=rod_support_t, center=true) ;
+                        cylinder(d=holder_wdth,h=rod_support_block_t, center=true) ;
             }
-            translate([-rod_support_t/2,0,holder_dpth-holder_wdth/2])
+            translate([-rod_support_block_t/2,0,holder_hght]) {
                 rotate([0,90,0])
-                    shaft_hole(hold_fix_rod_d, rod_support_t) ;
+                    shaft_hole(hold_fix_rod_d, rod_support_block_t+2*delta) ;
+            }
+            translate([rod_support_block_t/2-recess_t+delta,0,holder_hght])
+                rotate([0,90,0]) {
+                    nut_recess_Z(rod_support_nut_af, recess_t) ;
+                    translate([-rod_support_nut_af/2,0,recess_t/2])
+                        cube(size=[rod_support_nut_af, rod_support_nut_af, recess_t],
+                            center=true
+                        ) ;
+
+                }
+            // Cutaway for mounting screw head
+            translate([-rod_support_block_t/2-delta,0,holder_hght]) {
+                translate([0,rod_support_base_w*0.25,0]) {
+                    rotate([0,90,0])
+                        cylinder(d1=4, d2=6, h=rod_support_block_t+2*delta) ;
+                }
+                translate([0,-rod_support_base_w*0.25,0]) {
+                    rotate([0,90,0])
+                        cylinder(d1=5, d2=7, h=rod_support_block_t+2*delta) ;
+                }
+            }
         }
     }
     union() {
         side_profile() ;
         side_base() ;
-        translate([rod_support_t/2,0,0])
+        translate([rod_support_block_t/2,0,0])
             rod_holder() ;
         translate([rod_support_h*0.75,0,0])
             rod_holder() ;
@@ -292,20 +314,20 @@ module layout_reader_camera_holder() {
     //     phone_camera_holder() ;
     // translate([spacing*0, spacing*0.3, 0])
     //     phone_camera_holder() ;
-    // translate([-spacing*1.5, spacing*1, 0])
-    //     phone_holder_rod_support() ;    
-    // translate([spacing*0, spacing*1, 0])
-    //     phone_holder_rod_support() ;    
+    translate([-spacing*1.5, spacing*1, 0])
+        phone_holder_rod_support() ;    
+    translate([spacing*0, spacing*1, 0])
+        phone_holder_rod_support() ;    
     // translate([0,2*spacing,0])
     //     phone_holder_rod_fixing_arm() ;
     // translate([-spacing*1.5,spacing*2,0])
     //     phone_holder_rod_fixing_plate() ;
-    translate([-spacing*0,spacing*0,0])
-        phone_holder_rod_anti_rotation_plate() ;
-    translate([+spacing*0,spacing*0.6,0])
-        phone_holder_rod_adjusting_plate() ;
-    translate([-spacing*0,spacing*1.2,0])
-        phone_holder_rod_fixing_plate() ;
+    // translate([-spacing*0,spacing*0,0])
+    //     phone_holder_rod_anti_rotation_plate() ;
+    // translate([+spacing*0,spacing*0.6,0])
+    //     phone_holder_rod_adjusting_plate() ;
+    // translate([-spacing*0,spacing*1.2,0])
+    //     phone_holder_rod_fixing_plate() ;
 }
 
 ////-layout_reader_camera_holder

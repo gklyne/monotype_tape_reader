@@ -6,6 +6,7 @@
 include <reader-defs.scad> ;
 
 use <reader-common.scad> ;
+use <common-components.scad> ;
 
 ////////////////////////////////////////////////////////////////////////////////
 // Definitions
@@ -19,10 +20,16 @@ pizero_mount_holes_wid  = 23 ;
 
 pizero_mountplate_len   = 72 ;
 pizero_mountplate_wid   = 35 ;
-pizero_mountplate_r     = 3 ;       // Corner radius
-pizero_mount_hole_d     = m2_5 ;
-pizero_mount_stud_h     = 4 ;
-pizero_mount_stud_d     = 4.5 ;
+pizero_mountplate_len_2 = 88 ;
+pizero_mountplate_wid_2 = 12 ;
+pizero_mountplate_r     = 3 ;               // Corner radius
+pizero_mount_hole_d     = m2_5 ;            // Mounting screw diameter
+pizero_mount_hole_af    = m2_5_nut_af ;     // Mount nut recess AF
+pizero_mount_hole_nut_t = m2_5_nut_t ;      // Mount nut recess thickness
+pizero_mount_stud_h     = 7 ;               // Overall height of mounting stud
+pizero_mount_stud_d     = 4.5 ;             // Diameter (top) of mounting stud
+pizero_mount_stud_h_2   = m2_5_nut_t*2.2 ;  // Shoulder height of mounting stud
+pizero_mount_stud_d_2   = m2_5_nut_af*1.6 ; // Shoulder diameter of mounting stud
 pizero_boxwall_t        = 1.5 ;
 
 // @@@@
@@ -54,12 +61,20 @@ module pizero_mount_plate_blank() {
         -half_l,-half_w,half_l,half_w,
         pizero_mountplate_r,pizero_boxwall_t
         ) ;
+    half_l_2 = pizero_mountplate_len_2 / 2 ;
+    half_w_2 = pizero_mountplate_wid_2 / 2 ;
+    rounded_rectangle_plate(
+        -half_l_2,-half_w_2,half_l_2,half_w_2,
+        pizero_mountplate_r,pizero_boxwall_t
+        ) ;
     half_px = pizero_mount_holes_len/2 ;
     half_py = pizero_mount_holes_wid/2 ;
     for (x = [-half_px,half_px]) {
         for (y = [-half_py,half_py]) {
-            translate([x,y,pizero_boxwall_t-delta])
+            translate([x,y,0]) {
                 cylinder(d=pizero_mount_stud_d, h=pizero_mount_stud_h, $fn=12) ;
+                cylinder(d=pizero_mount_stud_d_2, h=pizero_mount_stud_h_2, $fn=12) ;
+            }
         }
     }
 }
@@ -70,23 +85,44 @@ module pizero_mount_holes() {
     half_py = pizero_mount_holes_wid/2 ;
     for (x = [-half_px,half_px]) {
         for (y = [-half_py,half_py]) {
-            translate([x,y,-delta])
-                mirror([0,0,1])
-                    countersinkZ(
-                        pizero_mount_hole_d*2, pizero_mount_stud_h+pizero_boxwall_t+2*delta, 
-                        pizero_mount_hole_d, pizero_mount_stud_h+pizero_boxwall_t+delta) ;
+            translate([x,y,-delta]) {
+                // mirror([0,0,1])
+                //     countersinkZ(
+                //         pizero_mount_hole_d*2, pizero_mount_stud_h+2*delta, 
+                //         pizero_mount_hole_d, pizero_mount_stud_h+2*delta) ;
+                cylinder(d=pizero_mount_hole_d, h=pizero_mount_stud_h+2*delta, $fn=12) ;
+                nut_recess(pizero_mount_hole_af, pizero_mount_hole_nut_t) ;
+            }
         }
     }
 }
 
 
 module pizero_rail_mount_holes() {
-    hole_x = [-24,-8, 8, 24] ;
+    hole_x = [-24, -8, 8, 24] ;
     hole_y = [-16, 0, 16] ;
     for (x = hole_x)
         for (y = hole_y)
             translate([x,y,-delta])
                 cylinder(d=m4, h=pizero_boxwall_t+2*delta, $fn=16) ;
+    hole_x_2 = [-40, -24, -8, 8, 24, 40] ;
+    hole_y_2 = [0] ;
+    for (x = hole_x_2)
+        for (y = hole_y_2)
+            translate([x,y,-delta])
+                cylinder(d=m4, h=pizero_boxwall_t+2*delta, $fn=16) ;
+}
+
+
+module pizero_mount_cup_washer() {
+    difference() {
+        cylinder(d=pizero_mount_hole_d*2, h=pizero_mount_hole_d, $fn=12) ;
+        translate([0,0,pizero_mount_hole_d+delta])
+            countersinkZ(
+                pizero_mount_hole_d*2, pizero_mount_hole_d+2*delta, 
+                pizero_mount_hole_d, pizero_mount_hole_d+2*delta) ;
+
+    }    
 }
 
 
@@ -96,10 +132,19 @@ module pizero_rail_mount_plate() {
         pizero_mount_holes() ;
         pizero_rail_mount_holes() ;
     }
-}
+    for ( i = [1,2,3,4] ) {
+        translate([-pizero_mountplate_len_2*0.55 + i*20, 30, 0])
+            pizero_mount_cup_washer() ;
+}}
+
 
 ////-pizero_rail_mount_plate()
 pizero_rail_mount_plate() ;
+
+for ( i = [1,2,3,4] ) {
+    translate([0, 25, 0])
+        pizero_mount_cup_washer() ;
+}
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -136,10 +181,10 @@ module rod_mounting_clamp(rod_d, clamp_screw_d, clamp_nut_af, clamp_nut_t) {
 }
 
 ////-rod_mounting_clamp()
-for (y=[-30,30])
-    for (x=[-20,20])
-        translate([x,y,0])
-            rod_mounting_clamp(8,m4,m4_nut_af,m4_nut_t) ;
+// for (y=[-30,30])
+//     for (x=[-20,20])
+//         translate([x,y,0])
+//             rod_mounting_clamp(8,m4,m4_nut_af,m4_nut_t) ;
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -174,9 +219,8 @@ module electronics_mount_rail() {
 }
 
 ////-electronics_mount_rail()
-
-translate([0,50,0])
-    electronics_mount_rail() ;
+// translate([0,50,0])
+//     electronics_mount_rail() ;
 
 ////////////////////////////////////////////////////////////////////////////////
 // xxxx
