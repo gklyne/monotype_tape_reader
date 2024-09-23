@@ -203,11 +203,17 @@ Following [meeting with Dawn](Journal/20230924-more-reader-changes-needed.md).
 
 [x] Revert to smaller EL wire and smaller gap in bridge
 
-[x] Move matrix mapping tables to separate module; use import <foo> as ...
-
-[x] Trace detection: require overlap in successive frames; some sprockets are getting merged
+[x] Redesign reader device to be more uniform with less wobble
 
 [ ] 
+
+
+## 2024-06-28
+
+[x] Design tweaks while reprinting with PETG, following "meltdown" of original PLA print.  (Turns out the PLA can start sagging when left out in the sun.)
+
+[x] Widen baseplate by 2mm to provide more clearance for the rollers/spools.
+
 
 
 ## To consider (2024-02-13)

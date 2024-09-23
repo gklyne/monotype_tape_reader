@@ -219,7 +219,7 @@ rod_support_shell_w = 48 ;  // Rod support position: increase to move away from 
 // Baseplate dimensions
 
 base_l   = 400 ; // was 300, 240, 400 ;
-base_w   = 130 ;
+base_w   = 132 ;
 base_t   = 4 ;
 border_w = 8 ;
 shell_h  = 8 ;
