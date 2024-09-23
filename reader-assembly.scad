@@ -334,8 +334,17 @@ module electronics_mount() {
 // reader_bridge() ;
 // electronics_mount() ;
 
+// Parts to print - black
+module parts_to_print_black() {
+    // reader_half_baseplate_1() ;
+    reader_half_baseplate_2() ;
+}
+parts_to_print_black() ;
+
+
 // Parts to print - white
 module parts_to_print_white() {
+
     // translate([0,25,0])
     //     phone_holder_rod_support() ;
     // translate([0,75,0])
@@ -353,18 +362,19 @@ module parts_to_print_white() {
 
     // translate([0,-25,0])
 
-    translate([-60,25,0])
-        pizero_rail_mount_plate() ;
-    translate([0,-20,0])
-        electronics_mount_rail() ;
+    // translate([-60,25,0])
+    //     pizero_rail_mount_plate() ;
+    // translate([0,-20,0])
+    //     electronics_mount_rail() ;
 
 }
-parts_to_print_white() ;
+// parts_to_print_white() ;
 
 // Parts to print - brown/dark
 module parts_to_print_brown() {
-}
 
+}
+// parts_to_print_brown() ;
 
 
 
