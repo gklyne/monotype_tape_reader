@@ -308,10 +308,14 @@ module spool_side_support_slotted(r=150, s_d=shaft_d) {
 
 
 ////-spool_side_support_slotted(r, s_d)
-translate([spacing*0.5,-spacing*0.3,0]) spool_side_support_slotted(r=150, s_d=m6) ;
-translate([spacing*0.5,+spacing*0.3,0]) spool_side_support_slotted(r=-150, s_d=m6) ;
-// translate([spacing*1.5,-spacing*0.3,0]) spool_side_support_slotted(r=150, s_d=shaft_d ;
-// translate([spacing*1.5,+spacing*0.3,0]) spool_side_support_slotted(r=-150, s_d=shaft_d ;
+translate([spacing*0.5,-spacing*0.3,0])
+    spool_side_support_slotted(r=150, s_d=spool_sleeve_d) ;
+translate([spacing*0.5,+spacing*0.3,0])
+    spool_side_support_slotted(r=-150, s_d=spool_sleeve_d) ;
+// translate([spacing*1.5,-spacing*0.3,0])
+//     spool_side_support_slotted(r=150, s_d=spool_sleeve_d) ;
+// translate([spacing*1.5,+spacing*0.3,0])
+//     spool_side_support_slotted(r=-150, s_d=spool_sleeve_d) ;
 
 
 ////////////////////////////////////////////////////////////////////////////////

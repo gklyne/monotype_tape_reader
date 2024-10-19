@@ -270,7 +270,7 @@ module trapezoidal_prism(w1,w2,h,l) {
 }
 
 // Platform to fit inside vertically-printed cylinder, with angled infill below.
-// Top of platform lies inX-Y plane, centred on origin.
+// Top of platform lies in X-Y plane, centred on origin.
 //
 // r  = radius of platform
 // h  = height of platform infill
@@ -280,7 +280,7 @@ module circular_platform(r,h) {
         difference() {
             cylinder(r=r+delta, h=h) ;
             translate([0, 0,-delta])
-                cylinder(r1=r+delta, r2=0, h=h) ;  
+                cylinder(r1=r+delta, r2=0, h=r*0.8) ;  
         }
     }
 }

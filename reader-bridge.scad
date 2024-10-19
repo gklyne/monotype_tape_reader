@@ -129,7 +129,6 @@ module tape_reader_bridge_with_guides() {
             // read_side_apex_h is height of dovetail on sides
             // read_extra_l is distance of side from inner guide flange
             // guide_tc is the full (combined bevel and rim) thickness of the guide flange
-            // read_total_l = spool_w_all + 2*(read_side_t + read_extra_l) ;
             // -X translates to +Z after rotation
             outer_shade_a = 45 ;
             outer_shade_h = read_side_apex_h - (read_extra_l-guide_tc)/tan(outer_shade_a) + clearance*2 ;
@@ -525,10 +524,14 @@ module roller_tape_guide() {
                 guide_roller_fillet_r, guide_roller_spoke_w, 
                 guide_roller_width, guide_hub_width
                 ) ;
-            translate([0,0,12+3.5])
-                circular_platform(r=guide_roller_rim_r+clearance*4, h=6) ;
-            translate([0,0,guide_roller_width-12+3.5])
-                circular_platform(r=guide_roller_rim_r+clearance*4, h=6) ;
+            // Note on "magic" numbers here:
+            // 16/2 : midpoint of platform
+            // -1   : adjust for slope underneath
+            // +12  : position away from end of roller
+            translate([0,0,16/2-1+12])
+                circular_platform(r=guide_roller_rim_r+clearance*4, h=16) ;
+            translate([0,0,guide_roller_width+16/2-1-12])
+                circular_platform(r=guide_roller_rim_r+clearance*4, h=16) ;
         }
         ////
         // M4 nut cutouts:  7 AF x 3.1 thick
@@ -827,37 +830,6 @@ module tape_follower_short_arm() {
 // Tape follower roller
 ////////////////////////////////////////////////////////////////////////////////
 
-////@@@@
-module tape_follower_roller_unused_() {
-    od = guide_roller_outer_d+2 ;
-    or = od/2 ;
-    rr = guide_roller_rim_r+1 ;
-    difference() {
-        union() {
-            roller_guide_3_spoked(
-                guide_roller_shaft_d, guide_roller_hub_r,  
-                rr, or,  
-                guide_roller_fillet_r, guide_roller_spoke_w, 
-                guide_roller_width, guide_hub_width
-                ) ;
-            translate([0,0,12+3.5])
-                circular_platform(r=rr+clearance*4, h=6) ;
-            translate([0,0,guide_roller_width-12+3.5])
-                circular_platform(r=rr+clearance*4, h=6) ;
-        }
-        // Shaft hole with clearance for free rotation
-        shaft_hole(guide_sprocket_shaft_d+1, guide_roller_width) ;
-        // M4 nut cutouts:  7 AF x 3.1 thick
-        // NOTE: Nuts drilled out to act as bearings
-        translate([0,0,12]) {
-            extended_nut_recess_with_ejection_hole(7, 3.1, od+1) ;
-        }
-        translate([0,0,guide_roller_width-12]) {
-            extended_nut_recess_with_ejection_hole(7, 3.1, od+1) ;
-        }
-    }
-}
-
 // Roller design without nut cutouts, but using sleeve bearings pushed in to ends
 module tape_follower_roller() {
     od = guide_roller_outer_d+2 ;
@@ -879,7 +851,6 @@ module tape_follower_roller() {
             shaft_hole(follower_roller_sleeve_d, follower_sleeve_len) ;
     }
 }
-
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -909,14 +880,11 @@ module layout_reader_bridge_dovetailed() {
 // translate([0,spacing*1,0])
 //     reader_bridge_side_support_dovetailed() ;
 
-////-tape_reader_bridge_el_wire_clip()
-// translate([0,-read_w,0])
+////-tape_reader_bridge_el_wire_clips()
+// translate([0,-read_w*2,0])
 //     tape_reader_bridge_el_wire_clip() ;
-// translate([0,+read_w,0])
+// translate([0,+read_w*2,0])
 //     tape_reader_bridge_el_wire_clip() ;
-
-
-
 
 ////-reader_bridge_side_support_dovetailed() ;
 // reader_bridge_side_support_dovetailed() ;
@@ -931,14 +899,14 @@ module layout_reader_bridge_dovetailed() {
 //     mirror([1,0,0]) reader_bridge_side_support_dovetailed() ;
 
 ////-sprocket_tape_guide
-//sprocket_tape_guide() ;
+// sprocket_tape_guide() ;
 // To see inside...
 // difference() { sprocket_tape_guide() ; cube(size=[20,20,160]) ; }
 
 ////-roller_tape_guide
-//roller_tape_guide() ;
+roller_tape_guide() ;
 // To see inside...
-//difference() { roller_tape_guide() ; cube(size=[20,20,160]) ; }
+//    difference() { roller_tape_guide() ; cube(size=[20,20,160]) ; }
 
 ////-tape_follower_roller
 // tape_follower_roller() ;

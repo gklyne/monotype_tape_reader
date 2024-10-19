@@ -433,12 +433,12 @@ module reader_half_baseplate_cutaway() {
                     ]) ;
 }
 
-// module reader_half_baseplate_1() {
-//     difference () {
-//         reader_baseplate() ;
-//         reader_half_baseplate_cutaway() ;
-//     }
-// }
+module reader_half_baseplate_1() {
+    difference () {
+        reader_baseplate() ;
+        reader_half_baseplate_cutaway() ;
+    }
+}
 
 module reader_half_baseplate_2() {
     difference () {
@@ -457,8 +457,8 @@ module reader_half_baseplate_2() {
 translate( [-10,0,0] )
     reader_half_baseplate_1() ;
 
-translate( [+10,0,0] )
-    reader_half_baseplate_2() ;
+// translate( [+10,0,0] )
+//     reader_half_baseplate_2() ;
 
 // for (offset = [0,border_w*4])
 //     translate([0,offset,0])

@@ -80,6 +80,7 @@ crank_end_t = 8 ;       // Thickness of crank handle hub (at end of arm)
 spool_side_t = 2.5 ;    // Thickness of carrier spool side
 spool_side_rim_t = 1 ;  // Thickness of carrier spool side rim (bevelled)
 spool_w_all = 114 ;     // Width of spool (overall between ends)
+                        // base_w - 2*(read_side_t+read_extra_l) ;
 spool_w_end = 5 ;       // Width of spool (to inside of end)
 spool_w_plug = 8 ;      // Width of spool-end plug overlap
 spool_w_mid = spool_w_all - 2*spool_w_end ;
@@ -219,7 +220,7 @@ rod_support_shell_w = 48 ;  // Rod support position: increase to move away from 
 // Baseplate dimensions
 
 base_l   = 400 ; // was 300, 240, 400 ;
-base_w   = 132 ;
+base_w   = 130 ;
 base_t   = 4 ;
 border_w = 8 ;
 shell_h  = 8 ;
