@@ -446,7 +446,7 @@ module extended_nylock_recess(af, t, l) {
     // l  = length of cutout
     //
     od = af * 2 / sqrt(3) ; // Diameter (across corners)
-    sl = af - 0.6 ;         // Width of nut support ledge
+    sl = af - 0.75 ;        // Width of nut support ledge
     co = af*0.26 ;          // Offset of cutout (leaving ridge to retain nut) 
     translate([0,0,-delta]) {
         cylinder(d=od, h=t+delta*2, $fn=6) ;
@@ -457,13 +457,13 @@ module extended_nylock_recess(af, t, l) {
     translate([0,0,t]) {
         cylinder(d1=sl, d2=2, h=nylock_recess_height(af), $fn=12) ;
         translate([co,0,0])
-            trapezoidal_prism(w1=sl, w2=2, h=nylock_recess_height(af), l=l-co) ;
+            trapezoidal_prism(w1=sl, w2=1, h=nylock_recess_height(af), l=l-co) ;
     }
     // Cone below for nylock dome
     translate([0,0,-nylock_recess_height(af)]) {
         cylinder(d1=2, d2=sl, h=nylock_recess_height(af), $fn=12) ;
         translate([co,0,0])
-            trapezoidal_prism(w1=2, w2=sl, h=nylock_recess_height(af), l=l-co) ;
+            trapezoidal_prism(w1=1, w2=sl, h=nylock_recess_height(af), l=l-co) ;
     }
 }
 ////-extended_nylock_recess(af, t, l) instance
