@@ -546,10 +546,10 @@ module roller_tape_guide() {
         ////
         // M4 nylock nut cutouts
         translate([0,0,10]) {
-            extended_nylock_recess_with_ejection_hole(m4_nut_af, m4_nylock_t, guide_sprocket_dia) ;
+            extended_nylock_recess_with_ejection_hole(m4_nut_af+clearance, m4_nylock_t, guide_sprocket_dia) ;
         }
         translate([0,0,guide_sprocket_width-10-m4_nylock_t]) {
-            extended_nylock_recess_with_ejection_hole(m4_nut_af, m4_nylock_t, guide_sprocket_dia) ;
+            extended_nylock_recess_with_ejection_hole(m4_nut_af+clearance, m4_nylock_t, guide_sprocket_dia) ;
         }
         shaft_hole(guide_sprocket_shaft_d, guide_roller_width) ;
     }

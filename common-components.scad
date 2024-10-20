@@ -286,7 +286,8 @@ module circular_platform(r,h) {
 }
 ////-circular_platform(r,h) instance
 // Instance of circular_platform (With cutaway to reveal angle of support.)
-// difference() { circular_platform(10,8) ; translate([0,0,-10]) cube(size=[20,20,20]) ; }
+// difference() 
+//    { circular_platform(10,8) ; translate([0,0,-10]) cube(size=[20,20,20]) ; }
 
 module nut(af, t, sd) {
     // Nut outline shape
