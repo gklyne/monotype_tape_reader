@@ -951,8 +951,7 @@ module spoked_wheel_cutout(hr, sr, fr, wt, ns, sw) {
 // spoked_wheel_cutout(15, 30, 2, 5, 6, 4) ;
 
 module spoked_wheel_cutouts(hr, sr, fr, wt, ns, sw) {
-    // Single spoke cutout for spoked wheel in X-Y plane, centred on the origin,
-    // with segment edge aligned with (but offset from) X-axis.
+    // Multiple spoke cutout for spoked wheel in X-Y plane, centred on the origin.
     //
     // hr  = Hub radius (actual hub is larger due to fillets)
     // sr  = spoke radius (centre to inside of rim)
@@ -1346,7 +1345,7 @@ function segment_length(r, a) =
     r*deg_to_rad(a) ; 
 
 function segment_corner_adjustment(rs, a) =
-    // Calculates adjustment to enlarge segment towards centere to ensure full
+    // Calculates adjustment to enlarge segment towards center to ensure full
     // overlap with a cylinder on which it is placed
     let (
         ar  = deg_to_rad(a),
@@ -1397,13 +1396,13 @@ module bayonette_channel_cutout(lm, rm, rlb, rlt, hl, at) {
             rotate([0,0,at-ac])
                 translate([rsc, 0, dp])
                     rotate([0,90,0])        // align shape with direction of extrusion
-                        rotate([0,0,90])        // align shape with direction of extrusion
+                        rotate([0,0,90])    // align shape with direction of extrusion
                             cylinder(r1=rlb+dc, r2=rlt+dc, h=hl+dsc, $fn=16) ;
             // Final end of channel after "click"
             rotate([0,0,at])
                 translate([rsc, 0, dp])
                     rotate([0,90,0])        // align shape with direction of extrusion
-                        rotate([0,0,90])        // align shape with direction of extrusion
+                        rotate([0,0,90])    // align shape with direction of extrusion
                             cylinder(r1=rlb+dc, r2=rlt+dc, h=hl+dsc, $fn=16) ;
         }
     }
@@ -1429,6 +1428,8 @@ module bayonette_socket(ls, lm, ri, rm, ro, hl, dl, nl) {
     at  = al-30 ;                   // angle of twist
     rlb = dl/2 ;                    // Radius of lug at base
     rlt = radius_lug_top(dl, hl) ;  // Radius of lug at top
+    rb  = 3.5 ;                     // Radius of bearing lug cutout
+    hb  = 0.5 ;                     // Height of bearing lug cutout
     // Values used to extend inner face to fully overlap inner cylinder
     dsc = segment_corner_adjustment(rm, ls) ;
     rsc = rm - dsc ;
@@ -1441,6 +1442,13 @@ module bayonette_socket(ls, lm, ri, rm, ro, hl, dl, nl) {
                 rotate([0,0,al*i])
                     bayonette_channel_cutout(lm, rm, rlb, rlt, hl, at) ;
                 }
+            // Bearing lug home cutouts
+            for (i=[0:nl-1]) {
+                rotate([0,0,al*i+al/2])
+                    translate([0,0,-rb+hb])
+                        rotate([0,90,0])
+                            cylinder(r=rb, h=ro, $fn=24) ;
+            }
         }
     }
 }
@@ -1454,7 +1462,7 @@ module bayonette_socket(ls, lm, ri, rm, ro, hl, dl, nl) {
 
 
 module bayonette_plug(lp, lm, ri, rm, ro, hl, dl, nl) {
-    // Bayonette (push/twist) socket in cylindrical tube
+    // Bayonette (push/twist) plug in cylindrical tube
     //
     // lm  = length of bayonette mating faces
     // lp  = length of bayonette plug tube (not including mating face)
@@ -1471,12 +1479,25 @@ module bayonette_plug(lp, lm, ri, rm, ro, hl, dl, nl) {
     al  = 360/nl ;                  // Angle between lugs
     rlb = dl/2 ;                    // Radius of lug at base
     rlt = radius_lug_top(dl, hl) ;  // Radius of lug at top
+    rb  = 3.5 ;                     // Radius of bearing lug
+    hb  = 0.5 ;                     // Height of bearing lug
     // Basic shell
     difference() {
+        // Basic outer shape of plug
         union() {
-            cylinder(r=ro, h=lp, $fn=32) ;
+            // Outer shoulder
+            cylinder(r=ro, h=lp-hb, $fn=32) ;
+            // Bearing lugs
+            for (i=[0:nl-1]) {
+                rotate([0,0,al*i+al/2])
+                    translate([0,0,lp-rb])
+                        rotate([0,90,0])
+                            cylinder(r=rb, h=ro*0.98, $fn=24) ;
+            }
+            // Inner mating cylinder
             cylinder(r=rm, h=lp+lm-clearance, $fn=48) ;
         }
+        // Inside tube cutaway
         translate([0,0,-delta]) {
             cylinder(r=ri, h=lp+lm+2*delta, $fn=48) ;
         }

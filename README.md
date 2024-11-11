@@ -2,12 +2,16 @@
 
 Mechanical parts for reading paper tape created by Monotype keyboard.
 
-To run the tape reader, plug the reader RPi in to the Mac USB port, allow it a few seconds to start up, then SSH to the RPi:
+To run the tape reader, plug the reader RPi in to the Mac USB port (middle port on RPi, not "Pwr in"), allow it a few seconds to start up, then SSH to the RPi:
     ssh graham@192.168.1.23  (p:a...?)
 or:
     ssh graham@mcreader.local
 
-Then seek out and run `stepper-control.py`.
+
+(Before first time, from a Macbook, add an "RNDIS/Ethernet gadget" interface with DHCP network config, and no network address hiding.  This should then find the reader Raspberry Pi using mDNS (Bonjour).  Don't forget to turn off "Limit IP address tracking".  Thnen log in using "mcreader.local" option above.)
+
+Once logged in, seek out and run `stepper-control.py`.
+
 
 ## TODO
 
